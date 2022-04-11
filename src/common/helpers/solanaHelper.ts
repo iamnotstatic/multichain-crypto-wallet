@@ -1,16 +1,14 @@
 import provider from '../utils/solana';
+import * as solanaWeb3 from '@solana/web3.js';
 
 export const getConnection = (rpcUrl: string) => {
-  const { solanaWeb3, connection } = provider(rpcUrl);
+  const connection = provider(rpcUrl);
 
-  return {
-    solanaWeb3,
-    connection,
-  };
+  return connection;
 };
 
 export const getSolBalance = async (rpcUrl: string, address: string) => {
-  const { connection, solanaWeb3 } = getConnection(rpcUrl);
+  const connection = getConnection(rpcUrl);
 
   try {
     const publicKey = new solanaWeb3.PublicKey(address);
@@ -21,4 +19,13 @@ export const getSolBalance = async (rpcUrl: string, address: string) => {
     console.log(error);
     return error;
   }
+};
+
+export const createSolanaWallet = async () => {
+  const keyPair = solanaWeb3.Keypair.generate();
+
+  return {
+    address: keyPair.publicKey.toBase58(),
+    privateKey: keyPair.secretKey.toString(),
+  };
 };

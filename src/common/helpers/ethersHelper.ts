@@ -58,3 +58,13 @@ export const getBalance = async (
     return error;
   }
 };
+
+export const createEthereumWallet = async () => {
+  const wallet = ethers.Wallet.createRandom();
+
+  return {
+    privateKey: wallet.privateKey,
+    address: wallet.address,
+    mnemonic: wallet.mnemonic.phrase,
+  };
+};

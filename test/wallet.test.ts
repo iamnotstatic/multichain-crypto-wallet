@@ -26,4 +26,16 @@ describe('MultichainCryptoWallet', () => {
 
     expect(balance).toBe(0);
   });
+
+  it('createWallet ETH', async () => {
+    const wallet = await multichainCryptoWallet.Wallet.createWallet('ethereum');
+
+    expect(wallet).toBeTruthy();
+  });
+
+  it('createWallet SOLANA', async () => {
+    const wallet = await multichainCryptoWallet.Wallet.createWallet('solana');
+
+    expect(wallet).toBeTruthy();
+  });
 });
