@@ -68,3 +68,50 @@ export const createEthereumWallet = async () => {
     mnemonic: wallet.mnemonic.phrase,
   };
 };
+
+export const transfer = async (
+  rpcUrl: string,
+  privateKey: string,
+  toAddress: string,
+  amount: number,
+  tokenAddress?: string
+) => {
+  const { contract, providerInstance, gasPrice, nonce } = await getContract(
+    rpcUrl,
+    privateKey,
+    tokenAddress
+  );
+
+  let wallet = new ethers.Wallet(privateKey, providerInstance);
+
+  try {
+    let tx;
+
+    if (contract) {
+      const decimals = await contract.decimals();
+
+      tx = await contract.transfer(
+        toAddress,
+        ethers.utils.parseUnits(amount.toString(), decimals),
+        {
+          gasPrice,
+          nonce,
+        }
+      );
+    } else {
+      tx = await wallet.sendTransaction({
+        to: toAddress,
+        value: ethers.utils.parseEther(amount.toString()),
+        gasPrice,
+        nonce,
+      });
+    }
+
+    return {
+      hash: tx.hash,
+    };
+  } catch (error) {
+    console.log(error);
+    return error;
+  }
+};
