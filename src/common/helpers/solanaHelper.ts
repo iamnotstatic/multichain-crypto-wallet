@@ -1,5 +1,7 @@
 import provider from '../utils/solana';
 import * as solanaWeb3 from '@solana/web3.js';
+import { TransferPayload } from '../utils/types';
+import * as bs58 from 'bs58';
 
 export const getConnection = (rpcUrl: string) => {
   const connection = provider(rpcUrl);
@@ -26,30 +28,32 @@ export const createSolanaWallet = async () => {
 
   return {
     address: keyPair.publicKey.toBase58(),
-    privateKey: keyPair.secretKey.toString(),
+    privateKey: bs58.encode(keyPair.secretKey),
   };
 };
 
-export const transferSol = async (
-  rpcUrl: string,
-  key: any,
-  to: string,
-  amount: number
-) => {
-  const connection = getConnection(rpcUrl);
+export const transferSol = async (args: TransferPayload) => {
+  const connection = getConnection(args.rpcUrl);
 
   try {
-    const receiver = new solanaWeb3.PublicKey(to);
+    const receiver = new solanaWeb3.PublicKey(args.toAddress);
+    let secretKey;
 
-    const privateKey = new Uint8Array(key.split(','));
-    const from = solanaWeb3.Keypair.fromSecretKey(privateKey);
+    if (args.privateKey.split(',').length > 1) {
+      secretKey = new Uint8Array(args.privateKey.split(',') as any);
+    } else {
+      secretKey = bs58.decode(args.privateKey);
+    }
 
-    // Add transfer instruction to transaction
+    const from = solanaWeb3.Keypair.fromSecretKey(secretKey, {
+      skipValidation: true,
+    });
+
     const transaction = new solanaWeb3.Transaction().add(
       solanaWeb3.SystemProgram.transfer({
         fromPubkey: from.publicKey,
         toPubkey: receiver,
-        lamports: solanaWeb3.LAMPORTS_PER_SOL * amount,
+        lamports: solanaWeb3.LAMPORTS_PER_SOL * args.amount,
       })
     );
 
@@ -61,8 +65,7 @@ export const transferSol = async (
     );
 
     return { hash: signature };
-  } catch (error) {
-    console.log(error);
+  } catch (error: any) {
     return error;
   }
 };

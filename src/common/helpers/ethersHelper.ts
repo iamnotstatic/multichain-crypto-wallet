@@ -1,6 +1,7 @@
 import provider from '../utils/ethers';
 import erc20Abi from '../../abis/erc20.json';
 import { ethers } from 'ethers';
+import { TransferPayload } from '../utils/types';
 
 export const getContract = async (
   rpcUrl: string,
@@ -9,6 +10,7 @@ export const getContract = async (
 ) => {
   const providerInstance = provider(rpcUrl, privateKey);
   const gasPrice = await providerInstance.getGasPrice();
+  const gas = ethers.BigNumber.from(21000);
 
   const signer = providerInstance.getSigner();
 
@@ -24,6 +26,7 @@ export const getContract = async (
     contract,
     signer,
     gasPrice,
+    gas,
     nonce,
     providerInstance,
   };
@@ -69,20 +72,16 @@ export const createEthereumWallet = async () => {
   };
 };
 
-export const transfer = async (
-  rpcUrl: string,
-  privateKey: string,
-  toAddress: string,
-  amount: number,
-  tokenAddress?: string
-) => {
-  const { contract, providerInstance, gasPrice, nonce } = await getContract(
-    rpcUrl,
-    privateKey,
-    tokenAddress
-  );
+export const transfer = async (args: TransferPayload) => {
+  const {
+    contract,
+    providerInstance,
+    gasPrice,
+    gas,
+    nonce,
+  } = await getContract(args.rpcUrl, args.privateKey, args.tokenAddress);
 
-  let wallet = new ethers.Wallet(privateKey, providerInstance);
+  let wallet = new ethers.Wallet(args.privateKey, providerInstance);
 
   try {
     let tx;
@@ -91,18 +90,22 @@ export const transfer = async (
       const decimals = await contract.decimals();
 
       tx = await contract.transfer(
-        toAddress,
-        ethers.utils.parseUnits(amount.toString(), decimals),
+        args.toAddress,
+        ethers.utils.parseUnits(args.amount.toString(), decimals),
         {
-          gasPrice,
+          gasPrice:
+            ethers.utils.parseUnits(args.gasPrice as string, 'gwei') ||
+            gasPrice,
           nonce,
         }
       );
     } else {
       tx = await wallet.sendTransaction({
-        to: toAddress,
-        value: ethers.utils.parseEther(amount.toString()),
-        gasPrice,
+        to: args.toAddress,
+        value: ethers.utils.parseEther(args.amount.toString()),
+        gasPrice:
+          ethers.utils.parseUnits(args.gasPrice as string, 'gwei') || gasPrice,
+        gasLimit: gas,
         nonce,
       });
     }

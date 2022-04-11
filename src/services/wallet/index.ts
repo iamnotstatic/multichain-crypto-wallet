@@ -9,6 +9,8 @@ import {
   transferSol,
 } from '../../common/helpers/solanaHelper';
 
+import { TransferPayload } from '../../common/utils/types';
+
 export default class Wallet {
   async getBalance(
     address: string,
@@ -46,25 +48,12 @@ export default class Wallet {
     }
   }
 
-  async transfer(
-    toAddress: string,
-    amount: number,
-    network: string,
-    rpcUrl: string,
-    privateKey: string,
-    tokenAddress?: string
-  ) {
+  async transfer(args: TransferPayload) {
     try {
-      if (network === 'ethereum') {
-        return await transfer(
-          rpcUrl,
-          privateKey,
-          toAddress,
-          amount,
-          tokenAddress
-        );
-      } else if (network === 'solana') {
-        return await transferSol(rpcUrl, privateKey, toAddress, amount);
+      if (args.network === 'ethereum') {
+        return await transfer({ ...args });
+      } else if (args.network === 'solana') {
+        return await transferSol({ ...args });
       }
 
       return;
