@@ -46,7 +46,7 @@ describe('MultichainCryptoWallet', () => {
       toAddress: '0x2455eC6700092991Ce0782365A89d5Cd89c8Fa22',
       amount: 0.0001,
       network: 'ethereum',
-      rpcUrl: 'https://rinkeby.infura.io/v3/bff827defbfc496a8499d1b1d2223ae3',
+      rpcUrl: 'https://rpc.ankr.com/eth',
       privateKey:
         '367df12b3064ba363de465bf299e78a68aae69932918b160f1724e688050f73d',
       gasPrice: '10',
@@ -62,7 +62,7 @@ describe('MultichainCryptoWallet', () => {
       toAddress: '0x2455eC6700092991Ce0782365A89d5Cd89c8Fa22',
       amount: 10,
       network: 'ethereum',
-      rpcUrl: 'https://rinkeby.infura.io/v3/bff827defbfc496a8499d1b1d2223ae3',
+      rpcUrl: 'https://rpc.ankr.com/eth',
       privateKey:
         '367df12b3064ba363de465bf299e78a68aae69932918b160f1724e688050f73d',
       gasPrice: '10',
@@ -79,7 +79,7 @@ describe('MultichainCryptoWallet', () => {
       toAddress: '9DSRMyr3EfxPzxZo9wMBPku7mvcazHTHfyjhcfw5yucA',
       amount: 0.000001,
       network: 'solana',
-      rpcUrl: 'https://api.devnet.solana.com',
+      rpcUrl: 'https://rpc.ankr.com/solana',
       privateKey:
         'bXXgTj2cgXMFAGpLHkF5GhnoNeUpmcJDsxXDhXQhQhL2BDpJumdwMGeC5Cs66stsN3GfkMH8oyHu24dnojKbtfp',
     };
