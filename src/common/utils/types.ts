@@ -6,4 +6,5 @@ export interface TransferPayload {
   privateKey: string;
   gasPrice?: string;
   tokenAddress?: string;
+  nonce?: number;
 }

@@ -96,7 +96,7 @@ export const transfer = async (args: TransferPayload) => {
           gasPrice:
             ethers.utils.parseUnits(args.gasPrice as string, 'gwei') ||
             gasPrice,
-          nonce,
+          nonce: args.nonce || nonce,
         }
       );
     } else {
@@ -106,7 +106,7 @@ export const transfer = async (args: TransferPayload) => {
         gasPrice:
           ethers.utils.parseUnits(args.gasPrice as string, 'gwei') || gasPrice,
         gasLimit: gas,
-        nonce,
+        nonce: args.nonce || nonce,
       });
     }
 

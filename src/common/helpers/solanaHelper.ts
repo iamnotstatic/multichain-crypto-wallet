@@ -66,6 +66,7 @@ export const transferSol = async (args: TransferPayload) => {
 
     return { hash: signature };
   } catch (error: any) {
+    console.log(error);
     return error;
   }
 };
