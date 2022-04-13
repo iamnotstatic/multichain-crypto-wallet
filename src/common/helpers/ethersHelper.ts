@@ -1,7 +1,7 @@
 import provider from '../utils/ethers';
 import erc20Abi from '../../abis/erc20.json';
 import { ethers } from 'ethers';
-import { TransferPayload } from '../utils/types';
+import { BalancePayload, TransferPayload } from '../utils/types';
 
 export const getContract = async (
   rpcUrl: string,
@@ -32,16 +32,11 @@ export const getContract = async (
   };
 };
 
-export const getBalance = async (
-  rpcUrl: string,
-  address: string,
-  privateKey?: string,
-  tokenAddress?: string
-) => {
+export const getBalance = async (args: BalancePayload) => {
   const { contract, providerInstance } = await getContract(
-    rpcUrl,
-    privateKey,
-    tokenAddress
+    args.rpcUrl,
+    args.privateKey,
+    args.tokenAddress
   );
 
   try {
@@ -50,11 +45,11 @@ export const getBalance = async (
     if (contract) {
       const decimals = await contract.decimals();
 
-      balance = await contract.balanceOf(`${address}`);
+      balance = await contract.balanceOf(args.address);
       return ethers.utils.formatUnits(balance, decimals);
     }
 
-    balance = await providerInstance.getBalance(address);
+    balance = await providerInstance.getBalance(args.address);
     return ethers.utils.formatEther(balance);
   } catch (error) {
     console.log(error);

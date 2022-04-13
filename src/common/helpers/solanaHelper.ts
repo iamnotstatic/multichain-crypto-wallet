@@ -1,6 +1,6 @@
 import provider from '../utils/solana';
 import * as solanaWeb3 from '@solana/web3.js';
-import { TransferPayload } from '../utils/types';
+import { BalancePayload, TransferPayload } from '../utils/types';
 import * as bs58 from 'bs58';
 
 export const getConnection = (rpcUrl: string) => {
@@ -9,11 +9,11 @@ export const getConnection = (rpcUrl: string) => {
   return connection;
 };
 
-export const getSolBalance = async (rpcUrl: string, address: string) => {
-  const connection = getConnection(rpcUrl);
+export const getSolBalance = async (args: BalancePayload) => {
+  const connection = getConnection(args.rpcUrl);
 
   try {
-    const publicKey = new solanaWeb3.PublicKey(address);
+    const publicKey = new solanaWeb3.PublicKey(args.address);
     const balance = await connection.getBalance(publicKey);
 
     return balance;
@@ -65,7 +65,7 @@ export const transferSol = async (args: TransferPayload) => {
     );
 
     return { hash: signature };
-  } catch (error: any) {
+  } catch (error) {
     console.log(error);
     return error;
   }

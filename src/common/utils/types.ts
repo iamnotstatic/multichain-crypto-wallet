@@ -8,3 +8,15 @@ export interface TransferPayload {
   tokenAddress?: string;
   nonce?: number;
 }
+
+export interface BalancePayload {
+  address: string;
+  network: string;
+  rpcUrl: string;
+  privateKey?: string;
+  tokenAddress?: string;
+}
+
+export interface CreateWalletPayload {
+  network: string;
+}

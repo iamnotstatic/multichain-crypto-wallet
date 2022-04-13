@@ -9,21 +9,19 @@ import {
   transferSol,
 } from '../../common/helpers/solanaHelper';
 
-import { TransferPayload } from '../../common/utils/types';
+import {
+  TransferPayload,
+  BalancePayload,
+  CreateWalletPayload,
+} from '../../common/utils/types';
 
 export default class Wallet {
-  async getBalance(
-    address: string,
-    network: string,
-    rpcUrl: string,
-    privateKey?: string,
-    tokenAddress?: string
-  ) {
+  async getBalance(args: BalancePayload) {
     try {
-      if (network === 'ethereum') {
-        return await getBalance(rpcUrl, address, privateKey, tokenAddress);
-      } else if (network === 'solana') {
-        return await getSolBalance(rpcUrl, address);
+      if (args.network === 'ethereum') {
+        return await getBalance({ ...args });
+      } else if (args.network === 'solana') {
+        return await getSolBalance({ ...args });
       }
 
       return;
@@ -33,11 +31,11 @@ export default class Wallet {
     }
   }
 
-  async createWallet(network: string) {
+  async createWallet(args: CreateWalletPayload) {
     try {
-      if (network === 'ethereum') {
+      if (args.network === 'ethereum') {
         return await createEthereumWallet();
-      } else if (network === 'solana') {
+      } else if (args.network === 'solana') {
         return await createSolanaWallet();
       }
 
