@@ -1,6 +1,6 @@
 import provider from '../utils/solana';
 import * as solanaWeb3 from '@solana/web3.js';
-import { BalancePayload, TransferPayload } from '../utils/types';
+import { BalancePayload, successResponse, TransferPayload } from '../utils/types';
 import * as bs58 from 'bs58';
 
 export const getConnection = (rpcUrl: string) => {
@@ -16,20 +16,22 @@ export const getSolBalance = async (args: BalancePayload) => {
     const publicKey = new solanaWeb3.PublicKey(args.address);
     const balance = await connection.getBalance(publicKey);
 
-    return balance;
-  } catch (error) {
-    console.log(error);
-    return error;
+    return successResponse({
+      balance,
+    });
+  } catch (error: any) {
+    throw error.message;
   }
 };
 
 export const createSolanaWallet = async () => {
   const keyPair = solanaWeb3.Keypair.generate();
 
-  return {
+  return successResponse({
     address: keyPair.publicKey.toBase58(),
-    privateKey: bs58.encode(keyPair.secretKey),
-  };
+    privateKey: bs58.encode(keyPair.secretKey)
+  });
+ 
 };
 
 export const transferSol = async (args: TransferPayload) => {
@@ -64,9 +66,10 @@ export const transferSol = async (args: TransferPayload) => {
       [from]
     );
 
-    return { hash: signature };
-  } catch (error) {
-    console.log(error);
-    return error;
+    return successResponse({
+     hash: signature,
+    });
+  } catch (error: any) {
+    throw error.message;
   }
 };

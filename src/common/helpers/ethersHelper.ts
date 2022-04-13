@@ -1,7 +1,11 @@
 import provider from '../utils/ethers';
 import erc20Abi from '../../abis/erc20.json';
 import { ethers } from 'ethers';
-import { BalancePayload, TransferPayload } from '../utils/types';
+import {
+  BalancePayload,
+  successResponse,
+  TransferPayload,
+} from '../utils/types';
 
 export const getContract = async (
   rpcUrl: string,
@@ -46,25 +50,29 @@ export const getBalance = async (args: BalancePayload) => {
       const decimals = await contract.decimals();
 
       balance = await contract.balanceOf(args.address);
-      return ethers.utils.formatUnits(balance, decimals);
+     
+      return successResponse({
+        balance: parseFloat(ethers.utils.formatUnits(balance, decimals)),
+      });
     }
 
     balance = await providerInstance.getBalance(args.address);
-    return ethers.utils.formatEther(balance);
-  } catch (error) {
-    console.log(error);
-    return error;
+
+    return successResponse({
+      balance: parseFloat(ethers.utils.formatEther(balance)),
+    });
+  } catch (error: any) {
+    throw error.message;
   }
 };
 
 export const createEthereumWallet = async () => {
   const wallet = ethers.Wallet.createRandom();
 
-  return {
-    privateKey: wallet.privateKey,
+  return successResponse({
     address: wallet.address,
-    mnemonic: wallet.mnemonic.phrase,
-  };
+    privateKey: wallet.privateKey,
+  });
 };
 
 export const transfer = async (args: TransferPayload) => {
@@ -105,11 +113,10 @@ export const transfer = async (args: TransferPayload) => {
       });
     }
 
-    return {
+    return successResponse({
       hash: tx.hash,
-    };
-  } catch (error) {
-    console.log(error);
-    return error;
+    });
+  } catch (error: any) {
+    throw error.message;
   }
 };

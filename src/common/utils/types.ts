@@ -20,3 +20,11 @@ export interface BalancePayload {
 export interface CreateWalletPayload {
   network: string;
 }
+
+export interface IResponse {
+  [key: string]: any;
+}
+
+export const successResponse = (args: IResponse) => {
+  return args;
+};
