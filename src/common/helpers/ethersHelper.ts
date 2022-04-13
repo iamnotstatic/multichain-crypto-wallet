@@ -93,7 +93,7 @@ export const transfer = async (args: TransferPayload) => {
       const decimals = await contract.decimals();
 
       tx = await contract.transfer(
-        args.toAddress,
+        args.recipientAddress,
         ethers.utils.parseUnits(args.amount.toString(), decimals),
         {
           gasPrice:
@@ -104,7 +104,7 @@ export const transfer = async (args: TransferPayload) => {
       );
     } else {
       tx = await wallet.sendTransaction({
-        to: args.toAddress,
+        to: args.recipientAddress,
         value: ethers.utils.parseEther(args.amount.toString()),
         gasPrice:
           ethers.utils.parseUnits(args.gasPrice as string, 'gwei') || gasPrice,

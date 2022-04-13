@@ -39,7 +39,7 @@ export const transferSol = async (args: TransferPayload) => {
   const connection = getConnection(args.rpcUrl);
 
   try {
-    const receiver = new solanaWeb3.PublicKey(args.toAddress);
+    const receiver = new solanaWeb3.PublicKey(args.recipientAddress);
     let secretKey;
 
     if (args.privateKey.split(',').length > 1) {

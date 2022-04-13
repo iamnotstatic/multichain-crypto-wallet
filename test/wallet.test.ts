@@ -60,7 +60,7 @@ describe('MultichainCryptoWallet', () => {
 
   it('transfer ETH', async () => {
     const payload = {
-      toAddress: '0x2455eC6700092991Ce0782365A89d5Cd89c8Fa22',
+      recipientAddress: '0x2455eC6700092991Ce0782365A89d5Cd89c8Fa22',
       amount: 0.0001,
       network: 'ethereum',
       rpcUrl: 'https://rpc.ankr.com/eth', // Optional - leave empty to use default
@@ -75,7 +75,7 @@ describe('MultichainCryptoWallet', () => {
 
   it('transfer ERC20 Token', async () => {
     const payload = {
-      toAddress: '0x2455eC6700092991Ce0782365A89d5Cd89c8Fa22',
+      recipientAddress: '0x2455eC6700092991Ce0782365A89d5Cd89c8Fa22',
       amount: 10,
       network: 'ethereum',
       rpcUrl: 'https://rpc.ankr.com/eth',
@@ -91,7 +91,7 @@ describe('MultichainCryptoWallet', () => {
 
   it('transfer SOL', async () => {
     const payload = {
-      toAddress: '9DSRMyr3EfxPzxZo9wMBPku7mvcazHTHfyjhcfw5yucA',
+      recipientAddress: '9DSRMyr3EfxPzxZo9wMBPku7mvcazHTHfyjhcfw5yucA',
       amount: 0.000001,
       network: 'solana',
       rpcUrl: 'https://rpc.ankr.com/solana',  // Optional - leave empty for default
@@ -105,7 +105,7 @@ describe('MultichainCryptoWallet', () => {
 
   it('Override ERC20 token pending transaction on ethereum', async () => {
     const payload = {
-      toAddress: '0x2455eC6700092991Ce0782365A89d5Cd89c8Fa22',
+      recipientAddress: '0x2455eC6700092991Ce0782365A89d5Cd89c8Fa22',
       amount: 0,
       network: 'ethereum',
       rpcUrl: 'https://rpc.ankr.com/eth',  // Optional - leave empty for default
@@ -122,7 +122,7 @@ describe('MultichainCryptoWallet', () => {
 
   it('Override pending ETH transactionm', async () => {
     const payload = {
-      toAddress: '0x2455eC6700092991Ce0782365A89d5Cd89c8Fa22',
+      recipientAddress: '0x2455eC6700092991Ce0782365A89d5Cd89c8Fa22',
       amount: 0,
       network: 'ethereum',
       rpcUrl: 'https://rpc.ankr.com/eth',  // Optional - leave empty for default

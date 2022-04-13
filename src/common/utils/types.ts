@@ -1,5 +1,5 @@
 export interface TransferPayload {
-  toAddress: string;
+  recipientAddress: string;
   amount: number;
   network: string;
   rpcUrl?: string;
