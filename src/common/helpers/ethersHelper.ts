@@ -8,7 +8,7 @@ import {
 import { successResponse } from '../utils';
 
 export const getContract = async (
-  rpcUrl?: string,
+  rpcUrl: string,
   privateKey?: string,
   tokenAddress?: string
 ) => {
