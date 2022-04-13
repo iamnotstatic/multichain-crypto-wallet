@@ -3,12 +3,12 @@ import erc20Abi from '../../abis/erc20.json';
 import { ethers } from 'ethers';
 import {
   BalancePayload,
-  successResponse,
   TransferPayload,
 } from '../utils/types';
+import { successResponse } from '../utils';
 
 export const getContract = async (
-  rpcUrl: string,
+  rpcUrl?: string,
   privateKey?: string,
   tokenAddress?: string
 ) => {
@@ -61,8 +61,8 @@ export const getBalance = async (args: BalancePayload) => {
     return successResponse({
       balance: parseFloat(ethers.utils.formatEther(balance)),
     });
-  } catch (error: any) {
-    throw error.message;
+  } catch (error) {
+    throw error;
   }
 };
 
@@ -116,7 +116,7 @@ export const transfer = async (args: TransferPayload) => {
     return successResponse({
       hash: tx.hash,
     });
-  } catch (error: any) {
-    throw error.message;
+  } catch (error) {
+    throw error;
   }
 };

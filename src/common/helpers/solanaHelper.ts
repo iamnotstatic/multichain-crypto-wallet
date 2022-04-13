@@ -1,9 +1,10 @@
 import provider from '../utils/solana';
 import * as solanaWeb3 from '@solana/web3.js';
-import { BalancePayload, successResponse, TransferPayload } from '../utils/types';
+import { BalancePayload, TransferPayload } from '../utils/types';
 import * as bs58 from 'bs58';
+import { successResponse } from '../utils';
 
-export const getConnection = (rpcUrl: string) => {
+export const getConnection = (rpcUrl?: string) => {
   const connection = provider(rpcUrl);
 
   return connection;
@@ -19,8 +20,8 @@ export const getSolBalance = async (args: BalancePayload) => {
     return successResponse({
       balance,
     });
-  } catch (error: any) {
-    throw error.message;
+  } catch (error) {
+    throw error;
   }
 };
 
@@ -69,7 +70,7 @@ export const transferSol = async (args: TransferPayload) => {
     return successResponse({
      hash: signature,
     });
-  } catch (error: any) {
-    throw error.message;
+  } catch (error) {
+    throw error;
   }
 };
