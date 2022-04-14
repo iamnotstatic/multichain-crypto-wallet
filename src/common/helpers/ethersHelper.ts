@@ -1,29 +1,37 @@
 import provider from '../utils/ethers';
 import erc20Abi from '../../abis/erc20.json';
 import { ethers } from 'ethers';
-import {
-  BalancePayload,
-  TransferPayload,
-} from '../utils/types';
+import { BalancePayload, TransferPayload } from '../utils/types';
 import { successResponse } from '../utils';
 
-export const getContract = async (
-  rpcUrl: string,
-  privateKey?: string,
-  tokenAddress?: string
-) => {
-  const providerInstance = provider(rpcUrl, privateKey);
+interface GetContract {
+  rpcUrl: string;
+  privateKey?: string;
+  tokenAddress?: string;
+}
+
+export const getContract = async ({
+  tokenAddress,
+  rpcUrl,
+  privateKey,
+}: GetContract) => {
+  const providerInstance = provider(rpcUrl);
   const gasPrice = await providerInstance.getGasPrice();
   const gas = ethers.BigNumber.from(21000);
 
-  const signer = providerInstance.getSigner();
-
   let nonce;
   let contract;
+  let signer;
 
-  if (tokenAddress) {
+  if (privateKey && tokenAddress) {
+    signer = new ethers.Wallet(privateKey, providerInstance);
     nonce = providerInstance.getTransactionCount(signer.getAddress());
     contract = new ethers.Contract(tokenAddress, erc20Abi, signer);
+  } else if (privateKey && !tokenAddress) {
+    signer = new ethers.Wallet(privateKey, providerInstance);
+    nonce = providerInstance.getTransactionCount(signer.getAddress());
+  } else if (tokenAddress && !privateKey) {
+    contract = new ethers.Contract(tokenAddress, erc20Abi, providerInstance);
   }
 
   return {
@@ -36,12 +44,15 @@ export const getContract = async (
   };
 };
 
-export const getBalance = async (args: BalancePayload) => {
-  const { contract, providerInstance } = await getContract(
-    args.rpcUrl,
-    args.privateKey,
-    args.tokenAddress
-  );
+export const getBalance = async ({
+  rpcUrl,
+  tokenAddress,
+  address,
+}: BalancePayload) => {
+  const { contract, providerInstance } = await getContract({
+    rpcUrl,
+    tokenAddress,
+  });
 
   try {
     let balance;
@@ -49,14 +60,14 @@ export const getBalance = async (args: BalancePayload) => {
     if (contract) {
       const decimals = await contract.decimals();
 
-      balance = await contract.balanceOf(args.address);
-     
+      balance = await contract.balanceOf(address);
+
       return successResponse({
         balance: parseFloat(ethers.utils.formatUnits(balance, decimals)),
       });
     }
 
-    balance = await providerInstance.getBalance(args.address);
+    balance = await providerInstance.getBalance(address);
 
     return successResponse({
       balance: parseFloat(ethers.utils.formatEther(balance)),
@@ -75,16 +86,21 @@ export const createEthereumWallet = async () => {
   });
 };
 
-export const transfer = async (args: TransferPayload) => {
+export const transfer = async ({
+  privateKey,
+  tokenAddress,
+  rpcUrl,
+  ...args
+}: TransferPayload) => {
   const {
     contract,
     providerInstance,
     gasPrice,
     gas,
     nonce,
-  } = await getContract(args.rpcUrl, args.privateKey, args.tokenAddress);
+  } = await getContract({ rpcUrl, privateKey, tokenAddress });
 
-  let wallet = new ethers.Wallet(args.privateKey, providerInstance);
+  let wallet = new ethers.Wallet(privateKey, providerInstance);
 
   try {
     let tx;

@@ -13,7 +13,6 @@ export interface BalancePayload {
   address: string;
   network: string;
   rpcUrl: string;
-  privateKey?: string;
   tokenAddress?: string;
 }
 

@@ -25,8 +25,6 @@ describe('MultichainCryptoWallet', () => {
       network: 'ethereum',
       rpcUrl: 'https://rpc.ankr.com/eth',
       tokenAddress: '0xdac17f958d2ee523a2206206994597c13d831ec7',
-      privateKey:
-        '0f9e5c0bee6c7d06b95204ca22dea8d7f89bb04e8527a2c59e134d185d9af8ad',
     });
 
     expect(typeof data).toBe('object');
@@ -34,7 +32,7 @@ describe('MultichainCryptoWallet', () => {
 
   it('getBalance SOLANA', async () => {
     const data = await multichainCryptoWallet.Wallet.getBalance({
-      address: '5PwN5k7hin2XxUUaXveur7jSe5qt2mkWinp1JEiv8xYu',
+      address: 'DYgLjazTY6kMqagbDMsNttRHKQj9o6pNS8D6jMjWbmP7',
       network: 'solana',
       rpcUrl: 'https://rpc.ankr.com/solana',
     });
