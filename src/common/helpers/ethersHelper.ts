@@ -130,7 +130,7 @@ export const transfer = async ({
     }
 
     return successResponse({
-      hash: tx.hash,
+      receipt: tx,
     });
   } catch (error) {
     throw error;
