@@ -20,6 +20,11 @@ export interface CreateWalletPayload {
   network: string;
 }
 
+export interface GetAddressFromPrivateKeyPayload {
+  privateKey: string;
+  network: string;
+}
+
 export interface IResponse {
   [key: string]: any;
 }

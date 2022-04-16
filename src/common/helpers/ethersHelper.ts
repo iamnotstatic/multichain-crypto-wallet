@@ -1,7 +1,11 @@
 import provider from '../utils/ethers';
 import erc20Abi from '../../abis/erc20.json';
 import { ethers } from 'ethers';
-import { BalancePayload, TransferPayload } from '../utils/types';
+import {
+  BalancePayload,
+  GetAddressFromPrivateKeyPayload,
+  TransferPayload,
+} from '../utils/types';
 import { successResponse } from '../utils';
 
 interface GetContract {
@@ -83,6 +87,16 @@ export const createEthereumWallet = async () => {
   return successResponse({
     address: wallet.address,
     privateKey: wallet.privateKey,
+  });
+};
+
+export const getAddressFromPrivateKey = async (
+  args: GetAddressFromPrivateKeyPayload
+) => {
+  const wallet = new ethers.Wallet(args.privateKey);
+
+  return successResponse({
+    address: wallet.address,
   });
 };
 

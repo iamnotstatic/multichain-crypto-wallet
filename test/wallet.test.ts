@@ -56,6 +56,30 @@ describe('MultichainCryptoWallet', () => {
     expect(typeof wallet).toBe('object');
   });
 
+  it('getAddressFromPrivateKey ETH', async () => {
+    const address = await multichainCryptoWallet.Wallet.getAddressFromPrivateKey(
+      {
+        privateKey:
+          '0f9e5c0bee6c7d06b95204ca22dea8d7f89bb04e8527a2c59e134d185d9af8ad',
+        network: 'ethereum',
+      }
+    );
+
+    expect(typeof address).toBe('object');
+  });
+
+  it('getAddressFromPrivateKey SOLANA', async () => {
+    const address = await multichainCryptoWallet.Wallet.getAddressFromPrivateKey(
+      {
+        privateKey:
+          'bXXgTj2cgXMFAGpLHkF5GhnoNeUpmcJDsxXDhXQhQhL2BDpJumdwMGeC5Cs66stsN3GfkMH8oyHu24dnojKbtfp',
+        network: 'solana',
+      }
+    );
+
+    expect(typeof address).toBe('object');
+  });
+
   it('transfer ETH', async () => {
     const payload = {
       recipientAddress: '0x2455eC6700092991Ce0782365A89d5Cd89c8Fa22',

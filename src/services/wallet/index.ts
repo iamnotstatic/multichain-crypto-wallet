@@ -2,17 +2,20 @@ import {
   getBalance,
   createEthereumWallet,
   transfer,
+  getAddressFromPrivateKey,
 } from '../../common/helpers/ethersHelper';
 import {
   getSolBalance,
   createSolanaWallet,
   transferSol,
+  getSolAddressFromPrivateKey,
 } from '../../common/helpers/solanaHelper';
 
 import {
   TransferPayload,
   BalancePayload,
   CreateWalletPayload,
+  GetAddressFromPrivateKeyPayload,
 } from '../../common/utils/types';
 
 export default class Wallet {
@@ -22,6 +25,21 @@ export default class Wallet {
         return await getBalance({ ...args });
       } else if (args.network === 'solana') {
         return await getSolBalance({ ...args });
+      }
+
+      return;
+    } catch (error) {
+      console.log(error);
+      return error;
+    }
+  }
+
+  async getAddressFromPrivateKey(args: GetAddressFromPrivateKeyPayload) {
+    try {
+      if (args.network === 'ethereum') {
+        return await getAddressFromPrivateKey(args);
+      } else if (args.network === 'solana') {
+        return await getSolAddressFromPrivateKey(args);
       }
 
       return;

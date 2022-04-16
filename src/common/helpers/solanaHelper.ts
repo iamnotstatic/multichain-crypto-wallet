@@ -1,6 +1,10 @@
 import provider from '../utils/solana';
 import * as solanaWeb3 from '@solana/web3.js';
-import { BalancePayload, TransferPayload } from '../utils/types';
+import {
+  BalancePayload,
+  GetAddressFromPrivateKeyPayload,
+  TransferPayload,
+} from '../utils/types';
 import * as bs58 from 'bs58';
 import { successResponse } from '../utils';
 
@@ -30,9 +34,8 @@ export const createSolanaWallet = async () => {
 
   return successResponse({
     address: keyPair.publicKey.toBase58(),
-    privateKey: bs58.encode(keyPair.secretKey)
+    privateKey: bs58.encode(keyPair.secretKey),
   });
- 
 };
 
 export const transferSol = async (args: TransferPayload) => {
@@ -68,9 +71,29 @@ export const transferSol = async (args: TransferPayload) => {
     );
 
     return successResponse({
-     hash: signature,
+      hash: signature,
     });
   } catch (error) {
     throw error;
   }
+};
+
+export const getSolAddressFromPrivateKey = async (
+  args: GetAddressFromPrivateKeyPayload
+) => {
+  let secretKey;
+
+  if (args.privateKey.split(',').length > 1) {
+    secretKey = new Uint8Array(args.privateKey.split(',') as any);
+  } else {
+    secretKey = bs58.decode(args.privateKey);
+  }
+
+  const keyPair = solanaWeb3.Keypair.fromSecretKey(secretKey, {
+    skipValidation: true,
+  });
+
+  return successResponse({
+    address: keyPair.publicKey.toBase58(),
+  });
 };
