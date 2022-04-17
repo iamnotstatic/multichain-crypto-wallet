@@ -8,6 +8,7 @@ import {
 import * as bs58 from 'bs58';
 import { successResponse } from '../utils';
 import * as bip39 from 'bip39';
+import { derivePath } from 'ed25519-hd-key';
 
 const getConnection = (rpcUrl: string) => {
   const connection = provider(rpcUrl);
@@ -31,9 +32,13 @@ const getBalance = async (args: BalancePayload) => {
 };
 
 const createWallet = async () => {
+  const path = "m/44'/501'/0'/0'";
+
   const mnemonic = bip39.generateMnemonic();
-  const seed = bip39.mnemonicToSeedSync(mnemonic);
-  const keyPair = solanaWeb3.Keypair.fromSeed(seed.slice(0, 32));
+  const seed = await bip39.mnemonicToSeed(mnemonic);
+  const derivedSeed = derivePath(path, (seed as unknown) as string).key;
+
+  const keyPair = solanaWeb3.Keypair.fromSeed(derivedSeed);
 
   return successResponse({
     address: keyPair.publicKey.toBase58(),
@@ -43,8 +48,11 @@ const createWallet = async () => {
 };
 
 const generateWalletFromMnemonic = async (mnemonic: string) => {
-  const seed = bip39.mnemonicToSeedSync(mnemonic);
-  let keyPair = solanaWeb3.Keypair.fromSeed(seed.slice(0, 32));
+  const path = "m/44'/501'/0'/0'";
+  const seed = await bip39.mnemonicToSeed(mnemonic);
+  const derivedSeed = derivePath(path, (seed as unknown) as string).key;
+
+  const keyPair = solanaWeb3.Keypair.fromSeed(derivedSeed);
 
   return successResponse({
     address: keyPair.publicKey.toBase58(),

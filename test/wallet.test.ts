@@ -71,7 +71,7 @@ describe('MultichainCryptoWallet', () => {
       const wallet = await multichainCryptoWallet.Wallet.generateWalletFromMnemonic(
         {
           mnemonic:
-            'corn fantasy before task life ring enforce art loud finger moral fluid peasant lion seminar owner dynamic limb park analyst fence reduce tackle yellow',
+            'base dry mango subject neither labor portion weekend range couple right document',
           network: 'solana',
         }
       );
