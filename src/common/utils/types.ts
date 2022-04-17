@@ -25,6 +25,11 @@ export interface GetAddressFromPrivateKeyPayload {
   network: string;
 }
 
+export interface GenerateWalletFromMnemonicPayload {
+  mnemonic: string;
+  network: string;
+}
+
 export interface IResponse {
   [key: string]: any;
 }

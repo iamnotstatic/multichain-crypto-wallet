@@ -56,6 +56,29 @@ describe('MultichainCryptoWallet', () => {
     expect(typeof wallet).toBe('object');
   });
 
+  it('generateWalletFromMnemonic ETH', async () => {
+    const wallet = await multichainCryptoWallet.Wallet.generateWalletFromMnemonic(
+      {
+        mnemonic:
+          'candy maple cake sugar pudding cream honey rich smooth crumble sweet treat',
+        network: 'ethereum',
+      }
+    );
+
+    expect(typeof wallet).toBe('object');
+  }),
+    it('generateWalletFromMnemonic SOLANA', async () => {
+      const wallet = await multichainCryptoWallet.Wallet.generateWalletFromMnemonic(
+        {
+          mnemonic:
+            'corn fantasy before task life ring enforce art loud finger moral fluid peasant lion seminar owner dynamic limb park analyst fence reduce tackle yellow',
+          network: 'solana',
+        }
+      );
+
+      expect(typeof wallet).toBe('object');
+    });
+
   it('getAddressFromPrivateKey ETH', async () => {
     const address = await multichainCryptoWallet.Wallet.getAddressFromPrivateKey(
       {

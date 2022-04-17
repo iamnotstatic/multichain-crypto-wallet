@@ -57,7 +57,6 @@
     "@truffle/hdwallet-provider": "^2.0.5",
     "bip39": "^3.0.4",
     "bs58": "^5.0.0",
-    "ethers": "^5.6.2",
-    "tweetnacl": "^1.0.3"
+    "ethers": "^5.6.2"
   }
 }

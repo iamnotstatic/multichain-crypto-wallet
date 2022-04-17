@@ -14,7 +14,7 @@ interface GetContract {
   tokenAddress?: string;
 }
 
-export const getContract = async ({
+const getContract = async ({
   tokenAddress,
   rpcUrl,
   privateKey,
@@ -48,7 +48,7 @@ export const getContract = async ({
   };
 };
 
-export const getBalance = async ({
+const getBalance = async ({
   rpcUrl,
   tokenAddress,
   address,
@@ -81,7 +81,7 @@ export const getBalance = async ({
   }
 };
 
-export const createEthereumWallet = async () => {
+const createWallet = async () => {
   const wallet = ethers.Wallet.createRandom();
 
   return successResponse({
@@ -91,7 +91,7 @@ export const createEthereumWallet = async () => {
   });
 };
 
-export const getAddressFromPrivateKey = async (
+const getAddressFromPrivateKey = async (
   args: GetAddressFromPrivateKeyPayload
 ) => {
   const wallet = new ethers.Wallet(args.privateKey);
@@ -101,7 +101,16 @@ export const getAddressFromPrivateKey = async (
   });
 };
 
-export const transfer = async ({
+const generateWalletFromMnemonic = async (mnemonic: string) => {
+  const wallet = ethers.Wallet.fromMnemonic(mnemonic);
+
+  return successResponse({
+    address: wallet.address,
+    privateKey: wallet.privateKey,
+    mnemonic: wallet.mnemonic.phrase,
+  });
+};
+const transfer = async ({
   privateKey,
   tokenAddress,
   rpcUrl,
@@ -150,4 +159,12 @@ export const transfer = async ({
   } catch (error) {
     throw error;
   }
+};
+
+export default {
+  getBalance,
+  createWallet,
+  getAddressFromPrivateKey,
+  generateWalletFromMnemonic,
+  transfer,
 };

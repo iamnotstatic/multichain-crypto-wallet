@@ -8,15 +8,14 @@ import {
 import * as bs58 from 'bs58';
 import { successResponse } from '../utils';
 import * as bip39 from 'bip39';
-import nacl from 'tweetnacl';
 
-export const getConnection = (rpcUrl: string) => {
+const getConnection = (rpcUrl: string) => {
   const connection = provider(rpcUrl);
 
   return connection;
 };
 
-export const getSolBalance = async (args: BalancePayload) => {
+const getBalance = async (args: BalancePayload) => {
   const connection = getConnection(args.rpcUrl);
 
   try {
@@ -31,19 +30,30 @@ export const getSolBalance = async (args: BalancePayload) => {
   }
 };
 
-export const createSolanaWallet = async () => {
+const createWallet = async () => {
   const mnemonic = bip39.generateMnemonic();
   const seed = bip39.mnemonicToSeedSync(mnemonic);
-  const keyPair = nacl.sign.keyPair.fromSeed(seed.slice(0, 32));
+  const keyPair = solanaWeb3.Keypair.fromSeed(seed.slice(0, 32));
 
   return successResponse({
-    address: bs58.encode(keyPair.publicKey),
+    address: keyPair.publicKey.toBase58(),
     privateKey: bs58.encode(keyPair.secretKey),
     mnemonic,
   });
 };
 
-export const transferSol = async (args: TransferPayload) => {
+const generateWalletFromMnemonic = async (mnemonic: string) => {
+  const seed = bip39.mnemonicToSeedSync(mnemonic);
+  let keyPair = solanaWeb3.Keypair.fromSeed(seed.slice(0, 32));
+
+  return successResponse({
+    address: keyPair.publicKey.toBase58(),
+    privateKey: bs58.encode(keyPair.secretKey),
+    mnemonic,
+  });
+};
+
+const transfer = async (args: TransferPayload) => {
   const connection = getConnection(args.rpcUrl);
 
   try {
@@ -83,7 +93,7 @@ export const transferSol = async (args: TransferPayload) => {
   }
 };
 
-export const getSolAddressFromPrivateKey = async (
+const getAddressFromPrivateKey = async (
   args: GetAddressFromPrivateKeyPayload
 ) => {
   let secretKey;
@@ -101,4 +111,12 @@ export const getSolAddressFromPrivateKey = async (
   return successResponse({
     address: keyPair.publicKey.toBase58(),
   });
+};
+
+export default {
+  getBalance,
+  createWallet,
+  generateWalletFromMnemonic,
+  transfer,
+  getAddressFromPrivateKey,
 };

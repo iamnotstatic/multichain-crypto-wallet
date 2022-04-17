@@ -1,30 +1,21 @@
-import {
-  getBalance,
-  createEthereumWallet,
-  transfer,
-  getAddressFromPrivateKey,
-} from '../../common/helpers/ethersHelper';
-import {
-  getSolBalance,
-  createSolanaWallet,
-  transferSol,
-  getSolAddressFromPrivateKey,
-} from '../../common/helpers/solanaHelper';
+import ethereumHelper from '../../common/helpers/ethersHelper';
+import solanaHelper from '../../common/helpers/solanaHelper';
 
 import {
   TransferPayload,
   BalancePayload,
   CreateWalletPayload,
   GetAddressFromPrivateKeyPayload,
+  GenerateWalletFromMnemonicPayload,
 } from '../../common/utils/types';
 
 export default class Wallet {
   async getBalance(args: BalancePayload) {
     try {
       if (args.network === 'ethereum') {
-        return await getBalance({ ...args });
+        return await ethereumHelper.getBalance({ ...args });
       } else if (args.network === 'solana') {
-        return await getSolBalance({ ...args });
+        return await solanaHelper.getBalance({ ...args });
       }
 
       return;
@@ -37,9 +28,24 @@ export default class Wallet {
   async getAddressFromPrivateKey(args: GetAddressFromPrivateKeyPayload) {
     try {
       if (args.network === 'ethereum') {
-        return await getAddressFromPrivateKey(args);
+        return await ethereumHelper.getAddressFromPrivateKey(args);
       } else if (args.network === 'solana') {
-        return await getSolAddressFromPrivateKey(args);
+        return await solanaHelper.getAddressFromPrivateKey(args);
+      }
+
+      return;
+    } catch (error) {
+      console.log(error);
+      return error;
+    }
+  }
+
+  async generateWalletFromMnemonic(args: GenerateWalletFromMnemonicPayload) {
+    try {
+      if (args.network === 'ethereum') {
+        return await ethereumHelper.generateWalletFromMnemonic(args.mnemonic);
+      } else if (args.network === 'solana') {
+        return await solanaHelper.generateWalletFromMnemonic(args.mnemonic);
       }
 
       return;
@@ -52,9 +58,9 @@ export default class Wallet {
   async createWallet(args: CreateWalletPayload) {
     try {
       if (args.network === 'ethereum') {
-        return await createEthereumWallet();
+        return await ethereumHelper.createWallet();
       } else if (args.network === 'solana') {
-        return await createSolanaWallet();
+        return await solanaHelper.createWallet();
       }
 
       return;
@@ -67,9 +73,9 @@ export default class Wallet {
   async transfer(args: TransferPayload) {
     try {
       if (args.network === 'ethereum') {
-        return await transfer({ ...args });
+        return await ethereumHelper.transfer({ ...args });
       } else if (args.network === 'solana') {
-        return await transferSol({ ...args });
+        return await solanaHelper.transfer({ ...args });
       }
 
       return;
