@@ -87,6 +87,7 @@ export const createEthereumWallet = async () => {
   return successResponse({
     address: wallet.address,
     privateKey: wallet.privateKey,
+    mnemonic: wallet.mnemonic.phrase,
   });
 };
 
