@@ -40,6 +40,17 @@ describe('MultichainCryptoWallet', () => {
     expect(typeof data).toBe('object');
   });
 
+  it('getBalance token SOLANA', async () => {
+    const data = await multichainCryptoWallet.Wallet.getBalance({
+      address: '5PwN5k7hin2XxUUaXveur7jSe5qt2mkWinp1JEiv8xYu',
+      tokenAddress: 'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB',
+      network: 'solana',
+      rpcUrl: 'https://rpc.ankr.com/solana',
+    });
+
+    expect(typeof data).toBe('object');
+  });
+
   it('createWallet ETH', async () => {
     const wallet = await multichainCryptoWallet.Wallet.createWallet({
       network: 'ethereum',

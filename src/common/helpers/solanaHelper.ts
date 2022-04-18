@@ -9,6 +9,15 @@ import * as bs58 from 'bs58';
 import { successResponse } from '../utils';
 import * as bip39 from 'bip39';
 import { derivePath } from 'ed25519-hd-key';
+// @ts-ignore
+import * as BufferLayout from 'buffer-layout';
+
+export const ACCOUNT_LAYOUT = BufferLayout.struct([
+  BufferLayout.blob(32, 'mint'),
+  BufferLayout.blob(32, 'owner'),
+  BufferLayout.nu64('amount'),
+  BufferLayout.blob(93),
+]);
 
 const getConnection = (rpcUrl: string) => {
   const connection = provider(rpcUrl);
@@ -20,8 +29,27 @@ const getBalance = async (args: BalancePayload) => {
   const connection = getConnection(args.rpcUrl);
 
   try {
+    let balance;
+    if (args.tokenAddress) {
+      const account = await connection.getTokenAccountsByOwner(
+        new solanaWeb3.PublicKey(args.address),
+        {
+          mint: new solanaWeb3.PublicKey(args.tokenAddress),
+        }
+      );
+
+      balance =
+        account.value.length > 0
+          ? ACCOUNT_LAYOUT.decode(account.value[0].account.data).amount
+          : 0;
+
+      return successResponse({
+        balance,
+      });
+    }
+
     const publicKey = new solanaWeb3.PublicKey(args.address);
-    const balance = await connection.getBalance(publicKey);
+    balance = await connection.getBalance(publicKey);
 
     return successResponse({
       balance,
