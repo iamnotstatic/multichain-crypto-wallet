@@ -1,6 +1,11 @@
 import provider from '../utils/solana';
 import * as solanaWeb3 from '@solana/web3.js';
 import {
+  getOrCreateAssociatedTokenAccount,
+  transfer as transferToken,
+  getMint,
+} from '@solana/spl-token';
+import {
   BalancePayload,
   GetAddressFromPrivateKeyPayload,
   TransferPayload,
@@ -93,7 +98,7 @@ const transfer = async (args: TransferPayload) => {
   const connection = getConnection(args.rpcUrl);
 
   try {
-    const receiver = new solanaWeb3.PublicKey(args.recipientAddress);
+    const recipient = new solanaWeb3.PublicKey(args.recipientAddress);
     let secretKey;
 
     if (args.privateKey.split(',').length > 1) {
@@ -106,10 +111,48 @@ const transfer = async (args: TransferPayload) => {
       skipValidation: true,
     });
 
+    if (args.tokenAddress) {
+
+      // Get token mint
+      const mint = await getMint(
+        connection,
+        new solanaWeb3.PublicKey(args.tokenAddress)
+      );
+
+      // Get the token account of the from address, and if it does not exist, create it
+      const fromTokenAccount = await getOrCreateAssociatedTokenAccount(
+        connection,
+        from,
+        mint.address,
+        from.publicKey
+      );
+
+      // Get the token account of the recipient address, and if it does not exist, create it
+      const recipientTokenAccount = await getOrCreateAssociatedTokenAccount(
+        connection,
+        from,
+        mint.address,
+        recipient
+      );
+
+      let signature = await transferToken(
+        connection,
+        from,
+        fromTokenAccount.address,
+        recipientTokenAccount.address,
+        from,
+        solanaWeb3.LAMPORTS_PER_SOL * args.amount
+      );
+
+      return successResponse({
+        hash: signature,
+      });
+    }
+
     const transaction = new solanaWeb3.Transaction().add(
       solanaWeb3.SystemProgram.transfer({
         fromPubkey: from.publicKey,
-        toPubkey: receiver,
+        toPubkey: recipient,
         lamports: solanaWeb3.LAMPORTS_PER_SOL * args.amount,
       })
     );

@@ -3,7 +3,7 @@ import MultichainCryptoWallet from '../src/index';
 describe('MultichainCryptoWallet', () => {
   const multichainCryptoWallet = new MultichainCryptoWallet();
 
-  jest.setTimeout(300000000);
+  jest.setTimeout(900000000);
 
   it('instantiate SDK', () => {
     expect(multichainCryptoWallet).toBeTruthy();
@@ -148,7 +148,7 @@ describe('MultichainCryptoWallet', () => {
   it('transfer SOL', async () => {
     const payload = {
       recipientAddress: '9DSRMyr3EfxPzxZo9wMBPku7mvcazHTHfyjhcfw5yucA',
-      amount: 0.000001,
+      amount: 1,
       network: 'solana',
       rpcUrl: 'https://rpc.ankr.com/solana',
       privateKey:
@@ -156,6 +156,22 @@ describe('MultichainCryptoWallet', () => {
     };
 
     const transfer = await multichainCryptoWallet.Wallet.transfer(payload);
+    expect(typeof transfer).toBe('object');
+  });
+
+  it('transfer Token Solana', async () => {
+    const payload = {
+      recipientAddress: '9DSRMyr3EfxPzxZo9wMBPku7mvcazHTHfyjhcfw5yucA',
+      tokenAddress: 'DV2exYApRFWEVb9oQkedLRYeSm8ccxNReLfEksEE5FZm',
+      amount: 1,
+      network: 'solana',
+      rpcUrl: 'https://rpc.ankr.com/solana',
+      privateKey:
+        'h5KUPKU4z8c9nhMCQsvCLq4q6Xn9XK1B1cKjC9bJVLQLgJDvknKCBtZdHKDoKBHuATnSYaHRvjJSDdBWN8P67hh',
+    };
+
+    const transfer = await multichainCryptoWallet.Wallet.transfer(payload);
+
     expect(typeof transfer).toBe('object');
   });
 
