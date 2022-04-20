@@ -20,8 +20,7 @@ export default class Wallet {
 
       return;
     } catch (error) {
-      console.log(error);
-      return error;
+      throw error;
     }
   }
 
@@ -35,8 +34,7 @@ export default class Wallet {
 
       return;
     } catch (error) {
-      console.log(error);
-      return error;
+      throw error;
     }
   }
 
@@ -50,8 +48,7 @@ export default class Wallet {
 
       return;
     } catch (error) {
-      console.log(error);
-      return error;
+      throw error;
     }
   }
 
@@ -65,8 +62,7 @@ export default class Wallet {
 
       return;
     } catch (error) {
-      console.log(error);
-      return error;
+      throw error;
     }
   }
 
@@ -80,8 +76,7 @@ export default class Wallet {
 
       return;
     } catch (error) {
-      console.log(error);
-      return error;
+      throw error;
     }
   }
 }

@@ -54,7 +54,7 @@
   },
   "dependencies": {
     "@solana/spl-token": "^0.2.0",
-    "@solana/web3.js": "^1.37.1",
+    "@solana/web3.js": "^1.39.1",
     "@truffle/hdwallet-provider": "^2.0.5",
     "bip39": "^3.0.4",
     "bs58": "^5.0.0",

@@ -140,7 +140,7 @@ const transfer = async (args: TransferPayload) => {
         from,
         fromTokenAccount.address,
         recipientTokenAccount.address,
-        from,
+        from.publicKey,
         solanaWeb3.LAMPORTS_PER_SOL * args.amount
       );
 

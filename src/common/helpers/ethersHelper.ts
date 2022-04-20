@@ -136,9 +136,9 @@ const transfer = async ({
         args.recipientAddress,
         ethers.utils.parseUnits(args.amount.toString(), decimals),
         {
-          gasPrice:
-            ethers.utils.parseUnits(args.gasPrice as string, 'gwei') ||
-            gasPrice,
+          gasPrice: args.gasPrice
+            ? ethers.utils.parseUnits(args.gasPrice.toString(), 'gwei')
+            : gasPrice,
           nonce: args.nonce || nonce,
         }
       );
@@ -146,8 +146,9 @@ const transfer = async ({
       tx = await wallet.sendTransaction({
         to: args.recipientAddress,
         value: ethers.utils.parseEther(args.amount.toString()),
-        gasPrice:
-          ethers.utils.parseUnits(args.gasPrice as string, 'gwei') || gasPrice,
+        gasPrice: args.gasPrice
+        ? ethers.utils.parseUnits(args.gasPrice.toString(), 'gwei')
+        : gasPrice,
         gasLimit: gas,
         nonce: args.nonce || nonce,
       });

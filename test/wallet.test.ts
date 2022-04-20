@@ -3,7 +3,9 @@ import MultichainCryptoWallet from '../src/index';
 describe('MultichainCryptoWallet', () => {
   const multichainCryptoWallet = new MultichainCryptoWallet();
 
-  jest.setTimeout(900000000);
+  beforeEach(async () => {
+    jest.setTimeout(50000);
+  });
 
   it('instantiate SDK', () => {
     expect(multichainCryptoWallet).toBeTruthy();
@@ -13,7 +15,7 @@ describe('MultichainCryptoWallet', () => {
     const data = await multichainCryptoWallet.Wallet.getBalance({
       address: '0x2455eC6700092991Ce0782365A89d5Cd89c8Fa22',
       network: 'ethereum',
-      rpcUrl: 'https://rpc.ankr.com/eth',
+      rpcUrl: 'https://rinkeby-light.eth.linkpool.io',
     });
 
     expect(typeof data).toBe('object');
@@ -23,8 +25,8 @@ describe('MultichainCryptoWallet', () => {
     const data = await multichainCryptoWallet.Wallet.getBalance({
       address: '0x2455eC6700092991Ce0782365A89d5Cd89c8Fa22',
       network: 'ethereum',
-      rpcUrl: 'https://rpc.ankr.com/eth',
-      tokenAddress: '0xdac17f958d2ee523a2206206994597c13d831ec7',
+      rpcUrl: 'https://rinkeby-light.eth.linkpool.io',
+      tokenAddress: '0x5592EC0cfb4dbc12D3aB100b257153436a1f0FEa',
     });
 
     expect(typeof data).toBe('object');
@@ -32,9 +34,9 @@ describe('MultichainCryptoWallet', () => {
 
   it('getBalance SOLANA', async () => {
     const data = await multichainCryptoWallet.Wallet.getBalance({
-      address: 'DYgLjazTY6kMqagbDMsNttRHKQj9o6pNS8D6jMjWbmP7',
+      address: '9DSRMyr3EfxPzxZo9wMBPku7mvcazHTHfyjhcfw5yucA',
       network: 'solana',
-      rpcUrl: 'https://rpc.ankr.com/solana',
+      rpcUrl: 'https://api.devnet.solana.com',
     });
 
     expect(typeof data).toBe('object');
@@ -42,10 +44,10 @@ describe('MultichainCryptoWallet', () => {
 
   it('getBalance token SOLANA', async () => {
     const data = await multichainCryptoWallet.Wallet.getBalance({
-      address: '5PwN5k7hin2XxUUaXveur7jSe5qt2mkWinp1JEiv8xYu',
-      tokenAddress: 'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB',
+      address: '9DSRMyr3EfxPzxZo9wMBPku7mvcazHTHfyjhcfw5yucA',
+      tokenAddress: '6xRPFqbtpkS7iVd9SysZDXdYn6iWceXF7p3T91N3EcAc',
       network: 'solana',
-      rpcUrl: 'https://rpc.ankr.com/solana',
+      rpcUrl: 'https://api.devnet.solana.com',
     });
 
     expect(typeof data).toBe('object');
@@ -77,18 +79,19 @@ describe('MultichainCryptoWallet', () => {
     );
 
     expect(typeof wallet).toBe('object');
-  }),
-    it('generateWalletFromMnemonic SOLANA', async () => {
-      const wallet = await multichainCryptoWallet.Wallet.generateWalletFromMnemonic(
-        {
-          mnemonic:
-            'base dry mango subject neither labor portion weekend range couple right document',
-          network: 'solana',
-        }
-      );
+  });
 
-      expect(typeof wallet).toBe('object');
-    });
+  it('generateWalletFromMnemonic SOLANA', async () => {
+    const wallet = await multichainCryptoWallet.Wallet.generateWalletFromMnemonic(
+      {
+        mnemonic:
+          'base dry mango subject neither labor portion weekend range couple right document',
+        network: 'solana',
+      }
+    );
+
+    expect(typeof wallet).toBe('object');
+  });
 
   it('getAddressFromPrivateKey ETH', async () => {
     const address = await multichainCryptoWallet.Wallet.getAddressFromPrivateKey(
@@ -119,10 +122,9 @@ describe('MultichainCryptoWallet', () => {
       recipientAddress: '0x2455eC6700092991Ce0782365A89d5Cd89c8Fa22',
       amount: 0.0001,
       network: 'ethereum',
-      rpcUrl: 'https://rpc.ankr.com/eth',
+      rpcUrl: 'https://rinkeby-light.eth.linkpool.io',
       privateKey:
         '0f9e5c0bee6c7d06b95204ca22dea8d7f89bb04e8527a2c59e134d185d9af8ad',
-      gasPrice: '10', // Optional - leave empty for default
     };
 
     const transfer = await multichainCryptoWallet.Wallet.transfer(payload);
@@ -132,13 +134,12 @@ describe('MultichainCryptoWallet', () => {
   it('transfer ERC20 Token', async () => {
     const payload = {
       recipientAddress: '0x2455eC6700092991Ce0782365A89d5Cd89c8Fa22',
-      amount: 10,
+      amount: 5,
       network: 'ethereum',
-      rpcUrl: 'https://rpc.ankr.com/eth',
+      rpcUrl: 'https://rinkeby-light.eth.linkpool.io',
       privateKey:
         '0f9e5c0bee6c7d06b95204ca22dea8d7f89bb04e8527a2c59e134d185d9af8ad',
-      gasPrice: '10', // Optional - leave empty for default
-      tokenAddress: '0xdac17f958d2ee523a2206206994597c13d831ec7',
+      tokenAddress: '0x5592EC0cfb4dbc12D3aB100b257153436a1f0FEa',
     };
 
     const transfer = await multichainCryptoWallet.Wallet.transfer(payload);
@@ -148,63 +149,30 @@ describe('MultichainCryptoWallet', () => {
   it('transfer SOL', async () => {
     const payload = {
       recipientAddress: '9DSRMyr3EfxPzxZo9wMBPku7mvcazHTHfyjhcfw5yucA',
-      amount: 1,
+      amount: 0.0001,
       network: 'solana',
-      rpcUrl: 'https://rpc.ankr.com/solana',
+      rpcUrl: 'https://api.devnet.solana.com',
       privateKey:
-        'bXXgTj2cgXMFAGpLHkF5GhnoNeUpmcJDsxXDhXQhQhL2BDpJumdwMGeC5Cs66stsN3GfkMH8oyHu24dnojKbtfp',
+        'qUfgDqNZ8EmZtG7FCdvo8ETTQb8crmzcYUdrVdpjfxZiVkrwSjQ9L2ov55oRt25ZSJXCjHw6hqtKJnxdnoGtp1M',
     };
 
     const transfer = await multichainCryptoWallet.Wallet.transfer(payload);
     expect(typeof transfer).toBe('object');
   });
 
-  it('transfer Token Solana', async () => {
+  it('transfer Token on Solana', async () => {
     const payload = {
       recipientAddress: '9DSRMyr3EfxPzxZo9wMBPku7mvcazHTHfyjhcfw5yucA',
-      tokenAddress: 'DV2exYApRFWEVb9oQkedLRYeSm8ccxNReLfEksEE5FZm',
+      tokenAddress: '6xRPFqbtpkS7iVd9SysZDXdYn6iWceXF7p3T91N3EcAc',
       amount: 1,
       network: 'solana',
-      rpcUrl: 'https://rpc.ankr.com/solana',
+      rpcUrl: 'https://api.devnet.solana.com',
       privateKey:
-        'h5KUPKU4z8c9nhMCQsvCLq4q6Xn9XK1B1cKjC9bJVLQLgJDvknKCBtZdHKDoKBHuATnSYaHRvjJSDdBWN8P67hh',
+        'qUfgDqNZ8EmZtG7FCdvo8ETTQb8crmzcYUdrVdpjfxZiVkrwSjQ9L2ov55oRt25ZSJXCjHw6hqtKJnxdnoGtp1M',
     };
 
     const transfer = await multichainCryptoWallet.Wallet.transfer(payload);
 
-    expect(typeof transfer).toBe('object');
-  });
-
-  it('Override ERC20 token pending transaction on ethereum', async () => {
-    const payload = {
-      recipientAddress: '0x2455eC6700092991Ce0782365A89d5Cd89c8Fa22',
-      amount: 0,
-      network: 'ethereum',
-      rpcUrl: 'https://rpc.ankr.com/eth',
-      privateKey:
-        '0f9e5c0bee6c7d06b95204ca22dea8d7f89bb04e8527a2c59e134d185d9af8ad',
-      gasPrice: '10', // Optional - leave empty for default
-      tokenAddress: '0xdac17f958d2ee523a2206206994597c13d831ec7',
-      nonce: 1,
-    };
-
-    const transfer = await multichainCryptoWallet.Wallet.transfer(payload);
-    expect(typeof transfer).toBe('object');
-  });
-
-  it('Override pending ETH transactionm', async () => {
-    const payload = {
-      recipientAddress: '0x2455eC6700092991Ce0782365A89d5Cd89c8Fa22',
-      amount: 0,
-      network: 'ethereum',
-      rpcUrl: 'https://rpc.ankr.com/eth',
-      privateKey:
-        '0f9e5c0bee6c7d06b95204ca22dea8d7f89bb04e8527a2c59e134d185d9af8ad',
-      gasPrice: '10', // Optional - leave empty for default
-      nonce: 1,
-    };
-
-    const transfer = await multichainCryptoWallet.Wallet.transfer(payload);
     expect(typeof transfer).toBe('object');
   });
 });
