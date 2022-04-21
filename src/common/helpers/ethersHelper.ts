@@ -147,15 +147,15 @@ const transfer = async ({
         to: args.recipientAddress,
         value: ethers.utils.parseEther(args.amount.toString()),
         gasPrice: args.gasPrice
-        ? ethers.utils.parseUnits(args.gasPrice.toString(), 'gwei')
-        : gasPrice,
+          ? ethers.utils.parseUnits(args.gasPrice.toString(), 'gwei')
+          : gasPrice,
         gasLimit: gas,
         nonce: args.nonce || nonce,
       });
     }
 
     return successResponse({
-      receipt: tx,
+      hash: tx.hash,
     });
   } catch (error) {
     throw error;
