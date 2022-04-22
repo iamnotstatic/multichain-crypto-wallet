@@ -8,6 +8,7 @@ import {
 import {
   BalancePayload,
   GetAddressFromPrivateKeyPayload,
+  GetTransactionPayload,
   TransferPayload,
 } from '../utils/types';
 import * as bs58 from 'bs58';
@@ -112,7 +113,6 @@ const transfer = async (args: TransferPayload) => {
     });
 
     if (args.tokenAddress) {
-
       // Get token mint
       const mint = await getMint(
         connection,
@@ -192,10 +192,25 @@ const getAddressFromPrivateKey = async (
   });
 };
 
+const getTransaction = async (args: GetTransactionPayload) => {
+  const connection = getConnection(args.rpcUrl);
+
+  try {
+    const tx = await connection.getTransaction(args.hash);
+
+    return successResponse({
+      receipt: tx,
+    });
+  } catch (error) {
+    throw error;
+  }
+};
+
 export default {
   getBalance,
   createWallet,
   generateWalletFromMnemonic,
   transfer,
   getAddressFromPrivateKey,
+  getTransaction,
 };

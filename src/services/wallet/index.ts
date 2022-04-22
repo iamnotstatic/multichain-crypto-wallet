@@ -7,6 +7,7 @@ import {
   CreateWalletPayload,
   GetAddressFromPrivateKeyPayload,
   GenerateWalletFromMnemonicPayload,
+  GetTransactionPayload,
 } from '../../common/utils/types';
 
 export async function getBalance(args: BalancePayload) {
@@ -75,6 +76,20 @@ export async function transfer(args: TransferPayload) {
       return await ethereumHelper.transfer({ ...args });
     } else if (args.network === 'solana') {
       return await solanaHelper.transfer({ ...args });
+    }
+
+    return;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function getTransaction(args: GetTransactionPayload) {
+  try {
+    if (args.network === 'ethereum') {
+      return await ethereumHelper.getTransaction({ ...args });
+    } else if (args.network === 'solana') {
+      return await solanaHelper.getTransaction({ ...args });
     }
 
     return;

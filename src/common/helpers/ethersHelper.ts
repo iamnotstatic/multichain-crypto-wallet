@@ -4,6 +4,7 @@ import { ethers } from 'ethers';
 import {
   BalancePayload,
   GetAddressFromPrivateKeyPayload,
+  GetTransactionPayload,
   TransferPayload,
 } from '../utils/types';
 import { successResponse } from '../utils';
@@ -162,10 +163,24 @@ const transfer = async ({
   }
 };
 
+const getTransaction = async ({ hash, rpcUrl }: GetTransactionPayload) => {
+  const { providerInstance } = await getContract({ rpcUrl });
+
+  try {
+    const tx = await providerInstance.getTransaction(hash);
+    return successResponse({
+      receipt: tx,
+    });
+  } catch (error) {
+    throw error;
+  }
+};
+
 export default {
   getBalance,
   createWallet,
   getAddressFromPrivateKey,
   generateWalletFromMnemonic,
   transfer,
+  getTransaction,
 };

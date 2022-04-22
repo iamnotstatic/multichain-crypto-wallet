@@ -3,6 +3,7 @@ import {
   createWallet,
   generateWalletFromMnemonic,
   getAddressFromPrivateKey,
+  getTransaction,
   transfer,
 } from '../src';
 
@@ -166,5 +167,27 @@ describe('MultichainCryptoWallet', () => {
     const response = await transfer(payload);
 
     expect(typeof response).toBe('object');
+  });
+
+  it('Get transaction on Ethereum', async () => {
+    const receipt = await getTransaction({
+      rpcUrl: 'https://rinkeby-light.eth.linkpool.io',
+      hash:
+        '0x5a90cea37e3a5dbee6e10190ff5a3769ad27a0c6f625458682104e26e0491055',
+      network: 'ethereum',
+    });
+
+    expect(typeof receipt).toBe('object');
+  });
+
+  it('Get transaction on Solana', async () => {
+    const receipt = await getTransaction({
+      rpcUrl: 'https://api.devnet.solana.com',
+      hash:
+        'CkG1ynQ2vN8bmNsBUKG8ix3moUUfELWwd8K2f7mmqDd7LifFFfgyFhBux6t22AncbY4NR3PsEU3DbH7mDBMXWk7',
+      network: 'solana',
+    });
+
+    expect(typeof receipt).toBe('object');
   });
 });

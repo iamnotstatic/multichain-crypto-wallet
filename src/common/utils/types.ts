@@ -25,6 +25,12 @@ export interface GetAddressFromPrivateKeyPayload {
   network: string;
 }
 
+export interface GetTransactionPayload {
+  rpcUrl: string;
+  hash: string;
+  network: string;
+}
+
 export interface GenerateWalletFromMnemonicPayload {
   mnemonic: string;
   network: string;
