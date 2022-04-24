@@ -312,4 +312,4 @@ const transfer = await MultichainCryptoWallet.transfer(payload);
 }
 ```
 
-Contirubtions are welcome! Kindly refer to the contribution guidelines.
+Contributions are welcome! Kindly refer to the [contribution guidelines](CONTRIBUTING.md).
