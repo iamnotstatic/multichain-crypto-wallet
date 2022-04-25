@@ -33,6 +33,16 @@
   },
   "name": "multichain-crypto-wallet",
   "author": "iamnotstatic",
+  "keywords": [
+    "multichain",
+    "crypto",
+    "wallet",
+    "ethereum",
+    "blockchain",
+    "cryptocurrency",
+    "evm",
+    "solana"
+  ],
   "module": "dist/multichain-crypto-wallet.esm.js",
   "size-limit": [
     {
