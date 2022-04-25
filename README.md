@@ -313,4 +313,4 @@ const transfer = await MultichainCryptoWallet.transfer({
 }
 ```
 
-Contirubtions are welcome! Kindly refer to the [Contribution Guidelines](https://github.com/iamnotstatic/multichain-crypto-wallet/CONTRIBUTIONS.md).
+Contributions are welcome! Kindly refer to the [contribution guidelines](CONTRIBUTING.md).
