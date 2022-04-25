@@ -1,9 +1,10 @@
 # Multichain Crypto Wallet 
 
+[![GitHub issues](https://img.shields.io/npm/v/multichain-crypto-wallet)](https://github.com/iamnotstatic/multichain-crypto-wallet/issues)
 [![GitHub issues](https://img.shields.io/github/issues/iamnotstatic/multichain-crypto-wallet)](https://github.com/iamnotstatic/multichain-crypto-wallet/issues)
 [![GitHub stars](https://img.shields.io/github/stars/iamnotstatic/multichain-crypto-wallet)](https://github.com/iamnotstatic/multichain-crypto-wallet/stargazers)
 [![GitHub license](https://img.shields.io/github/license/iamnotstatic/multichain-crypto-wallet)](https://github.com/iamnotstatic/multichain-crypto-wallet)
-[![Total Downloads](https://img.shields.io/npm/dm/multichain-crypto-wallet.svg?style=flat)](https://github.com/iamnotstatic/multichain-crypto-wallet)
+[![Total Downloads](https://img.shields.io/npm/dw/multichain-crypto-wallet)](https://github.com/iamnotstatic/multichain-crypto-wallet)
 
 
 A Multichain crypto wallet library that supports Ethereum, Solana and other EVM compatible blockchains.
