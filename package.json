@@ -43,6 +43,11 @@
     "evm",
     "solana"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/iamnotstatic/multichain-crypto-wallet"
+  },
+  "homepage": "https://github.com/iamnotstatic/multichain-crypto-wallet/blob/main/README.md",
   "module": "dist/multichain-crypto-wallet.esm.js",
   "size-limit": [
     {
