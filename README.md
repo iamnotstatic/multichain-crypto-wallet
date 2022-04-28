@@ -1,14 +1,15 @@
 # Multichain Crypto Wallet 
 
+A Multichain crypto wallet library that supports Ethereum, Solana and other EVM compatible blockchains.
+
+
 [![Build](https://img.shields.io/travis/iamnotstatic/multichain-crypto-wallet)](https://github.com/iamnotstatic/multichain-crypto-wallet/issues)
 [![Version](https://img.shields.io/npm/v/multichain-crypto-wallet)](https://github.com/iamnotstatic/multichain-crypto-wallet/issues)
-[![GitHub issues](https://img.shields.io/github/issues/iamnotstatic/multichain-crypto-wallet)](https://github.com/iamnotstatic/multichain-crypto-wallet/issues) <br/>
+[![GitHub issues](https://img.shields.io/github/issues/iamnotstatic/multichain-crypto-wallet)](https://github.com/iamnotstatic/multichain-crypto-wallet/issues) 
 [![GitHub stars](https://img.shields.io/github/stars/iamnotstatic/multichain-crypto-wallet)](https://github.com/iamnotstatic/multichain-crypto-wallet/stargazers)
 [![GitHub license](https://img.shields.io/github/license/iamnotstatic/multichain-crypto-wallet)](https://github.com/iamnotstatic/multichain-crypto-wallet)
-[![Total Downloads](https://img.shields.io/npm/dw/multichain-crypto-wallet)](https://github.com/iamnotstatic/multichain-crypto-wallet)
+[![Total Downloads](https://img.shields.io/npm/dm/multichain-crypto-wallet)](https://github.com/iamnotstatic/multichain-crypto-wallet)
 
-
-A Multichain crypto wallet library that supports Ethereum, Solana and other EVM compatible blockchains.
 
 ## Installation
 
@@ -179,7 +180,7 @@ const address = await multichainWallet.getAddressFromPrivateKey({
 }
 ```
 
-### Get Transaction with Hash 
+### Get Transaction 
 This gets the transcation receipt of a transaction from the transaction hash. The method accepts an object as the parameter. The parameters that this object takes are:
 
 ```javascript
@@ -261,7 +262,7 @@ const transfer = await multichainWallet.transfer({
   privateKey:
     "0f9e5c0bee6c7d06b95204ca22dea8d7f89bb04e8527a2c59e134d185d9af8ad",
   gasPrice: "10",
-  nonce: 1,
+  nonce: 1, // The pending transaction nonce
 });
 
 // Overriding ERC20 token pending transaction.
@@ -274,7 +275,7 @@ const transfer = await multichainWallet.transfer({
     "0f9e5c0bee6c7d06b95204ca22dea8d7f89bb04e8527a2c59e134d185d9af8ad",
   gasPrice: "10",
   tokenAddress: "0xdac17f958d2ee523a2206206994597c13d831ec7",
-  nonce: 1,
+  nonce: 1, // The pending transaction nonce
 });
 
 ```
