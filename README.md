@@ -1,41 +1,42 @@
-# Multichain Crypto Wallet 
+# Multichain Crypto Wallet
 
 A Multichain crypto wallet library that supports Ethereum, Solana and other EVM compatible blockchains.
 
-
 [![Build](https://img.shields.io/travis/iamnotstatic/multichain-crypto-wallet)](https://github.com/iamnotstatic/multichain-crypto-wallet/issues)
 [![Version](https://img.shields.io/npm/v/multichain-crypto-wallet)](https://github.com/iamnotstatic/multichain-crypto-wallet/issues)
-[![GitHub issues](https://img.shields.io/github/issues/iamnotstatic/multichain-crypto-wallet)](https://github.com/iamnotstatic/multichain-crypto-wallet/issues) 
+[![GitHub issues](https://img.shields.io/github/issues/iamnotstatic/multichain-crypto-wallet)](https://github.com/iamnotstatic/multichain-crypto-wallet/issues)
 [![GitHub stars](https://img.shields.io/github/stars/iamnotstatic/multichain-crypto-wallet)](https://github.com/iamnotstatic/multichain-crypto-wallet/stargazers)
 [![GitHub license](https://img.shields.io/github/license/iamnotstatic/multichain-crypto-wallet)](https://github.com/iamnotstatic/multichain-crypto-wallet)
 [![Total Downloads](https://img.shields.io/npm/dm/multichain-crypto-wallet)](https://github.com/iamnotstatic/multichain-crypto-wallet)
-
 
 ## Installation
 
 ```bash
 npm install multichain-crypto-wallet
 ```
+
 Using yarn,
-    
- ```bash
+
+```bash
 yarn add multichain-crypto-wallet
 ```
 
 ## Usage
 
 ### Javascript
+
 ```javascript
-const multichainWallet = require("multichain-crypto-wallet");
+const multichainWallet = require('multichain-crypto-wallet');
 ```
 
 ### TypeScript
+
 ```typescript
-import multichainWallet from "multichain-crypto-wallet";
+import multichainWallet from 'multichain-crypto-wallet';
 ```
 
-
 ## Methods
+
 The following methods are available with this SDK:
 
 - [Create Wallet](#create-wallet)
@@ -45,8 +46,6 @@ The following methods are available with this SDK:
 - [Get Transaction Hash](#get-transaction-with-hash)
 - [Transfer](#transfer)
 
-
-
 ### Create Wallet
 
 This method creates a new wallet. The method accepts a payload object as the parameter. The parameter of this payload is:
@@ -54,16 +53,16 @@ This method creates a new wallet. The method accepts a payload object as the par
 ```javascript
 // Creating an Ethereum wallet.
 const wallet = await multichainWallet.createWallet({
-  network: "ethereum",
+  network: 'ethereum',
 });
 
 // Creating a Solana wallet.
 const wallet = await multichainWallet.createWallet({
-  network: "solana",
+  network: 'solana',
 });
 ```
 
-#### Repsonse
+#### Response
 
 ```javascript
 {
@@ -76,45 +75,47 @@ const wallet = await multichainWallet.createWallet({
 ### Get Balance
 
 This gets the balance of the address passed in. The method accepts an object as the parameter.
- The parameters for this object depeding on the kind of balance to be gotten is in the form:
+The parameters for this object depeding on the kind of balance to be gotten is in the form:
 
-#### Native coins 
+#### Native coins
+
 ```javascript
 // Get the ETH balance of an address
 const data = await multichainWallet.getBalance({
-  address: "0x2455eC6700092991Ce0782365A89d5Cd89c8Fa22",
-  network: "ethereum",
-  rpcUrl: "https://rinkeby-light.eth.linkpool.io",
+  address: '0x2455eC6700092991Ce0782365A89d5Cd89c8Fa22',
+  network: 'ethereum',
+  rpcUrl: 'https://rinkeby-light.eth.linkpool.io',
 });
-
 
 // Get the SOL balance of an address
 const data = await multichainWallet.getBalance({
-  address: "DYgLjazTY6kMqagbDMsNttRHKQj9o6pNS8D6jMjWbmP7",
-  network: "solana",
-  rpcUrl: "https://api.devnet.solana.com",
+  address: 'DYgLjazTY6kMqagbDMsNttRHKQj9o6pNS8D6jMjWbmP7',
+  network: 'solana',
+  rpcUrl: 'https://api.devnet.solana.com',
 });
 ```
+
 #### Tokens
+
 ```javascript
 // Get the balance of an ERC20 token.
 const data = await multichainWallet.getBalance({
-  address: "0x2455eC6700092991Ce0782365A89d5Cd89c8Fa22",
-  network: "ethereum",
-  rpcUrl: "https://rpc.ankr.com/eth",
-  tokenAddress: "0xdac17f958d2ee523a2206206994597c13d831ec7",
+  address: '0x2455eC6700092991Ce0782365A89d5Cd89c8Fa22',
+  network: 'ethereum',
+  rpcUrl: 'https://rpc.ankr.com/eth',
+  tokenAddress: '0xdac17f958d2ee523a2206206994597c13d831ec7',
 });
 
 // Get the balance of a token on Solana.
 const data = await multichainWallet.getBalance({
-  address: "5PwN5k7hin2XxUUaXveur7jSe5qt2mkWinp1JEiv8xYu",
-  tokenAddress: "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB",
-  network: "solana",
-  rpcUrl: "https://rpc.ankr.com/solana",
+  address: '5PwN5k7hin2XxUUaXveur7jSe5qt2mkWinp1JEiv8xYu',
+  tokenAddress: 'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB',
+  network: 'solana',
+  rpcUrl: 'https://rpc.ankr.com/solana',
 });
 ```
 
-#### Repsonse 
+#### Response
 
 ```javascript
 {
@@ -130,19 +131,19 @@ This generates a wallet from Mnemonic phrase. The method accepts an object as th
 // Generate an Ethereum wallet from mnemonic.
 const wallet = await multichainWallet.generateWalletFromMnemonic({
   mnemonic:
-    "candy maple cake sugar pudding cream honey rich smooth crumble sweet treat",
-  network: "ethereum",
+    'candy maple cake sugar pudding cream honey rich smooth crumble sweet treat',
+  network: 'ethereum',
 });
 
 // Generate a Solana wallet from mnemonic.
 const wallet = await multichainWallet.generateWalletFromMnemonic({
   mnemonic:
-    "base dry mango subject neither labor portion weekend range couple right document",
-  network: "solana",
+    'base dry mango subject neither labor portion weekend range couple right document',
+  network: 'solana',
 });
 ```
 
-#### Repsonse
+#### Response
 
 ```javascript
 {
@@ -160,39 +161,37 @@ This gets the address from the private key passed in. The method accepts an obje
 // Get the address from the private key on the Ethereum network.
 const address = await multichainWallet.getAddressFromPrivateKey({
   privateKey:
-    "0f9e5c0bee6c7d06b95204ca22dea8d7f89bb04e8527a2c59e134d185d9af8ad",
-  network: "ethereum",
+    '0f9e5c0bee6c7d06b95204ca22dea8d7f89bb04e8527a2c59e134d185d9af8ad',
+  network: 'ethereum',
 });
 
 // Get the address from the private key on the Solana network.
 const address = await multichainWallet.getAddressFromPrivateKey({
   privateKey:
-    "bXXgTj2cgXMFAGpLHkF5GhnoNeUpmcJDsxXDhXQhQhL2BDpJumdwMGeC5Cs66stsN3GfkMH8oyHu24dnojKbtfp",
-  network: "solana",
+    'bXXgTj2cgXMFAGpLHkF5GhnoNeUpmcJDsxXDhXQhQhL2BDpJumdwMGeC5Cs66stsN3GfkMH8oyHu24dnojKbtfp',
+  network: 'solana',
 });
 ```
 
-#### Repsonse 
+#### Response
 
 ```javascript
 {
-  address: "0x1C082D1052fb44134a408651c01148aDBFcCe7Fe";
+  address: '0x1C082D1052fb44134a408651c01148aDBFcCe7Fe';
 }
 ```
 
-### Get Transaction 
+### Get Transaction
+
 This gets the transcation receipt of a transaction from the transaction hash. The method accepts an object as the parameter. The parameters that this object takes are:
 
 ```javascript
 // Get the transaction receipt on Ethereum network.
 const receipt = await multichainWallet.getTransaction({
-  hash:
-    '0x5a90cea37e3a5dbee6e10190ff5a3769ad27a0c6f625458682104e26e0491055',
+  hash: '0x5a90cea37e3a5dbee6e10190ff5a3769ad27a0c6f625458682104e26e0491055',
   network: 'ethereum',
   rpcUrl: 'https://rinkeby-light.eth.linkpool.io',
 });
-
-
 
 // Get the transaction receipt on Solana network.
 const receipt = await multichainWallet.getTransaction({
@@ -205,12 +204,13 @@ const receipt = await multichainWallet.getTransaction({
 
 #### Response
 
-``` javascript
+```javascript
 {
-  receipt: { object }
+  receipt: {
+    object;
+  }
 }
 ```
-
 
 ### Transfer
 
@@ -223,102 +223,100 @@ Allows for the transfer of ETH, and overriding of transactions.
 ```javascript
 // Transferring ETH from one address to another.
 const transfer = await multichainWallet.transfer({
-  recipientAddress: "0x2455eC6700092991Ce0782365A89d5Cd89c8Fa22",
+  recipientAddress: '0x2455eC6700092991Ce0782365A89d5Cd89c8Fa22',
   amount: 1,
-  network: "ethereum",
-  rpcUrl: "https://rinkeby-light.eth.linkpool.io",
+  network: 'ethereum',
+  rpcUrl: 'https://rinkeby-light.eth.linkpool.io',
   privateKey:
-    "0f9e5c0bee6c7d06b95204ca22dea8d7f89bb04e8527a2c59e134d185d9af8ad",
-  gasPrice: "10", // This in Gwei leave empty to use default gas price 
+    '0f9e5c0bee6c7d06b95204ca22dea8d7f89bb04e8527a2c59e134d185d9af8ad',
+  gasPrice: '10', // This in Gwei leave empty to use default gas price
 });
-
-
 
 // Transferring ERC20 tokens from one address to another.
 const transfer = await multichainWallet.transfer({
-  recipientAddress: "0x2455eC6700092991Ce0782365A89d5Cd89c8Fa22",
+  recipientAddress: '0x2455eC6700092991Ce0782365A89d5Cd89c8Fa22',
   amount: 10,
-  network: "ethereum",
-  rpcUrl: "https://rinkeby-light.eth.linkpool.io",
+  network: 'ethereum',
+  rpcUrl: 'https://rinkeby-light.eth.linkpool.io',
   privateKey:
-    "0f9e5c0bee6c7d06b95204ca22dea8d7f89bb04e8527a2c59e134d185d9af8ad",
-  gasPrice: "10", // This in Gwei leave empty to use gas price 
-  tokenAddress: "0xdac17f958d2ee523a2206206994597c13d831ec7",
+    '0f9e5c0bee6c7d06b95204ca22dea8d7f89bb04e8527a2c59e134d185d9af8ad',
+  gasPrice: '10', // This in Gwei leave empty to use gas price
+  tokenAddress: '0xdac17f958d2ee523a2206206994597c13d831ec7',
 });
 ```
 
-The optional parameters that the object takes in are: gas price and nonce. 
+The optional parameters that the object takes in are: gas price and nonce.
 
 - The gas price is the price of gas in Gwei. The higher the gas price, the faster the transaction will be. It's best to use a higher gas price than the default.
-- The nonce is the number of transactions that have been sent from the source address and is used to ensure that the transaction is unique. The transaction is unique because the nonce is incremented each time a transaction is sent. 
+- The nonce is the number of transactions that have been sent from the source address and is used to ensure that the transaction is unique. The transaction is unique because the nonce is incremented each time a transaction is sent.
 
 ```javascript
 // Overriding pending ETH transaction.
 const transfer = await multichainWallet.transfer({
-  recipientAddress: "0x2455eC6700092991Ce0782365A89d5Cd89c8Fa22",
+  recipientAddress: '0x2455eC6700092991Ce0782365A89d5Cd89c8Fa22',
   amount: 0,
-  network: "ethereum",
-  rpcUrl: "https://rinkeby-light.eth.linkpool.io",
+  network: 'ethereum',
+  rpcUrl: 'https://rinkeby-light.eth.linkpool.io',
   privateKey:
-    "0f9e5c0bee6c7d06b95204ca22dea8d7f89bb04e8527a2c59e134d185d9af8ad",
-  gasPrice: "10",
+    '0f9e5c0bee6c7d06b95204ca22dea8d7f89bb04e8527a2c59e134d185d9af8ad',
+  gasPrice: '10',
   nonce: 1, // The pending transaction nonce
 });
 
 // Overriding ERC20 token pending transaction.
 const transfer = await multichainWallet.transfer({
-  recipientAddress: "0x2455eC6700092991Ce0782365A89d5Cd89c8Fa22",
+  recipientAddress: '0x2455eC6700092991Ce0782365A89d5Cd89c8Fa22',
   amount: 0,
-  network: "ethereum",
-  rpcUrl: "https://rinkeby-light.eth.linkpool.io",
+  network: 'ethereum',
+  rpcUrl: 'https://rinkeby-light.eth.linkpool.io',
   privateKey:
-    "0f9e5c0bee6c7d06b95204ca22dea8d7f89bb04e8527a2c59e134d185d9af8ad",
-  gasPrice: "10",
-  tokenAddress: "0xdac17f958d2ee523a2206206994597c13d831ec7",
+    '0f9e5c0bee6c7d06b95204ca22dea8d7f89bb04e8527a2c59e134d185d9af8ad',
+  gasPrice: '10',
+  tokenAddress: '0xdac17f958d2ee523a2206206994597c13d831ec7',
   nonce: 1, // The pending transaction nonce
 });
-
 ```
+
 #### Response
 
-``` javascript
+```javascript
 {
-  hash: '0xf2978fe918f3e28b7f57101bbc99aa9d7d2d71507ca4a08bac6dd09575527502'
+  hash: '0xf2978fe918f3e28b7f57101bbc99aa9d7d2d71507ca4a08bac6dd09575527502';
 }
 ```
 
 #### Solana Network
-Allows for the transfer of SOL and tokens. 
 
-``` javascript
+Allows for the transfer of SOL and tokens.
+
+```javascript
 // Transferring SOL from one address to another.
 const transfer = await MultichainCryptoWallet.transfer({
-  recipientAddress: "9DSRMyr3EfxPzxZo9wMBPku7mvcazHTHfyjhcfw5yucA",
+  recipientAddress: '9DSRMyr3EfxPzxZo9wMBPku7mvcazHTHfyjhcfw5yucA',
   amount: 1,
-  network: "solana",
-  rpcUrl: "https://api.devnet.solana.com",
+  network: 'solana',
+  rpcUrl: 'https://api.devnet.solana.com',
   privateKey:
-    "bXXgTj2cgXMFAGpLHkF5GhnoNeUpmcJDsxXDhXQhQhL2BDpJumdwMGeC5Cs66stsN3GfkMH8oyHu24dnojKbtfp",
+    'bXXgTj2cgXMFAGpLHkF5GhnoNeUpmcJDsxXDhXQhQhL2BDpJumdwMGeC5Cs66stsN3GfkMH8oyHu24dnojKbtfp',
 });
-
 
 // Transferring a token from one address to another.
 const transfer = await MultichainCryptoWallet.transfer({
-  recipientAddress: "9DSRMyr3EfxPzxZo9wMBPku7mvcazHTHfyjhcfw5yucA",
-  tokenAddress: "DV2exYApRFWEVb9oQkedLRYeSm8ccxNReLfEksEE5FZm",
+  recipientAddress: '9DSRMyr3EfxPzxZo9wMBPku7mvcazHTHfyjhcfw5yucA',
+  tokenAddress: 'DV2exYApRFWEVb9oQkedLRYeSm8ccxNReLfEksEE5FZm',
   amount: 1,
-  network: "solana",
-  rpcUrl: "https://api.devnet.solana.com",
+  network: 'solana',
+  rpcUrl: 'https://api.devnet.solana.com',
   privateKey:
-    "h5KUPKU4z8c9nhMCQsvCLq4q6Xn9XK1B1cKjC9bJVLQLgJDvknKCBtZdHKDoKBHuATnSYaHRvjJSDdBWN8P67hh",
+    'h5KUPKU4z8c9nhMCQsvCLq4q6Xn9XK1B1cKjC9bJVLQLgJDvknKCBtZdHKDoKBHuATnSYaHRvjJSDdBWN8P67hh',
 });
 ```
 
 #### Response
 
-``` javascript
+```javascript
 {
-  hash: '3nGq2yczqCpm8bF2dyvdPtXpnFLJ1oGWkDfD6neLbRay8SjNqYNhWQBKE1ZFunxvFhJ47FyT6igNpYPP293jXCZk'
+  hash: '3nGq2yczqCpm8bF2dyvdPtXpnFLJ1oGWkDfD6neLbRay8SjNqYNhWQBKE1ZFunxvFhJ47FyT6igNpYPP293jXCZk';
 }
 ```
 
