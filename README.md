@@ -119,7 +119,7 @@ const data = await multichainWallet.getBalance({
 
 ```javascript
 {
-  balance: 2;
+  balance: 2
 }
 ```
 
@@ -177,7 +177,7 @@ const address = await multichainWallet.getAddressFromPrivateKey({
 
 ```javascript
 {
-  address: '0x1C082D1052fb44134a408651c01148aDBFcCe7Fe';
+  address: '0x1C082D1052fb44134a408651c01148aDBFcCe7Fe'
 }
 ```
 
@@ -207,7 +207,7 @@ const receipt = await multichainWallet.getTransaction({
 ```javascript
 {
   receipt: {
-    object;
+    object
   }
 }
 ```
@@ -281,7 +281,7 @@ const transfer = await multichainWallet.transfer({
 
 ```javascript
 {
-  hash: '0xf2978fe918f3e28b7f57101bbc99aa9d7d2d71507ca4a08bac6dd09575527502';
+  hash: '0xf2978fe918f3e28b7f57101bbc99aa9d7d2d71507ca4a08bac6dd09575527502'
 }
 ```
 
@@ -316,7 +316,7 @@ const transfer = await MultichainCryptoWallet.transfer({
 
 ```javascript
 {
-  hash: '3nGq2yczqCpm8bF2dyvdPtXpnFLJ1oGWkDfD6neLbRay8SjNqYNhWQBKE1ZFunxvFhJ47FyT6igNpYPP293jXCZk';
+  hash: '3nGq2yczqCpm8bF2dyvdPtXpnFLJ1oGWkDfD6neLbRay8SjNqYNhWQBKE1ZFunxvFhJ47FyT6igNpYPP293jXCZk'
 }
 ```
 
