@@ -8,10 +8,6 @@ import {
 } from '../src';
 
 describe('MultichainCryptoWallet', () => {
-  beforeEach(async () => {
-    jest.setTimeout(50000);
-  });
-
   it('getBalance ETH balance', async () => {
     const data = await getBalance({
       address: '0x2455eC6700092991Ce0782365A89d5Cd89c8Fa22',
