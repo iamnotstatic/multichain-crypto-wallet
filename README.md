@@ -53,11 +53,13 @@ This method creates a new wallet. The method accepts a payload object as the par
 ```javascript
 // Creating an Ethereum wallet.
 const wallet = await multichainWallet.createWallet({
+  derivationPath: "m/44'/60'/0'/0/0", // Leave empty to use default derivation path
   network: 'ethereum',
 });
 
 // Creating a Solana wallet.
 const wallet = await multichainWallet.createWallet({
+  derivationPath: "m/44'/501'/0'/0'", // Leave empty to use default derivation path
   network: 'solana',
 });
 ```
@@ -132,6 +134,7 @@ This generates a wallet from Mnemonic phrase. The method accepts an object as th
 const wallet = await multichainWallet.generateWalletFromMnemonic({
   mnemonic:
     'candy maple cake sugar pudding cream honey rich smooth crumble sweet treat',
+  derivationPath: "m/44'/60'/0'/0/0", // Leave empty to use default derivation path
   network: 'ethereum',
 });
 
@@ -139,6 +142,7 @@ const wallet = await multichainWallet.generateWalletFromMnemonic({
 const wallet = await multichainWallet.generateWalletFromMnemonic({
   mnemonic:
     'base dry mango subject neither labor portion weekend range couple right document',
+  derivationPath: "m/44'/501'/0'/0'", // Leave empty to use default derivation path
   network: 'solana',
 });
 ```
