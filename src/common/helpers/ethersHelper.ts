@@ -82,8 +82,11 @@ const getBalance = async ({
   }
 };
 
-const createWallet = async () => {
-  const wallet = ethers.Wallet.createRandom();
+const createWallet = async (derivationPath?: string) => {
+  const path = derivationPath || "m/44'/60'/0'/0/0";
+  const wallet = ethers.Wallet.createRandom({
+    path,
+  });
 
   return successResponse({
     address: wallet.address,
@@ -102,8 +105,12 @@ const getAddressFromPrivateKey = async (
   });
 };
 
-const generateWalletFromMnemonic = async (mnemonic: string) => {
-  const wallet = ethers.Wallet.fromMnemonic(mnemonic);
+const generateWalletFromMnemonic = async (
+  mnemonic: string,
+  derivationPath?: string
+) => {
+  const path = derivationPath || "m/44'/60'/0'/0/0";
+  const wallet = ethers.Wallet.fromMnemonic(mnemonic, path);
 
   return successResponse({
     address: wallet.address,

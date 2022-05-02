@@ -52,6 +52,7 @@ describe('MultichainCryptoWallet', () => {
 
   it('createWallet ETH', async () => {
     const wallet = await createWallet({
+      derivationPath: "m/44'/60'/0'/0/0", // Leave empty to use default derivation path
       network: 'ethereum',
     });
 
@@ -71,6 +72,7 @@ describe('MultichainCryptoWallet', () => {
     const wallet = await generateWalletFromMnemonic({
       mnemonic:
         'candy maple cake sugar pudding cream honey rich smooth crumble sweet treat',
+      derivationPath: "m/44'/60'/0'/0/0", // Leave empty to use default derivation path
       network: 'ethereum',
     });
 
