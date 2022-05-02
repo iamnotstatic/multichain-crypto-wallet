@@ -60,6 +60,7 @@ describe('MultichainCryptoWallet', () => {
 
   it('createWallet SOLANA', async () => {
     const wallet = await createWallet({
+      derivationPath: "m/44'/501'/0'/0'", // Leave empty to use default derivation path
       network: 'solana',
     });
 
@@ -80,6 +81,7 @@ describe('MultichainCryptoWallet', () => {
     const wallet = await generateWalletFromMnemonic({
       mnemonic:
         'base dry mango subject neither labor portion weekend range couple right document',
+      derivationPath: "m/44'/501'/0'/0'", // Leave empty to use default derivation path
       network: 'solana',
     });
 

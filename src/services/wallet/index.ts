@@ -47,7 +47,10 @@ export async function generateWalletFromMnemonic(
     if (args.network === 'ethereum') {
       return await ethereumHelper.generateWalletFromMnemonic(args.mnemonic);
     } else if (args.network === 'solana') {
-      return await solanaHelper.generateWalletFromMnemonic(args.mnemonic);
+      return await solanaHelper.generateWalletFromMnemonic(
+        args.mnemonic,
+        args.derivationPath
+      );
     }
 
     return;
@@ -61,7 +64,7 @@ export async function createWallet(args: CreateWalletPayload) {
     if (args.network === 'ethereum') {
       return await ethereumHelper.createWallet();
     } else if (args.network === 'solana') {
-      return await solanaHelper.createWallet();
+      return await solanaHelper.createWallet(args.derivationPath);
     }
 
     return;

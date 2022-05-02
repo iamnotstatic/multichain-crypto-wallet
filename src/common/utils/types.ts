@@ -17,6 +17,7 @@ export interface BalancePayload {
 }
 
 export interface CreateWalletPayload {
+  derivationPath?: string;
   network: string;
 }
 
@@ -33,6 +34,7 @@ export interface GetTransactionPayload {
 
 export interface GenerateWalletFromMnemonicPayload {
   mnemonic: string;
+  derivationPath?: string;
   network: string;
 }
 

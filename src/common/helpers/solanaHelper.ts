@@ -65,8 +65,8 @@ const getBalance = async (args: BalancePayload) => {
   }
 };
 
-const createWallet = async () => {
-  const path = "m/44'/501'/0'/0'";
+const createWallet = async (derivationPath?: string) => {
+  const path = derivationPath || "m/44'/501'/0'/0'";
 
   const mnemonic = bip39.generateMnemonic();
   const seed = await bip39.mnemonicToSeed(mnemonic);
@@ -81,8 +81,12 @@ const createWallet = async () => {
   });
 };
 
-const generateWalletFromMnemonic = async (mnemonic: string) => {
-  const path = "m/44'/501'/0'/0'";
+const generateWalletFromMnemonic = async (
+  mnemonic: string,
+  derivationPath?: string
+) => {
+  const path = derivationPath || "m/44'/501'/0'/0'";
+
   const seed = await bip39.mnemonicToSeed(mnemonic);
   const derivedSeed = derivePath(path, (seed as unknown) as string).key;
 
