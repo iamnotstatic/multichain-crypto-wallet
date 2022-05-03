@@ -4,7 +4,9 @@ import { ethers } from 'ethers';
 import {
   BalancePayload,
   GetAddressFromPrivateKeyPayload,
+  GetEncryptedJsonFromPrivateKey,
   GetTransactionPayload,
+  GetWalletFromEncryptedjsonPayload,
   TransferPayload,
 } from '../utils/types';
 import { successResponse } from '../utils';
@@ -183,6 +185,29 @@ const getTransaction = async ({ hash, rpcUrl }: GetTransactionPayload) => {
   }
 };
 
+const getEncryptedJsonFromPrivateKey = async (
+  args: GetEncryptedJsonFromPrivateKey
+) => {
+  const wallet = new ethers.Wallet(args.privateKey);
+  const json = await wallet.encrypt(args.password);
+
+  return successResponse({ json });
+};
+
+const getWalletFromEncryptedJson = async (
+  args: GetWalletFromEncryptedjsonPayload
+) => {
+  const wallet = await ethers.Wallet.fromEncryptedJson(
+    args.json,
+    args.password
+  );
+
+  return successResponse({
+    privateKey: wallet.privateKey,
+    address: wallet.address,
+  });
+};
+
 export default {
   getBalance,
   createWallet,
@@ -190,4 +215,6 @@ export default {
   generateWalletFromMnemonic,
   transfer,
   getTransaction,
+  getEncryptedJsonFromPrivateKey,
+  getWalletFromEncryptedJson,
 };

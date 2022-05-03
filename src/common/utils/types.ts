@@ -41,3 +41,15 @@ export interface GenerateWalletFromMnemonicPayload {
 export interface IResponse {
   [key: string]: any;
 }
+
+export interface GetEncryptedJsonFromPrivateKey {
+  password: string;
+  privateKey: string;
+  network: string;
+}
+
+export interface GetWalletFromEncryptedjsonPayload {
+  json: string;
+  password: string;
+  network: string;
+}
