@@ -45,8 +45,8 @@ The following methods are available with this SDK:
 - [Get Address from Private Key](#get-address-from-private-key)
 - [Get Transaction Hash](#get-transaction-with-hash)
 - [Transfer](#transfer)
-- [Encrypt Private Key](#encryptions#encrypt-private-key)
-- [Decrypt Encrypted JSON](#encryptions#decrypt-encrypted-json)
+- [Encrypt Private Key](#encrypt-private-key)
+- [Decrypt Encrypted JSON](#decrypt-encrypted-json)
 
 ### Create Wallet
 
