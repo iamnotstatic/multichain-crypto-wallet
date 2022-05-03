@@ -45,6 +45,8 @@ The following methods are available with this SDK:
 - [Get Address from Private Key](#get-address-from-private-key)
 - [Get Transaction Hash](#get-transaction-with-hash)
 - [Transfer](#transfer)
+- [Encrypt Private Key](#encryptions#encrypt-private-key)
+- [Decrypt Encrypted JSON](#encryptions#decrypt-encrypted-json)
 
 ### Create Wallet
 
@@ -291,7 +293,7 @@ const transfer = await multichainWallet.transfer({
 
 ### Encryptions
 
-#### encrypt private key
+#### Encrypt Private Key
 
 It supports encryption of ethereum and other EVM compatible chains private keys.
 
@@ -314,7 +316,7 @@ const encrypted = await multichainWallet.getEncryptedJsonFromPrivateKey({
 }
 ```
 
-#### decrypt JSON key
+#### Decrypt Encrypted JSON
 
 It supports decryption of encrypted JSONs (A.K.A keystore).
 
