@@ -233,7 +233,7 @@ const transfer = await multichainWallet.transfer({
   rpcUrl: 'https://rinkeby-light.eth.linkpool.io',
   privateKey:
     '0f9e5c0bee6c7d06b95204ca22dea8d7f89bb04e8527a2c59e134d185d9af8ad',
-  gasPrice: '10', // Price is in Gwei. Leave empty to use default gas price
+  gasPrice: '10', // Gas price is in Gwei. Leave empty to use default gas price
 });
 
 // Transferring ERC20 tokens from one address to another.
@@ -244,7 +244,7 @@ const transfer = await multichainWallet.transfer({
   rpcUrl: 'https://rinkeby-light.eth.linkpool.io',
   privateKey:
     '0f9e5c0bee6c7d06b95204ca22dea8d7f89bb04e8527a2c59e134d185d9af8ad',
-  gasPrice: '10', // Price is in Gwei. leave empty to use gas price
+  gasPrice: '10', // Gas price is in Gwei. leave empty to use default gas price
   tokenAddress: '0xdac17f958d2ee523a2206206994597c13d831ec7',
 });
 ```
