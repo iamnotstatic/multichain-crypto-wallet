@@ -76,5 +76,8 @@
     "buffer-layout": "^1.2.2",
     "ed25519-hd-key": "^1.2.0",
     "ethers": "^5.6.2"
+  },
+  "browser": {
+    "stream": false
   }
 }
