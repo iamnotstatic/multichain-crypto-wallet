@@ -5,6 +5,8 @@ import {
   getAddressFromPrivateKey,
   getTransaction,
   transfer,
+  getWalletFromEncryptedJson,
+  getEncryptedJsonFromPrivateKey,
 } from '../src';
 
 describe('MultichainCryptoWallet', () => {
@@ -189,5 +191,30 @@ describe('MultichainCryptoWallet', () => {
     });
 
     expect(typeof receipt).toBe('object');
+  });
+
+  it('encrypts ethereum address privatekey and returns the encrypted json', async () => {
+    const data = await getEncryptedJsonFromPrivateKey({
+      privateKey:
+        '0f9e5c0bee6c7d06b95204ca22dea8d7f89bb04e8527a2c59e134d185d9af8ad',
+      network: 'ethereum',
+      password: 'walletpassword',
+    });
+
+    expect(typeof data).toBe('object');
+    expect(typeof (data && data.json)).toBe('string');
+  });
+
+  it('decrypts ethereum address and returns the wallet details', async () => {
+    const data = await getWalletFromEncryptedJson({
+      json:
+        '{"address":"1c082d1052fb44134a408651c01148adbfcce7fe","id":"ca8b45b0-e69d-4e5e-8003-8f3dbb1082cf","version":3,"Crypto":{"cipher":"aes-128-ctr","cipherparams":{"iv":"fe66bd308ad315126ae6f09f0d6599f4"},"ciphertext":"5f2abe02e49868c36df36f884680b132333e541f89cd7eb375247ff7c8a6ccdd","kdf":"scrypt","kdfparams":{"salt":"2570bf687cb7d9cd694e1c79f6e817c9c66467e81b04013104620670f0664bf5","n":131072,"dklen":32,"p":1,"r":8},"mac":"35f69fb7283c65d75c000a0c93042c063d2903efe9b9e6f03b05d842f47ed1e9"}}',
+      network: 'ethereum',
+      password: 'walletpassword',
+    });
+
+    expect(typeof data).toBe('object');
+    expect(typeof (data && data.privateKey)).toBe('string');
+    expect(typeof (data && data.address)).toBe('string');
   });
 });
