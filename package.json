@@ -52,11 +52,11 @@
   "size-limit": [
     {
       "path": "dist/multichain-crypto-wallet.cjs.production.min.js",
-      "limit": "10 KB"
+      "limit": "500 KB"
     },
     {
       "path": "dist/multichain-crypto-wallet.esm.js",
-      "limit": "10 KB"
+      "limit": "500 KB"
     }
   ],
   "devDependencies": {
@@ -76,5 +76,8 @@
     "buffer-layout": "^1.2.2",
     "ed25519-hd-key": "^1.2.0",
     "ethers": "^5.6.2"
+  },
+  "browser": {
+    "stream": false
   }
 }
