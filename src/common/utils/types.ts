@@ -58,7 +58,7 @@ export interface IGetTokenMetadataPayload {
   network: string;
   rpcUrl: string;
   address: string;
-  cluster?: string;
+  cluster?: 'mainnet-beta' | 'testnet' | 'devnet';
 }
 
 export interface ITokenMetadata {
@@ -68,4 +68,15 @@ export interface ITokenMetadata {
   decimals: number;
   totalSupply: number;
   logoUrl?: string;
+}
+
+export interface ISplTokenInfo {
+  chainId: number;
+  address: string;
+  symbol: string;
+  name: string;
+  decimals: number;
+  logoURI?: string;
+  tags: string[];
+  extensions: any;
 }

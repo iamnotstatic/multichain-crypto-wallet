@@ -10,6 +10,7 @@ import {
   GetAddressFromPrivateKeyPayload,
   GetTransactionPayload,
   IGetTokenMetadataPayload,
+  ISplTokenInfo,
   ITokenMetadata,
   TransferPayload,
 } from '../utils/types';
@@ -19,7 +20,7 @@ import * as bip39 from 'bip39';
 import { derivePath } from 'ed25519-hd-key';
 // @ts-ignore
 import * as BufferLayout from 'buffer-layout';
-import { TokenListProvider } from '@solana/spl-token-registry';
+import axios from 'axios';
 
 export const ACCOUNT_LAYOUT = BufferLayout.struct([
   BufferLayout.blob(32, 'mint'),
@@ -27,6 +28,11 @@ export const ACCOUNT_LAYOUT = BufferLayout.struct([
   BufferLayout.nu64('amount'),
   BufferLayout.blob(93),
 ]);
+export const chainId = {
+  'mainnet-beta': 101,
+  testnet: 102,
+  devnet: 103,
+};
 
 const getConnection = (rpcUrl: string) => {
   const connection = provider(rpcUrl);
@@ -216,11 +222,9 @@ const getTransaction = async (args: GetTransactionPayload) => {
 const getTokenMetadata = async (args: IGetTokenMetadataPayload) => {
   try {
     const connection = getConnection(args.rpcUrl);
-    const tokenList = await new TokenListProvider().resolve();
-    const token = tokenList
-      .filterByClusterSlug(args.cluster!)
-      .getList()
-      .find(token => token.address === args.address);
+    const tokenList = await getTokenList(args.cluster!);
+    const token = tokenList.find(token => token.address === args.address);
+
     if (token) {
       const data: ITokenMetadata = {
         name: token.name,
@@ -243,6 +247,22 @@ const getTokenMetadata = async (args: IGetTokenMetadataPayload) => {
   } catch (error) {
     throw error;
   }
+};
+
+const getTokenList = async (
+  cluster: 'mainnet-beta' | 'testnet' | 'devnet'
+): Promise<ISplTokenInfo[]> => {
+  const tokenListUrl =
+    'https://raw.githubusercontent.com/solana-labs/token-list/main/src/tokens/solana.tokenlist.json';
+  const response = await axios.get(tokenListUrl);
+
+  if (response.data && response.data.tokens) {
+    return response.data.tokens.filter(
+      (data: any) => data.chainId === chainId[cluster]
+    );
+  }
+
+  return [];
 };
 
 export default {
