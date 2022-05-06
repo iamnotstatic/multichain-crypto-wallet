@@ -9,6 +9,7 @@ import {
   GetWalletFromEncryptedjsonPayload,
   TransferPayload,
   IGetTokenMetadataPayload,
+  ITokenMetadata,
 } from '../utils/types';
 import { successResponse } from '../utils';
 
@@ -223,15 +224,15 @@ const getTokenMetadata = async ({
       contract.totalSupply(),
     ]);
 
-    return successResponse({
+    const data: ITokenMetadata = {
       name,
       symbol,
       decimals,
       address: contract.address,
       totalSupply: parseInt(ethers.utils.formatUnits(totalSupply, decimals)),
-    });
+    };
+    return successResponse({ ...data });
   }
-
   return;
 };
 
