@@ -47,6 +47,8 @@ The following methods are available with this SDK:
 - [Transfer](#transfer)
 - [Encrypt Private Key](#encrypt-private-key)
 - [Decrypt Encrypted JSON](#decrypt-encrypted-json)
+- [Get ERC20 Token Metadata](#get-erc20-token-metadata)
+- [Get SPL Token Metadata](#get-spl-token-metadata)
 
 ### Create Wallet
 
@@ -341,6 +343,34 @@ const decrypted = await multichainWallet.getWalletFromEncryptedJson({
 
 ```
 
+### Token Metadata
+
+#### Get ERC20 Token Metadata
+
+Allows for fetching ERC20 tokens metadata from compatible blockchains by the token address
+
+```javascript
+// getting token metadata.
+
+const metadata = await multichainWallet.getTokenMetadata({
+  address: '0x7fe03a082fd18a80a7dbd55e9b216bcf540557e4',
+  network: 'ethereum',
+  rpcUrl: 'https://rinkeby-light.eth.linkpool.io',
+});
+```
+
+#### Response
+
+```javascript
+{
+  name: 'Mocked USDT',
+  symbol: 'USDT',
+  decimals: 6,
+  address: '0x7fe03a082fd18a80a7dbd55e9b216bcf540557e4',
+  totalSupply: 1000000000000
+}
+```
+
 #### Solana Network
 
 Allows for the transfer of SOL and tokens.
@@ -373,6 +403,37 @@ const transfer = await MultichainCryptoWallet.transfer({
 ```javascript
 {
   hash: '3nGq2yczqCpm8bF2dyvdPtXpnFLJ1oGWkDfD6neLbRay8SjNqYNhWQBKE1ZFunxvFhJ47FyT6igNpYPP293jXCZk';
+}
+```
+
+### Token Metadata
+
+#### Get SPL Token Metadata
+
+Allows for fetching SPL tokens metadata on the solana by the token address.
+Note: Token has to be available on the solana token list registry
+
+```javascript
+// getting token metadata.
+
+const metadata = await multichainWallet.getTokenMetadata({
+  address: '7Xn4mM868daxsGVJmaGrYxg8CZiuqBnDwUse66s5ALmr',
+  network: 'solana',
+  rpcUrl: 'https://api.devnet.solana.com',
+  cluster: 'devnet',
+});
+```
+
+#### Response
+
+```javascript
+{
+  name: 'SimpiansDEV',
+  symbol: 'SIMPDEV',
+  address: '7Xn4mM868daxsGVJmaGrYxg8CZiuqBnDwUse66s5ALmr',
+  decimals: 0,
+  logoUrl: 'https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/7Xn4mM868daxsGVJmaGrYxg8CZiuqBnDwUse66s5ALmr/logo.png',
+  totalSupply: 10000000
 }
 ```
 
