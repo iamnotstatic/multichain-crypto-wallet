@@ -258,7 +258,7 @@ const getTokenList = async (
 
   if (response.data && response.data.tokens) {
     return response.data.tokens.filter(
-      (data: any) => data.chainId === chainId[cluster]
+      (data: ISplTokenInfo) => data.chainId === chainId[cluster]
     );
   }
 
