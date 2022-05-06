@@ -58,4 +58,14 @@ export interface IGetTokenMetadataPayload {
   network: string;
   rpcUrl: string;
   address: string;
+  cluster?: string;
+}
+
+export interface ITokenMetadata {
+  name: string;
+  symbol: string;
+  address: string;
+  decimals: number;
+  totalSupply: number;
+  logoUrl?: string;
 }

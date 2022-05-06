@@ -139,6 +139,8 @@ export async function getTokenMetadata(args: IGetTokenMetadataPayload) {
   try {
     if (args.network === 'ethereum') {
       return await ethereumHelper.getTokenMetadata({ ...args });
+    } else if (args.network === 'solana') {
+      return solanaHelper.getTokenMetadata({ ...args });
     }
     return;
   } catch (error) {

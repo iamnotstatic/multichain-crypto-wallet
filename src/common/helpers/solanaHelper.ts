@@ -9,6 +9,8 @@ import {
   BalancePayload,
   GetAddressFromPrivateKeyPayload,
   GetTransactionPayload,
+  IGetTokenMetadataPayload,
+  ITokenMetadata,
   TransferPayload,
 } from '../utils/types';
 import * as bs58 from 'bs58';
@@ -17,6 +19,7 @@ import * as bip39 from 'bip39';
 import { derivePath } from 'ed25519-hd-key';
 // @ts-ignore
 import * as BufferLayout from 'buffer-layout';
+import { TokenListProvider } from '@solana/spl-token-registry';
 
 export const ACCOUNT_LAYOUT = BufferLayout.struct([
   BufferLayout.blob(32, 'mint'),
@@ -210,6 +213,38 @@ const getTransaction = async (args: GetTransactionPayload) => {
   }
 };
 
+const getTokenMetadata = async (args: IGetTokenMetadataPayload) => {
+  try {
+    const connection = getConnection(args.rpcUrl);
+    const tokenList = await new TokenListProvider().resolve();
+    const token = tokenList
+      .filterByClusterSlug(args.cluster!)
+      .getList()
+      .find(token => token.address === args.address);
+    if (token) {
+      const data: ITokenMetadata = {
+        name: token.name,
+        symbol: token.symbol,
+        address: token.address,
+        decimals: token.decimals,
+        logoUrl: token.logoURI,
+        totalSupply: 0,
+      };
+
+      const tokenSupply = await connection.getTokenSupply(
+        new solanaWeb3.PublicKey(data.address)
+      );
+      data.totalSupply = tokenSupply.value.uiAmount!;
+
+      return successResponse({ ...data });
+    }
+
+    return;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export default {
   getBalance,
   createWallet,
@@ -217,4 +252,5 @@ export default {
   transfer,
   getAddressFromPrivateKey,
   getTransaction,
+  getTokenMetadata,
 };

@@ -233,4 +233,20 @@ describe('MultichainCryptoWallet', () => {
     expect(typeof (data && data.decimals)).toBe('number');
     expect(typeof (data && data.totalSupply)).toBe('number');
   });
+
+  it('get SPL token metadata', async () => {
+    const data = await getTokenMetadata({
+      address: '7Xn4mM868daxsGVJmaGrYxg8CZiuqBnDwUse66s5ALmr',
+      network: 'solana',
+      rpcUrl: 'https://api.devnet.solana.com',
+      cluster: 'devnet',
+    });
+
+    expect(typeof data).toBe('object');
+    expect(typeof (data && data.name)).toBe('string');
+    expect(typeof (data && data.symbol)).toBe('string');
+    expect(typeof (data && data.address)).toBe('string');
+    expect(typeof (data && data.decimals)).toBe('number');
+    expect(typeof (data && data.totalSupply)).toBe('number');
+  });
 });
