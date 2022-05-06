@@ -53,3 +53,9 @@ export interface GetWalletFromEncryptedjsonPayload {
   password: string;
   network: string;
 }
+
+export interface IGetTokenMetadataPayload {
+  network: string;
+  rpcUrl: string;
+  address: string;
+}

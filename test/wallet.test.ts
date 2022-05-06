@@ -7,6 +7,7 @@ import {
   transfer,
   getWalletFromEncryptedJson,
   getEncryptedJsonFromPrivateKey,
+  getTokenMetadata,
 } from '../src';
 
 describe('MultichainCryptoWallet', () => {
@@ -216,5 +217,20 @@ describe('MultichainCryptoWallet', () => {
     expect(typeof data).toBe('object');
     expect(typeof (data && data.privateKey)).toBe('string');
     expect(typeof (data && data.address)).toBe('string');
+  });
+
+  it('get ERC20 token metadata', async () => {
+    const data = await getTokenMetadata({
+      address: '0x7fe03a082fd18a80a7dbd55e9b216bcf540557e4',
+      network: 'ethereum',
+      rpcUrl: 'https://rinkeby-light.eth.linkpool.io',
+    });
+
+    expect(typeof data).toBe('object');
+    expect(typeof (data && data.name)).toBe('string');
+    expect(typeof (data && data.symbol)).toBe('string');
+    expect(typeof (data && data.address)).toBe('string');
+    expect(typeof (data && data.decimals)).toBe('number');
+    expect(typeof (data && data.totalSupply)).toBe('number');
   });
 });

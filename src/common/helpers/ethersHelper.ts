@@ -8,6 +8,7 @@ import {
   GetTransactionPayload,
   GetWalletFromEncryptedjsonPayload,
   TransferPayload,
+  IGetTokenMetadataPayload,
 } from '../utils/types';
 import { successResponse } from '../utils';
 
@@ -208,6 +209,32 @@ const getWalletFromEncryptedJson = async (
   });
 };
 
+const getTokenMetadata = async ({
+  address,
+  rpcUrl,
+}: IGetTokenMetadataPayload) => {
+  const { contract } = await getContract({ tokenAddress: address, rpcUrl });
+
+  if (contract) {
+    const [name, symbol, decimals, totalSupply] = await Promise.all([
+      contract.name(),
+      contract.symbol(),
+      contract.decimals(),
+      contract.totalSupply(),
+    ]);
+
+    return successResponse({
+      name,
+      symbol,
+      decimals,
+      address: contract.address,
+      totalSupply: parseInt(ethers.utils.formatUnits(totalSupply, decimals)),
+    });
+  }
+
+  return;
+};
+
 export default {
   getBalance,
   createWallet,
@@ -217,4 +244,5 @@ export default {
   getTransaction,
   getEncryptedJsonFromPrivateKey,
   getWalletFromEncryptedJson,
+  getTokenMetadata,
 };

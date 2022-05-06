@@ -10,6 +10,7 @@ import {
   GetTransactionPayload,
   GetWalletFromEncryptedjsonPayload,
   GetEncryptedJsonFromPrivateKey,
+  IGetTokenMetadataPayload,
 } from '../../common/utils/types';
 
 export async function getBalance(args: BalancePayload) {
@@ -128,6 +129,17 @@ export async function getWalletFromEncryptedJson(
       return await ethereumHelper.getWalletFromEncryptedJson({ ...args });
     }
 
+    return;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function getTokenMetadata(args: IGetTokenMetadataPayload) {
+  try {
+    if (args.network === 'ethereum') {
+      return await ethereumHelper.getTokenMetadata({ ...args });
+    }
     return;
   } catch (error) {
     throw error;
