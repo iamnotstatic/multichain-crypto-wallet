@@ -9,9 +9,9 @@ import {
   BalancePayload,
   GetAddressFromPrivateKeyPayload,
   GetTransactionPayload,
-  IGetTokenMetadataPayload,
+  IGetTokenInfoPayload,
   ISplTokenInfo,
-  ITokenMetadata,
+  ITokenInfo,
   TransferPayload,
 } from '../utils/types';
 import * as bs58 from 'bs58';
@@ -219,14 +219,14 @@ const getTransaction = async (args: GetTransactionPayload) => {
   }
 };
 
-const getTokenMetadata = async (args: IGetTokenMetadataPayload) => {
+const getTokenInfo = async (args: IGetTokenInfoPayload) => {
   try {
     const connection = getConnection(args.rpcUrl);
     const tokenList = await getTokenList(args.cluster!);
     const token = tokenList.find(token => token.address === args.address);
 
     if (token) {
-      const data: ITokenMetadata = {
+      const data: ITokenInfo = {
         name: token.name,
         symbol: token.symbol,
         address: token.address,
@@ -272,5 +272,5 @@ export default {
   transfer,
   getAddressFromPrivateKey,
   getTransaction,
-  getTokenMetadata,
+  getTokenInfo,
 };

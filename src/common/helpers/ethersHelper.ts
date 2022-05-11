@@ -8,8 +8,8 @@ import {
   GetTransactionPayload,
   GetWalletFromEncryptedjsonPayload,
   TransferPayload,
-  IGetTokenMetadataPayload,
-  ITokenMetadata,
+  IGetTokenInfoPayload,
+  ITokenInfo,
 } from '../utils/types';
 import { successResponse } from '../utils';
 
@@ -210,10 +210,7 @@ const getWalletFromEncryptedJson = async (
   });
 };
 
-const getTokenMetadata = async ({
-  address,
-  rpcUrl,
-}: IGetTokenMetadataPayload) => {
+const getTokenInfo = async ({ address, rpcUrl }: IGetTokenInfoPayload) => {
   const { contract } = await getContract({ tokenAddress: address, rpcUrl });
 
   if (contract) {
@@ -224,7 +221,7 @@ const getTokenMetadata = async ({
       contract.totalSupply(),
     ]);
 
-    const data: ITokenMetadata = {
+    const data: ITokenInfo = {
       name,
       symbol,
       decimals,
@@ -245,5 +242,5 @@ export default {
   getTransaction,
   getEncryptedJsonFromPrivateKey,
   getWalletFromEncryptedJson,
-  getTokenMetadata,
+  getTokenInfo,
 };

@@ -54,14 +54,14 @@ export interface GetWalletFromEncryptedjsonPayload {
   network: string;
 }
 
-export interface IGetTokenMetadataPayload {
+export interface IGetTokenInfoPayload {
   network: string;
   rpcUrl: string;
   address: string;
   cluster?: 'mainnet-beta' | 'testnet' | 'devnet';
 }
 
-export interface ITokenMetadata {
+export interface ITokenInfo {
   name: string;
   symbol: string;
   address: string;

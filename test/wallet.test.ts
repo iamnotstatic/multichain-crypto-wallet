@@ -7,7 +7,7 @@ import {
   transfer,
   getWalletFromEncryptedJson,
   getEncryptedJsonFromPrivateKey,
-  getTokenMetadata,
+  getTokenInfo,
 } from '../src';
 
 describe('MultichainCryptoWallet', () => {
@@ -219,8 +219,8 @@ describe('MultichainCryptoWallet', () => {
     expect(typeof (data && data.address)).toBe('string');
   });
 
-  it('get ERC20 token metadata', async () => {
-    const data = await getTokenMetadata({
+  it('get ERC20 token info', async () => {
+    const data = await getTokenInfo({
       address: '0x7fe03a082fd18a80a7dbd55e9b216bcf540557e4',
       network: 'ethereum',
       rpcUrl: 'https://rinkeby-light.eth.linkpool.io',
@@ -234,8 +234,8 @@ describe('MultichainCryptoWallet', () => {
     expect(typeof (data && data.totalSupply)).toBe('number');
   });
 
-  it('get SPL token metadata', async () => {
-    const data = await getTokenMetadata({
+  it('get SPL token info', async () => {
+    const data = await getTokenInfo({
       address: '7Xn4mM868daxsGVJmaGrYxg8CZiuqBnDwUse66s5ALmr',
       network: 'solana',
       rpcUrl: 'https://api.devnet.solana.com',
