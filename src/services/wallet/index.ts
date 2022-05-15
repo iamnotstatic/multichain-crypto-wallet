@@ -10,6 +10,7 @@ import {
   GetTransactionPayload,
   GetWalletFromEncryptedjsonPayload,
   GetEncryptedJsonFromPrivateKey,
+  IGetTokenInfoPayload,
 } from '../../common/utils/types';
 
 export async function getBalance(args: BalancePayload) {
@@ -128,6 +129,19 @@ export async function getWalletFromEncryptedJson(
       return await ethereumHelper.getWalletFromEncryptedJson({ ...args });
     }
 
+    return;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function getTokenInfo(args: IGetTokenInfoPayload) {
+  try {
+    if (args.network === 'ethereum') {
+      return await ethereumHelper.getTokenInfo({ ...args });
+    } else if (args.network === 'solana') {
+      return solanaHelper.getTokenInfo({ ...args });
+    }
     return;
   } catch (error) {
     throw error;

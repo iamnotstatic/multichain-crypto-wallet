@@ -39,14 +39,39 @@ import multichainWallet from 'multichain-crypto-wallet';
 
 The following methods are available with this SDK:
 
-- [Create Wallet](#create-wallet)
-- [Get Balance](#get-balance)
-- [Generate Wallet from Mnemonic](#generate-wallet-from-mnemonic)
-- [Get Address from Private Key](#get-address-from-private-key)
-- [Get Transaction Hash](#get-transaction-with-hash)
-- [Transfer](#transfer)
-- [Encrypt Private Key](#encrypt-private-key)
-- [Decrypt Encrypted JSON](#decrypt-encrypted-json)
+- [Multichain Crypto Wallet](#multichain-crypto-wallet)
+  - [Installation](#installation)
+  - [Usage](#usage)
+    - [Javascript](#javascript)
+    - [TypeScript](#typescript)
+  - [Methods](#methods)
+    - [Create Wallet](#create-wallet)
+      - [Response](#response)
+    - [Get Balance](#get-balance)
+      - [Native coins](#native-coins)
+      - [Tokens](#tokens)
+      - [Response](#response-1)
+    - [Generate Wallet from Mnemonic](#generate-wallet-from-mnemonic)
+      - [Response](#response-2)
+    - [Get Address from Private Key](#get-address-from-private-key)
+      - [Response](#response-3)
+    - [Get Transaction](#get-transaction)
+      - [Response](#response-4)
+    - [Transfer](#transfer)
+      - [Ethereum Network](#ethereum-network)
+      - [Response](#response-5)
+      - [Solana Network](#solana-network)
+      - [Response](#response-9)
+    - [Encryptions](#encryptions)
+      - [Encrypt Private Key](#encrypt-private-key)
+      - [Response](#response-6)
+      - [Decrypt Encrypted JSON](#decrypt-encrypted-json)
+      - [Response](#response-7)
+    - [Token Info](#token-info)
+      - [Get ERC20 Token Info](#get-erc20-token-info)
+      - [Response](#response-8)
+      - [Get SPL Token Info](#get-spl-token-info)
+      - [Response](#response-10)
 
 ### Create Wallet
 
@@ -341,6 +366,34 @@ const decrypted = await multichainWallet.getWalletFromEncryptedJson({
 
 ```
 
+### Token Info
+
+#### Get ERC20 Token Info
+
+Allows for fetching ERC20 tokens info from compatible blockchains by the token address
+
+```javascript
+// getting token info.
+
+const info = await multichainWallet.getTokenInfo({
+  address: '0x7fe03a082fd18a80a7dbd55e9b216bcf540557e4',
+  network: 'ethereum',
+  rpcUrl: 'https://rinkeby-light.eth.linkpool.io',
+});
+```
+
+#### Response
+
+```javascript
+{
+  name: 'Mocked USDT',
+  symbol: 'USDT',
+  decimals: 6,
+  address: '0x7fe03a082fd18a80a7dbd55e9b216bcf540557e4',
+  totalSupply: 1000000000000
+}
+```
+
 #### Solana Network
 
 Allows for the transfer of SOL and tokens.
@@ -373,6 +426,37 @@ const transfer = await MultichainCryptoWallet.transfer({
 ```javascript
 {
   hash: '3nGq2yczqCpm8bF2dyvdPtXpnFLJ1oGWkDfD6neLbRay8SjNqYNhWQBKE1ZFunxvFhJ47FyT6igNpYPP293jXCZk';
+}
+```
+
+### Token Info
+
+#### Get SPL Token Info
+
+Allows for fetching SPL tokens info on the solana by the token address.
+Note: Token has to be available on the solana token list registry
+
+```javascript
+// getting token info.
+
+const info = await multichainWallet.getTokenInfo({
+  address: '7Xn4mM868daxsGVJmaGrYxg8CZiuqBnDwUse66s5ALmr',
+  network: 'solana',
+  rpcUrl: 'https://api.devnet.solana.com',
+  cluster: 'devnet',
+});
+```
+
+#### Response
+
+```javascript
+{
+  name: 'SimpiansDEV',
+  symbol: 'SIMPDEV',
+  address: '7Xn4mM868daxsGVJmaGrYxg8CZiuqBnDwUse66s5ALmr',
+  decimals: 0,
+  logoUrl: 'https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/7Xn4mM868daxsGVJmaGrYxg8CZiuqBnDwUse66s5ALmr/logo.png',
+  totalSupply: 10000000
 }
 ```
 

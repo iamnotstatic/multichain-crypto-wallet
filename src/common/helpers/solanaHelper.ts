@@ -9,6 +9,9 @@ import {
   BalancePayload,
   GetAddressFromPrivateKeyPayload,
   GetTransactionPayload,
+  IGetTokenInfoPayload,
+  ISplTokenInfo,
+  ITokenInfo,
   TransferPayload,
 } from '../utils/types';
 import * as bs58 from 'bs58';
@@ -17,6 +20,7 @@ import * as bip39 from 'bip39';
 import { derivePath } from 'ed25519-hd-key';
 // @ts-ignore
 import * as BufferLayout from 'buffer-layout';
+import axios from 'axios';
 
 export const ACCOUNT_LAYOUT = BufferLayout.struct([
   BufferLayout.blob(32, 'mint'),
@@ -24,6 +28,11 @@ export const ACCOUNT_LAYOUT = BufferLayout.struct([
   BufferLayout.nu64('amount'),
   BufferLayout.blob(93),
 ]);
+export const chainId = {
+  'mainnet-beta': 101,
+  testnet: 102,
+  devnet: 103,
+};
 
 const getConnection = (rpcUrl: string) => {
   const connection = provider(rpcUrl);
@@ -210,6 +219,52 @@ const getTransaction = async (args: GetTransactionPayload) => {
   }
 };
 
+const getTokenInfo = async (args: IGetTokenInfoPayload) => {
+  try {
+    const connection = getConnection(args.rpcUrl);
+    const tokenList = await getTokenList(args.cluster!);
+    const token = tokenList.find(token => token.address === args.address);
+
+    if (token) {
+      const data: ITokenInfo = {
+        name: token.name,
+        symbol: token.symbol,
+        address: token.address,
+        decimals: token.decimals,
+        logoUrl: token.logoURI,
+        totalSupply: 0,
+      };
+
+      const tokenSupply = await connection.getTokenSupply(
+        new solanaWeb3.PublicKey(data.address)
+      );
+      data.totalSupply = tokenSupply.value.uiAmount!;
+
+      return successResponse({ ...data });
+    }
+
+    return;
+  } catch (error) {
+    throw error;
+  }
+};
+
+const getTokenList = async (
+  cluster: 'mainnet-beta' | 'testnet' | 'devnet'
+): Promise<ISplTokenInfo[]> => {
+  const tokenListUrl =
+    'https://raw.githubusercontent.com/solana-labs/token-list/main/src/tokens/solana.tokenlist.json';
+  const response = await axios.get(tokenListUrl);
+
+  if (response.data && response.data.tokens) {
+    return response.data.tokens.filter(
+      (data: ISplTokenInfo) => data.chainId === chainId[cluster]
+    );
+  }
+
+  return [];
+};
+
 export default {
   getBalance,
   createWallet,
@@ -217,4 +272,5 @@ export default {
   transfer,
   getAddressFromPrivateKey,
   getTransaction,
+  getTokenInfo,
 };
