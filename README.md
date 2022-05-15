@@ -60,6 +60,8 @@ The following methods are available with this SDK:
     - [Transfer](#transfer)
       - [Ethereum Network](#ethereum-network)
       - [Response](#response-5)
+      - [Solana Network](#solana-network)
+      - [Response](#response-9)
     - [Encryptions](#encryptions)
       - [Encrypt Private Key](#encrypt-private-key)
       - [Response](#response-6)
@@ -68,9 +70,6 @@ The following methods are available with this SDK:
     - [Token Info](#token-info)
       - [Get ERC20 Token Info](#get-erc20-token-info)
       - [Response](#response-8)
-      - [Solana Network](#solana-network)
-      - [Response](#response-9)
-    - [Token Info](#token-info-1)
       - [Get SPL Token Info](#get-spl-token-info)
       - [Response](#response-10)
 
