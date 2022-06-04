@@ -114,6 +114,7 @@ const transfer = async (args: TransferPayload) => {
   try {
     const recipient = new solanaWeb3.PublicKey(args.recipientAddress);
     let secretKey;
+    let signature;
 
     if (args.privateKey.split(',').length > 1) {
       secretKey = new Uint8Array(args.privateKey.split(',') as any);
@@ -148,7 +149,7 @@ const transfer = async (args: TransferPayload) => {
         recipient
       );
 
-      let signature = await transferToken(
+      signature = await transferToken(
         connection,
         from,
         fromTokenAccount.address,
@@ -156,29 +157,27 @@ const transfer = async (args: TransferPayload) => {
         from.publicKey,
         solanaWeb3.LAMPORTS_PER_SOL * args.amount
       );
+    } else {
+      const transaction = new solanaWeb3.Transaction().add(
+        solanaWeb3.SystemProgram.transfer({
+          fromPubkey: from.publicKey,
+          toPubkey: recipient,
+          lamports: solanaWeb3.LAMPORTS_PER_SOL * args.amount,
+        })
+      );
 
-      return successResponse({
-        hash: signature,
-      });
+      // Sign transaction, broadcast, and confirm
+      signature = await solanaWeb3.sendAndConfirmTransaction(
+        connection,
+        transaction,
+        [from]
+      );
     }
 
-    const transaction = new solanaWeb3.Transaction().add(
-      solanaWeb3.SystemProgram.transfer({
-        fromPubkey: from.publicKey,
-        toPubkey: recipient,
-        lamports: solanaWeb3.LAMPORTS_PER_SOL * args.amount,
-      })
-    );
-
-    // Sign transaction, broadcast, and confirm
-    const signature = await solanaWeb3.sendAndConfirmTransaction(
-      connection,
-      transaction,
-      [from]
-    );
+    const tx = await connection.getTransaction(signature);
 
     return successResponse({
-      hash: signature,
+      ...tx,
     });
   } catch (error) {
     throw error;
@@ -212,7 +211,7 @@ const getTransaction = async (args: GetTransactionPayload) => {
     const tx = await connection.getTransaction(args.hash);
 
     return successResponse({
-      receipt: tx,
+      ...tx,
     });
   } catch (error) {
     throw error;
