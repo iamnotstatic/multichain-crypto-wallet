@@ -11,6 +11,7 @@ import {
   GetWalletFromEncryptedjsonPayload,
   GetEncryptedJsonFromPrivateKey,
   IGetTokenInfoPayload,
+  ISmartContractCallPayload,
 } from '../../common/utils/types';
 
 export async function getBalance(args: BalancePayload) {
@@ -143,6 +144,18 @@ export async function getTokenInfo(args: IGetTokenInfoPayload) {
       return solanaHelper.getTokenInfo({ ...args });
     }
     return;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function smartContractCall(args: ISmartContractCallPayload) {
+  try {
+    if (args.network === 'ethereum') {
+      return await ethereumHelper.smartContractCall({ ...args });
+    } else {
+      throw new Error('Only Ethereum is supported at this time');
+    }
   } catch (error) {
     throw error;
   }
