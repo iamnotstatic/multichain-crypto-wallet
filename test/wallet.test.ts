@@ -281,4 +281,26 @@ describe('MultichainCryptoWallet', () => {
 
     expect(typeof data).toBe('object');
   });
+
+  it('smart contract call (get factory Uniswap)', async () => {
+    const data = await smartContractCall({
+      rpcUrl: 'https://rinkeby-light.eth.linkpool.io',
+      network: 'ethereum',
+      contractAddress: '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D',
+      method: 'factory',
+      methodType: 'read',
+      params: [],
+      contractAbi: [
+        {
+          inputs: [],
+          name: 'factory',
+          outputs: [{ internalType: 'address', name: '', type: 'address' }],
+          stateMutability: 'view',
+          type: 'function',
+        },
+      ],
+    });
+
+    expect(typeof data).toBe('object');
+  });
 });
