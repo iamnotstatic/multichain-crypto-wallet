@@ -136,12 +136,11 @@ const transfer = async ({
   rpcUrl,
   ...args
 }: TransferPayload) => {
-  const {
-    contract,
-    providerInstance,
-    gasPrice,
-    nonce,
-  } = await getContract({ rpcUrl, privateKey, contractAddress: tokenAddress });
+  const { contract, providerInstance, gasPrice, nonce } = await getContract({
+    rpcUrl,
+    privateKey,
+    contractAddress: tokenAddress,
+  });
 
   let wallet = new ethers.Wallet(privateKey, providerInstance);
 
