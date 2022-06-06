@@ -500,16 +500,16 @@ Some of the parameters available in this function are:
 
 - The method parameter is the name of the smart contract function to be interacted with.
 - The **method type** is the type of action the method is meant to perform.
-- The **params** parameter takes in the parameters of the smart contract function if it requires any. It must be in the same order as of the contract address. If the smart contract function does not require any parameters, leave it as an empty array.
+- The **params** parameter is the parameters of the smart contract function if it requires any. It must be in the same order as the smart contract function. If the smart contract function does not require any parameters, leave it as an empty array.
 
 The optional parameters that the object takes in are: value, contractAbi, gas price, gas limit, nonce, and private key.
 
-- The value is the amount of ETH. Some smart contracts require you to specify.
+- The value is the amount of ETH you want to send while interacting with the function.
 - The contractAbi is the ABI of the smart contract. Every smart contract has an ABI that can be used to interact with the smart contract functions. If this is not specified. You can interact with all the [ERC20](https://github.com/ethereum/EIPs/blob/master/EIPS/eip-20.md) token standard functions by default.
 - The gas price is the price of gas in Gwei. The higher the gas price, the faster the transaction gets mined. It's best to use a higher gas price than the default.
 - The gas limit is the maximum amount of gas you are willing to pay for the transaction.
 - The nonce is the number of transactions that have been sent from the source address and is used to ensure that the transaction is unique. The transaction is unique because the nonce is incremented each time a transaction is sent.
-- The private key is a string parameter that can be passed in for a wallet. It is used to sign the transaction. This parameter is not needed when calling a smart contract with the read function.
+- The private key is a string parameter that can be passed to use as the signer. It is used to sign the transaction. This parameter is not needed when calling a smart contract read function.
 #### Response
 
 ```javascript
