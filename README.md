@@ -261,7 +261,7 @@ const transfer = await multichainWallet.transfer({
   privateKey:
     '0f9e5c0bee6c7d06b95204ca22dea8d7f89bb04e8527a2c59e134d185d9af8ad',
   gasPrice: '10', // Gas price is in Gwei. Leave empty to use default gas price
-  data: "Use this for flex" // Send a message
+  data: "Money for transportation" // Send a message
 });
 
 // Transferring ERC20 tokens from one address to another.
@@ -294,7 +294,7 @@ const transfer = await multichainWallet.transfer({
     '0f9e5c0bee6c7d06b95204ca22dea8d7f89bb04e8527a2c59e134d185d9af8ad',
   gasPrice: '10',
   nonce: 1, // The pending transaction nonce
-    data: "From me to you" // Send a message
+    data: "Money for feeding" // Send a message
 });
 
 // Overriding ERC20 token pending transaction.
@@ -459,7 +459,7 @@ const info = await multichainWallet.getTokenInfo({
 
 ### Smart Contract Call
 
-This can be used to make custom smart contract calls by specifying the ABIs and function types.
+This can be used to make custom smart contract calls by specifying the contract ABI and function types.
 ``` javascript
 // calling a read smart contract function.
 const data = await smartContractCall({
