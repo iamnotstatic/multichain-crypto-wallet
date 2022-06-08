@@ -7,6 +7,8 @@ export interface TransferPayload {
   gasPrice?: string;
   tokenAddress?: string;
   nonce?: number;
+  data?: string;
+  gasLimit?: number;
 }
 
 export interface BalancePayload {
@@ -79,4 +81,19 @@ export interface ISplTokenInfo {
   logoURI?: string;
   tags: string[];
   extensions: any;
+}
+
+export interface ISmartContractCallPayload {
+  rpcUrl: string;
+  network: string;
+  contractAddress: string;
+  method: string;
+  methodType: 'read' | 'write';
+  params: any[];
+  value?: number;
+  contractAbi?: any[];
+  gasPrice?: string;
+  gasLimit?: number;
+  nonce?: number;
+  privateKey?: string;
 }

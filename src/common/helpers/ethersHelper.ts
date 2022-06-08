@@ -10,19 +10,22 @@ import {
   TransferPayload,
   IGetTokenInfoPayload,
   ITokenInfo,
+  ISmartContractCallPayload,
 } from '../utils/types';
 import { successResponse } from '../utils';
 
 interface GetContract {
   rpcUrl: string;
   privateKey?: string;
-  tokenAddress?: string;
+  contractAddress?: string;
+  abi?: any[];
 }
 
 const getContract = async ({
-  tokenAddress,
+  contractAddress,
   rpcUrl,
   privateKey,
+  abi,
 }: GetContract) => {
   const providerInstance = provider(rpcUrl);
   const gasPrice = await providerInstance.getGasPrice();
@@ -31,16 +34,21 @@ const getContract = async ({
   let nonce;
   let contract;
   let signer;
+  const contractAbi = abi || erc20Abi;
 
-  if (privateKey && tokenAddress) {
+  if (privateKey && contractAddress) {
     signer = new ethers.Wallet(privateKey, providerInstance);
     nonce = providerInstance.getTransactionCount(signer.getAddress());
-    contract = new ethers.Contract(tokenAddress, erc20Abi, signer);
-  } else if (privateKey && !tokenAddress) {
+    contract = new ethers.Contract(contractAddress, contractAbi, signer);
+  } else if (privateKey && !contractAddress) {
     signer = new ethers.Wallet(privateKey, providerInstance);
     nonce = providerInstance.getTransactionCount(signer.getAddress());
-  } else if (tokenAddress && !privateKey) {
-    contract = new ethers.Contract(tokenAddress, erc20Abi, providerInstance);
+  } else if (contractAddress && !privateKey) {
+    contract = new ethers.Contract(
+      contractAddress,
+      contractAbi,
+      providerInstance
+    );
   }
 
   return {
@@ -60,7 +68,7 @@ const getBalance = async ({
 }: BalancePayload) => {
   const { contract, providerInstance } = await getContract({
     rpcUrl,
-    tokenAddress,
+    contractAddress: tokenAddress,
   });
 
   try {
@@ -128,13 +136,11 @@ const transfer = async ({
   rpcUrl,
   ...args
 }: TransferPayload) => {
-  const {
-    contract,
-    providerInstance,
-    gasPrice,
-    gas,
-    nonce,
-  } = await getContract({ rpcUrl, privateKey, tokenAddress });
+  const { contract, providerInstance, gasPrice, nonce } = await getContract({
+    rpcUrl,
+    privateKey,
+    contractAddress: tokenAddress,
+  });
 
   let wallet = new ethers.Wallet(privateKey, providerInstance);
 
@@ -143,6 +149,10 @@ const transfer = async ({
 
     if (contract) {
       const decimals = await contract.decimals();
+      const estimatedGas = await contract.estimateGas.transfer(
+        args.recipientAddress,
+        ethers.utils.parseUnits(args.amount.toString(), decimals)
+      );
 
       tx = await contract.transfer(
         args.recipientAddress,
@@ -152,6 +162,7 @@ const transfer = async ({
             ? ethers.utils.parseUnits(args.gasPrice.toString(), 'gwei')
             : gasPrice,
           nonce: args.nonce || nonce,
+          gasLimit: args.gasLimit || estimatedGas,
         }
       );
     } else {
@@ -161,13 +172,15 @@ const transfer = async ({
         gasPrice: args.gasPrice
           ? ethers.utils.parseUnits(args.gasPrice.toString(), 'gwei')
           : gasPrice,
-        gasLimit: gas,
         nonce: args.nonce || nonce,
+        data: args.data
+          ? ethers.utils.hexlify(ethers.utils.toUtf8Bytes(args.data as string))
+          : '0x',
       });
     }
 
     return successResponse({
-      hash: tx.hash,
+      ...tx,
     });
   } catch (error) {
     throw error;
@@ -180,7 +193,7 @@ const getTransaction = async ({ hash, rpcUrl }: GetTransactionPayload) => {
   try {
     const tx = await providerInstance.getTransaction(hash);
     return successResponse({
-      receipt: tx,
+      ...tx,
     });
   } catch (error) {
     throw error;
@@ -211,7 +224,7 @@ const getWalletFromEncryptedJson = async (
 };
 
 const getTokenInfo = async ({ address, rpcUrl }: IGetTokenInfoPayload) => {
-  const { contract } = await getContract({ tokenAddress: address, rpcUrl });
+  const { contract } = await getContract({ contractAddress: address, rpcUrl });
 
   if (contract) {
     const [name, symbol, decimals, totalSupply] = await Promise.all([
@@ -233,6 +246,48 @@ const getTokenInfo = async ({ address, rpcUrl }: IGetTokenInfoPayload) => {
   return;
 };
 
+const smartContractCall = async (args: ISmartContractCallPayload) => {
+  const { contract, gasPrice, nonce } = await getContract({
+    rpcUrl: args.rpcUrl,
+    contractAddress: args.contractAddress,
+    abi: args.contractAbi,
+    privateKey: args.privateKey,
+  });
+
+  try {
+    let tx;
+    let overrides = {} as any;
+
+    if (args.methodType === 'read') {
+      overrides = {};
+    } else if (args.methodType === 'write') {
+      overrides = {
+        gasPrice: args.gasPrice
+          ? ethers.utils.parseUnits(args.gasPrice, 'gwei')
+          : gasPrice,
+        nonce: args.nonce || nonce,
+        value: args.value ? ethers.utils.parseEther(args.value.toString()) : 0,
+      };
+
+      if (args.gasLimit) {
+        overrides.gasLimit = args.gasLimit;
+      }
+    }
+
+    if (args.params.length > 0) {
+      tx = await contract?.[args.method](...args.params, overrides);
+    } else {
+      tx = await contract?.[args.method](overrides);
+    }
+
+    return successResponse({
+      data: tx,
+    });
+  } catch (error) {
+    throw error;
+  }
+};
+
 export default {
   getBalance,
   createWallet,
@@ -243,4 +298,5 @@ export default {
   getEncryptedJsonFromPrivateKey,
   getWalletFromEncryptedJson,
   getTokenInfo,
+  smartContractCall,
 };

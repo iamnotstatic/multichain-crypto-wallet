@@ -8,6 +8,7 @@ import {
   getWalletFromEncryptedJson,
   getEncryptedJsonFromPrivateKey,
   getTokenInfo,
+  smartContractCall,
 } from '../src';
 
 describe('MultichainCryptoWallet', () => {
@@ -248,5 +249,58 @@ describe('MultichainCryptoWallet', () => {
     expect(typeof (data && data.address)).toBe('string');
     expect(typeof (data && data.decimals)).toBe('number');
     expect(typeof (data && data.totalSupply)).toBe('number');
+  });
+
+  it('smart contract call (get token Balance)', async () => {
+    const data = await smartContractCall({
+      rpcUrl: 'https://rinkeby-light.eth.linkpool.io',
+      network: 'ethereum',
+      contractAddress: '0x5592EC0cfb4dbc12D3aB100b257153436a1f0FEa',
+      method: 'balanceOf',
+      methodType: 'read',
+      params: ['0x2455eC6700092991Ce0782365A89d5Cd89c8Fa22'],
+    });
+
+    expect(typeof data).toBe('object');
+  });
+
+  it('smart contract call (ERC20 token transfer)', async () => {
+    const data = await smartContractCall({
+      rpcUrl: 'https://rinkeby-light.eth.linkpool.io',
+      network: 'ethereum',
+      contractAddress: '0x5592EC0cfb4dbc12D3aB100b257153436a1f0FEa',
+      method: 'transfer',
+      methodType: 'write',
+      params: [
+        '0x2455eC6700092991Ce0782365A89d5Cd89c8Fa22',
+        '1000000000000000000',
+      ],
+      privateKey:
+        '0f9e5c0bee6c7d06b95204ca22dea8d7f89bb04e8527a2c59e134d185d9af8ad',
+    });
+
+    expect(typeof data).toBe('object');
+  });
+
+  it('smart contract call (get factory Uniswap)', async () => {
+    const data = await smartContractCall({
+      rpcUrl: 'https://rinkeby-light.eth.linkpool.io',
+      network: 'ethereum',
+      contractAddress: '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D',
+      method: 'factory',
+      methodType: 'read',
+      params: [],
+      contractAbi: [
+        {
+          inputs: [],
+          name: 'factory',
+          outputs: [{ internalType: 'address', name: '', type: 'address' }],
+          stateMutability: 'view',
+          type: 'function',
+        },
+      ],
+    });
+
+    expect(typeof data).toBe('object');
   });
 });
