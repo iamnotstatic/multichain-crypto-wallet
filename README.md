@@ -72,6 +72,8 @@ The following methods are available with this SDK:
       - [Response](#response-8)
       - [Get SPL Token Info](#get-spl-token-info)
       - [Response](#response-10)
+    - [Smart Contract Call](#smart-contract-call)
+      - [Response](#response-11)
 
 ### Create Wallet
 
@@ -237,9 +239,7 @@ const receipt = await multichainWallet.getTransaction({
 
 ```javascript
 {
-  receipt: {
-    object;
-  }
+    object
 }
 ```
 
@@ -261,6 +261,7 @@ const transfer = await multichainWallet.transfer({
   privateKey:
     '0f9e5c0bee6c7d06b95204ca22dea8d7f89bb04e8527a2c59e134d185d9af8ad',
   gasPrice: '10', // Gas price is in Gwei. Leave empty to use default gas price
+  data: "Use this for flex" // Send a message
 });
 
 // Transferring ERC20 tokens from one address to another.
@@ -276,10 +277,11 @@ const transfer = await multichainWallet.transfer({
 });
 ```
 
-The optional parameters that the object takes in are: gas price and nonce.
+The optional parameters that the object takes in are: gas price, nonce, and data.
 
 - The gas price is the price of gas in Gwei. The higher the gas price, the faster the transaction will be. It's best to use a higher gas price than the default.
 - The nonce is the number of transactions that have been sent from the source address and is used to ensure that the transaction is unique. The transaction is unique because the nonce is incremented each time a transaction is sent.
+- The data is a string parameter used to pass across a message through the transaction. Can only be used on transfer of ETH.
 
 ```javascript
 // Overriding pending ETH transaction.
@@ -292,6 +294,7 @@ const transfer = await multichainWallet.transfer({
     '0f9e5c0bee6c7d06b95204ca22dea8d7f89bb04e8527a2c59e134d185d9af8ad',
   gasPrice: '10',
   nonce: 1, // The pending transaction nonce
+    data: "From me to you" // Send a message
 });
 
 // Overriding ERC20 token pending transaction.
@@ -312,7 +315,7 @@ const transfer = await multichainWallet.transfer({
 
 ```javascript
 {
-  hash: '0xf2978fe918f3e28b7f57101bbc99aa9d7d2d71507ca4a08bac6dd09575527502';
+  object
 }
 ```
 
@@ -332,7 +335,6 @@ const encrypted = await multichainWallet.getEncryptedJsonFromPrivateKey({
   password: 'walletpassword',
 });
 ```
-
 #### Response
 
 ```javascript
@@ -451,13 +453,69 @@ const info = await multichainWallet.getTokenInfo({
 
 ```javascript
 {
-  name: 'SimpiansDEV',
-  symbol: 'SIMPDEV',
-  address: '7Xn4mM868daxsGVJmaGrYxg8CZiuqBnDwUse66s5ALmr',
-  decimals: 0,
-  logoUrl: 'https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/7Xn4mM868daxsGVJmaGrYxg8CZiuqBnDwUse66s5ALmr/logo.png',
-  totalSupply: 10000000
+  object
 }
 ```
 
+### Smart Contract Call
+
+This can be used to make custom smart contract calls by specifying the ABIs and function types.
+``` javascript
+// calling a read smart contract function.
+const data = await smartContractCall({
+      rpcUrl: 'https://rinkeby-light.eth.linkpool.io',
+      network: 'ethereum',
+      contractAddress: '0x5592EC0cfb4dbc12D3aB100b257153436a1f0FEa',
+      method: 'transfer',
+      methodType: 'write',
+      params: [
+        '0x2455eC6700092991Ce0782365A89d5Cd89c8Fa22',
+        '1000000000000000000',
+      ],
+      privateKey:
+        '0f9e5c0bee6c7d06b95204ca22dea8d7f89bb04e8527a2c59e134d185d9af8ad',
+  });
+
+// calling a write smart contract function.
+const data = await smartContractCall({
+      rpcUrl: 'https://rinkeby-light.eth.linkpool.io',
+      network: 'ethereum',
+      contractAddress: '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D',
+      method: 'factory',
+      methodType: 'read',
+      params: [],
+      contractAbi: [
+        {
+          inputs: [],
+          name: 'factory',
+          outputs: [{ internalType: 'address', name: '', type: 'address' }],
+          stateMutability: 'view',
+          type: 'function',
+        },
+      ],
+    });
+```
+Some of the parameters available in this function are: 
+
+- The **method** parameter is the name of the smart contract function to be interacted with.
+- The **method type** is the type of action the method is meant to perform.
+- The **params** parameter is the parameter of the smart contract function if it requires any. It must be in the same order as the smart contract function. If the smart contract function does not require any parameters, leave it as an empty array.
+
+The optional parameters that the object takes in are: value, contractAbi, gas price, gas limit, nonce, and private key.
+
+- The **value** is the amount of ETH you want to send while interacting with the function.
+- The **contractAbi** is the ABI of the smart contract. Every smart contract has an ABI that can be used to interact with the smart contract functions. If this is not specified. You can interact with all the [ERC20](https://github.com/ethereum/EIPs/blob/master/EIPS/eip-20.md) token standard functions by default.
+- The **gas price** is the price of gas in Gwei. The higher the gas price, the faster the transaction gets mined. It's best to use a higher gas price than the default.
+- The **gas limit** is the maximum amount of gas you are willing to pay for the transaction.
+- The **nonce** is the number of transactions that have been sent from the source address and is used to ensure that the transaction is unique. The transaction is unique because the nonce is incremented each time a transaction is sent.
+- The **private key** is a string parameter that can be passed to use as the signer. It is used to sign the transaction. This parameter is not needed when calling a smart contract read function.
+#### Response
+
+```javascript
+{
+  data: object
+}
+```
+
+### Want to contribute?
 Contributions are welcome! Kindly refer to the [contribution guidelines](CONTRIBUTING.md).
