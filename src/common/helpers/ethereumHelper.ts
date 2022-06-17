@@ -14,7 +14,7 @@ import {
 import { successResponse } from '../utils';
 
 interface GetContract {
-  rpcUrl: string;
+  rpcUrl?: string;
   privateKey?: string;
   contractAddress?: string;
   abi?: any[];

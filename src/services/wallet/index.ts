@@ -21,9 +21,11 @@ export async function getBalance(args: BalancePayload) {
       return await ethereumHelper.getBalance({ ...args });
     } else if (args.network === 'solana') {
       return await solanaHelper.getBalance({ ...args });
+    } else if (args.network.includes('bitcoin')) {
+      return await bitcoinHelper.getBalance(args.address, args.network);
     }
 
-    return;
+    throw new Error('Invalid network');
   } catch (error) {
     throw error;
   }
@@ -103,6 +105,8 @@ export async function transfer(args: TransferPayload) {
       return await ethereumHelper.transfer({ ...args });
     } else if (args.network === 'solana') {
       return await solanaHelper.transfer({ ...args });
+    } else if (args.network.includes('bitcoin')) {
+      return await bitcoinHelper.transfer({ ...args });
     }
 
     throw new Error('Invalid network');
@@ -117,6 +121,8 @@ export async function getTransaction(args: GetTransactionPayload) {
       return await ethereumHelper.getTransaction({ ...args });
     } else if (args.network === 'solana') {
       return await solanaHelper.getTransaction({ ...args });
+    } else if (args.network.includes('bitcoin')) {
+      return await bitcoinHelper.getTransaction({ ...args });
     }
 
     throw new Error('Invalid network');

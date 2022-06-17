@@ -33,7 +33,7 @@ export const chainId = {
   devnet: 103,
 };
 
-const getConnection = (rpcUrl: string) => {
+const getConnection = (rpcUrl?: string) => {
   const connection = provider(rpcUrl);
 
   return connection;

@@ -1,6 +1,6 @@
 import { ethers } from 'ethers';
 
-const provider = (rpcUrl: string) => {
+const provider = (rpcUrl?: string) => {
   return new ethers.providers.JsonRpcProvider(rpcUrl);
 };
 
