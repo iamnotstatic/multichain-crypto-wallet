@@ -117,9 +117,10 @@ const getAddressFromPrivateKey = async (privateKey: string) => {
 
 const generateWalletFromMnemonic = async (
   mnemonic: string,
-  derivationPath: string
+  derivationPath?: string
 ) => {
-  const wallet = ethers.Wallet.fromMnemonic(mnemonic, derivationPath);
+  const path = derivationPath || "m/44'/60'/0'/0/0";
+  const wallet = ethers.Wallet.fromMnemonic(mnemonic, path);
 
   return successResponse({
     address: wallet.address,
