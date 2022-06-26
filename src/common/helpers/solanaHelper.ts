@@ -7,7 +7,6 @@ import {
 } from '@solana/spl-token';
 import {
   BalancePayload,
-  GetAddressFromPrivateKeyPayload,
   GetTransactionPayload,
   IGetTokenInfoPayload,
   ISplTokenInfo,
