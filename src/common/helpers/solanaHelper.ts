@@ -92,11 +92,11 @@ const createWallet = async (derivationPath?: string) => {
 
 const generateWalletFromMnemonic = async (
   mnemonic: string,
-  derivationPath: string
+  derivationPath?: string
 ) => {
+  const path = derivationPath || "m/44'/501'/0'/0'";
   const seed = await bip39.mnemonicToSeed(mnemonic);
-  const derivedSeed = derivePath(derivationPath, (seed as unknown) as string)
-    .key;
+  const derivedSeed = derivePath(path, (seed as unknown) as string).key;
 
   const keyPair = solanaWeb3.Keypair.fromSeed(derivedSeed);
 
