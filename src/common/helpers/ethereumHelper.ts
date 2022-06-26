@@ -3,7 +3,6 @@ import erc20Abi from '../../abis/erc20.json';
 import { ethers } from 'ethers';
 import {
   BalancePayload,
-  GetAddressFromPrivateKeyPayload,
   GetEncryptedJsonFromPrivateKey,
   GetTransactionPayload,
   GetWalletFromEncryptedjsonPayload,
