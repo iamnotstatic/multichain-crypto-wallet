@@ -1,5 +1,5 @@
 import bitcoinHelper from '../../common/helpers/bitcoinHelper';
-import ethereumHelper from '../../common/helpers/ethersHelper';
+import ethereumHelper from '../../common/helpers/ethereumHelper';
 import solanaHelper from '../../common/helpers/solanaHelper';
 
 import {
