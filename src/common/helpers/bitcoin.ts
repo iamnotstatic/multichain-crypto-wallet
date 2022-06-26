@@ -73,4 +73,19 @@ const generateWalletFromMnemonic = async (
   });
 };
 
-export default { createWallet, generateWalletFromMnemonic };
+const getAddressFromPrivateKey = async (privateKey: string) => {
+  const keyPair = ECPair.fromWIF(privateKey);
+  const { address } = bitcoin.payments.p2sh({
+    redeem: bitcoin.payments.p2wpkh({ pubkey: keyPair.publicKey }),
+  });
+
+  return successResponse({
+    address,
+  });
+};
+
+export default {
+  createWallet,
+  generateWalletFromMnemonic,
+  getAddressFromPrivateKey,
+};
