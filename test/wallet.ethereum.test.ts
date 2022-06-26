@@ -11,7 +11,7 @@ import {
   smartContractCall,
 } from '../src';
 
-describe('MultichainCryptoWallet', () => {
+describe('MultichainCryptoWallet Ethereum tests', () => {
   it('getBalance ETH balance', async () => {
     const data = await getBalance({
       address: '0x2455eC6700092991Ce0782365A89d5Cd89c8Fa22',
@@ -33,28 +33,7 @@ describe('MultichainCryptoWallet', () => {
     expect(typeof data).toBe('object');
   });
 
-  it('getBalance SOLANA', async () => {
-    const data = await getBalance({
-      address: '9DSRMyr3EfxPzxZo9wMBPku7mvcazHTHfyjhcfw5yucA',
-      network: 'solana',
-      rpcUrl: 'https://api.devnet.solana.com',
-    });
-
-    expect(typeof data).toBe('object');
-  });
-
-  it('getBalance token SOLANA', async () => {
-    const data = await getBalance({
-      address: '9DSRMyr3EfxPzxZo9wMBPku7mvcazHTHfyjhcfw5yucA',
-      tokenAddress: '6xRPFqbtpkS7iVd9SysZDXdYn6iWceXF7p3T91N3EcAc',
-      network: 'solana',
-      rpcUrl: 'https://api.devnet.solana.com',
-    });
-
-    expect(typeof data).toBe('object');
-  });
-
-  it('createWallet ETH', async () => {
+  it('createWallet', async () => {
     const wallet = await createWallet({
       derivationPath: "m/44'/60'/0'/0/0", // Leave empty to use default derivation path
       network: 'ethereum',
@@ -63,16 +42,7 @@ describe('MultichainCryptoWallet', () => {
     expect(typeof wallet).toBe('object');
   });
 
-  it('createWallet SOLANA', async () => {
-    const wallet = await createWallet({
-      derivationPath: "m/44'/501'/0'/0'", // Leave empty to use default derivation path
-      network: 'solana',
-    });
-
-    expect(typeof wallet).toBe('object');
-  });
-
-  it('generateWalletFromMnemonic ETH', async () => {
+  it('generateWalletFromMnemonic', async () => {
     const wallet = await generateWalletFromMnemonic({
       mnemonic:
         'candy maple cake sugar pudding cream honey rich smooth crumble sweet treat',
@@ -82,19 +52,7 @@ describe('MultichainCryptoWallet', () => {
 
     expect(typeof wallet).toBe('object');
   });
-
-  it('generateWalletFromMnemonic SOLANA', async () => {
-    const wallet = await generateWalletFromMnemonic({
-      mnemonic:
-        'base dry mango subject neither labor portion weekend range couple right document',
-      derivationPath: "m/44'/501'/0'/0'", // Leave empty to use default derivation path
-      network: 'solana',
-    });
-
-    expect(typeof wallet).toBe('object');
-  });
-
-  it('getAddressFromPrivateKey ETH', async () => {
+  it('getAddressFromPrivateKey', async () => {
     const address = await getAddressFromPrivateKey({
       privateKey:
         '0f9e5c0bee6c7d06b95204ca22dea8d7f89bb04e8527a2c59e134d185d9af8ad',
@@ -104,17 +62,7 @@ describe('MultichainCryptoWallet', () => {
     expect(typeof address).toBe('object');
   });
 
-  it('getAddressFromPrivateKey SOLANA', async () => {
-    const address = await getAddressFromPrivateKey({
-      privateKey:
-        'bXXgTj2cgXMFAGpLHkF5GhnoNeUpmcJDsxXDhXQhQhL2BDpJumdwMGeC5Cs66stsN3GfkMH8oyHu24dnojKbtfp',
-      network: 'solana',
-    });
-
-    expect(typeof address).toBe('object');
-  });
-
-  it('transfer ETH', async () => {
+  it('transfer', async () => {
     const payload = {
       recipientAddress: '0x2455eC6700092991Ce0782365A89d5Cd89c8Fa22',
       amount: 0.0001,
@@ -143,53 +91,12 @@ describe('MultichainCryptoWallet', () => {
     expect(typeof response).toBe('object');
   });
 
-  it('transfer SOL', async () => {
-    const payload = {
-      recipientAddress: '9DSRMyr3EfxPzxZo9wMBPku7mvcazHTHfyjhcfw5yucA',
-      amount: 0.0001,
-      network: 'solana',
-      rpcUrl: 'https://api.devnet.solana.com',
-      privateKey:
-        'qUfgDqNZ8EmZtG7FCdvo8ETTQb8crmzcYUdrVdpjfxZiVkrwSjQ9L2ov55oRt25ZSJXCjHw6hqtKJnxdnoGtp1M',
-    };
-
-    const response = await transfer(payload);
-    expect(typeof response).toBe('object');
-  });
-
-  it('transfer Token on Solana', async () => {
-    const payload = {
-      recipientAddress: '9DSRMyr3EfxPzxZo9wMBPku7mvcazHTHfyjhcfw5yucA',
-      tokenAddress: '6xRPFqbtpkS7iVd9SysZDXdYn6iWceXF7p3T91N3EcAc',
-      amount: 1,
-      network: 'solana',
-      rpcUrl: 'https://api.devnet.solana.com',
-      privateKey:
-        'qUfgDqNZ8EmZtG7FCdvo8ETTQb8crmzcYUdrVdpjfxZiVkrwSjQ9L2ov55oRt25ZSJXCjHw6hqtKJnxdnoGtp1M',
-    };
-
-    const response = await transfer(payload);
-
-    expect(typeof response).toBe('object');
-  });
-
-  it('Get transaction on Ethereum', async () => {
+  it('Get transaction', async () => {
     const receipt = await getTransaction({
       rpcUrl: 'https://rinkeby-light.eth.linkpool.io',
       hash:
         '0x5a90cea37e3a5dbee6e10190ff5a3769ad27a0c6f625458682104e26e0491055',
       network: 'ethereum',
-    });
-
-    expect(typeof receipt).toBe('object');
-  });
-
-  it('Get transaction on Solana', async () => {
-    const receipt = await getTransaction({
-      rpcUrl: 'https://api.devnet.solana.com',
-      hash:
-        'CkG1ynQ2vN8bmNsBUKG8ix3moUUfELWwd8K2f7mmqDd7LifFFfgyFhBux6t22AncbY4NR3PsEU3DbH7mDBMXWk7',
-      network: 'solana',
     });
 
     expect(typeof receipt).toBe('object');
@@ -225,22 +132,6 @@ describe('MultichainCryptoWallet', () => {
       address: '0x7fe03a082fd18a80a7dbd55e9b216bcf540557e4',
       network: 'ethereum',
       rpcUrl: 'https://rinkeby-light.eth.linkpool.io',
-    });
-
-    expect(typeof data).toBe('object');
-    expect(typeof (data && data.name)).toBe('string');
-    expect(typeof (data && data.symbol)).toBe('string');
-    expect(typeof (data && data.address)).toBe('string');
-    expect(typeof (data && data.decimals)).toBe('number');
-    expect(typeof (data && data.totalSupply)).toBe('number');
-  });
-
-  it('get SPL token info', async () => {
-    const data = await getTokenInfo({
-      address: '7Xn4mM868daxsGVJmaGrYxg8CZiuqBnDwUse66s5ALmr',
-      network: 'solana',
-      rpcUrl: 'https://api.devnet.solana.com',
-      cluster: 'devnet',
     });
 
     expect(typeof data).toBe('object');
