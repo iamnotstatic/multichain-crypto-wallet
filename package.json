@@ -72,11 +72,15 @@
     "@solana/web3.js": "^1.39.1",
     "@truffle/hdwallet-provider": "^2.0.5",
     "axios": "^0.27.2",
+    "bip32": "^3.0.1",
     "bip39": "^3.0.4",
+    "bitcoinjs-lib": "^6.0.1",
     "bs58": "^5.0.0",
     "buffer-layout": "^1.2.2",
+    "ecpair": "^2.0.1",
     "ed25519-hd-key": "^1.2.0",
-    "ethers": "^5.6.2"
+    "ethers": "^5.6.2",
+    "tiny-secp256k1": "^2.2.1"
   },
   "browser": {
     "stream": false
