@@ -30,13 +30,47 @@ const createWallet = async (network: string, derivationPath?: string) => {
     network: actualNetwork,
   });
 
-  const privkey = child.toWIF();
+  const privateKey = child.toWIF();
 
   return successResponse({
-    address: address,
-    privateKey: privkey,
+    address,
+    privateKey,
     mnemonic,
   });
 };
 
-export default { createWallet };
+const generateWalletFromMnemonic = async (
+  network: string,
+  mnemonic: string,
+  derivationPath?: string
+) => {
+  const path = derivationPath || "m/44'/0'/0'/0/0";
+  const seed = bip39.mnemonicToSeedSync(mnemonic);
+
+  const node = bip32.fromSeed(seed);
+  const child = node.derivePath(path);
+  const actualNetwork =
+    network === 'bitcoin'
+      ? bitcoin.networks.bitcoin
+      : network === 'bitcoin-testnet'
+      ? bitcoin.networks.testnet
+      : bitcoin.networks.bitcoin;
+
+  const { address } = bitcoin.payments.p2sh({
+    redeem: bitcoin.payments.p2wpkh({
+      pubkey: child.publicKey,
+      network: actualNetwork,
+    }),
+    network: actualNetwork,
+  });
+
+  const privateKey = child.toWIF();
+
+  return successResponse({
+    address,
+    privateKey,
+    mnemonic,
+  });
+};
+
+export default { createWallet, generateWalletFromMnemonic };
