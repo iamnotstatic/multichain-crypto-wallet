@@ -107,10 +107,8 @@ const createWallet = async (derivationPath?: string) => {
   });
 };
 
-const getAddressFromPrivateKey = async (
-  args: GetAddressFromPrivateKeyPayload
-) => {
-  const wallet = new ethers.Wallet(args.privateKey);
+const getAddressFromPrivateKey = async (privateKey: string) => {
+  const wallet = new ethers.Wallet(privateKey);
 
   return successResponse({
     address: wallet.address,
@@ -119,10 +117,9 @@ const getAddressFromPrivateKey = async (
 
 const generateWalletFromMnemonic = async (
   mnemonic: string,
-  derivationPath?: string
+  derivationPath: string
 ) => {
-  const path = derivationPath || "m/44'/60'/0'/0/0";
-  const wallet = ethers.Wallet.fromMnemonic(mnemonic, path);
+  const wallet = ethers.Wallet.fromMnemonic(mnemonic, derivationPath);
 
   return successResponse({
     address: wallet.address,
