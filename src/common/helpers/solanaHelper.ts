@@ -92,12 +92,11 @@ const createWallet = async (derivationPath?: string) => {
 
 const generateWalletFromMnemonic = async (
   mnemonic: string,
-  derivationPath?: string
+  derivationPath: string
 ) => {
-  const path = derivationPath || "m/44'/501'/0'/0'";
-
   const seed = await bip39.mnemonicToSeed(mnemonic);
-  const derivedSeed = derivePath(path, (seed as unknown) as string).key;
+  const derivedSeed = derivePath(derivationPath, (seed as unknown) as string)
+    .key;
 
   const keyPair = solanaWeb3.Keypair.fromSeed(derivedSeed);
 
@@ -184,15 +183,13 @@ const transfer = async (args: TransferPayload) => {
   }
 };
 
-const getAddressFromPrivateKey = async (
-  args: GetAddressFromPrivateKeyPayload
-) => {
+const getAddressFromPrivateKey = async (privateKey: string) => {
   let secretKey;
 
-  if (args.privateKey.split(',').length > 1) {
-    secretKey = new Uint8Array(args.privateKey.split(',') as any);
+  if (privateKey.split(',').length > 1) {
+    secretKey = new Uint8Array(privateKey.split(',') as any);
   } else {
-    secretKey = bs58.decode(args.privateKey);
+    secretKey = bs58.decode(privateKey);
   }
 
   const keyPair = solanaWeb3.Keypair.fromSecretKey(secretKey, {
