@@ -42,13 +42,12 @@ const createWallet = async (network: string, derivationPath?: string) => {
 const generateWalletFromMnemonic = async (
   network: string,
   mnemonic: string,
-  derivationPath?: string
+  derivationPath: string
 ) => {
-  const path = derivationPath || "m/44'/0'/0'/0/0";
   const seed = bip39.mnemonicToSeedSync(mnemonic);
 
   const node = bip32.fromSeed(seed);
-  const child = node.derivePath(path);
+  const child = node.derivePath(derivationPath);
   const actualNetwork =
     network === 'bitcoin'
       ? bitcoin.networks.bitcoin
