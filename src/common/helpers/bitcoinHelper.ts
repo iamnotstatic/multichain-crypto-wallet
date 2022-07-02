@@ -73,10 +73,23 @@ const generateWalletFromMnemonic = async (
   });
 };
 
-const getAddressFromPrivateKey = async (privateKey: string) => {
+const getAddressFromPrivateKey = async (
+  privateKey: string,
+  network: string
+) => {
+  const actualNetwork =
+    network === 'bitcoin'
+      ? bitcoin.networks.bitcoin
+      : network === 'bitcoin-testnet'
+      ? bitcoin.networks.testnet
+      : bitcoin.networks.bitcoin;
   const keyPair = ECPair.fromWIF(privateKey);
   const { address } = bitcoin.payments.p2sh({
-    redeem: bitcoin.payments.p2wpkh({ pubkey: keyPair.publicKey }),
+    redeem: bitcoin.payments.p2wpkh({
+      pubkey: keyPair.publicKey,
+      network: actualNetwork,
+    }),
+    network: actualNetwork,
   });
 
   return successResponse({

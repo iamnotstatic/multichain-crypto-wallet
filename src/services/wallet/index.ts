@@ -38,7 +38,10 @@ export async function getAddressFromPrivateKey(
     } else if (args.network === 'solana') {
       return await solanaHelper.getAddressFromPrivateKey(args.privateKey);
     } else if (args.network.includes('bitcoin')) {
-      return await bitcoinHelper.getAddressFromPrivateKey(args.privateKey);
+      return await bitcoinHelper.getAddressFromPrivateKey(
+        args.privateKey,
+        args.network
+      );
     }
 
     throw new Error('Invalid network');
