@@ -9,6 +9,13 @@ const bip32 = BIP32Factory(ecc);
 const ECPair = ECPairFactory(ecc);
 
 const createWallet = async (network: string, derivationPath?: string) => {
+  if (derivationPath) {
+    const purpose = derivationPath?.split('/')[1];
+    if (purpose !== "44'") {
+      throw new Error('Invalid derivation path');
+    }
+  }
+
   const path = derivationPath || "m/44'/0'/0'/0/0";
   const mnemonic = bip39.generateMnemonic();
   const seed = bip39.mnemonicToSeedSync(mnemonic);
@@ -22,11 +29,8 @@ const createWallet = async (network: string, derivationPath?: string) => {
       ? bitcoin.networks.testnet
       : bitcoin.networks.bitcoin;
 
-  const { address } = bitcoin.payments.p2sh({
-    redeem: bitcoin.payments.p2wpkh({
-      pubkey: child.publicKey,
-      network: actualNetwork,
-    }),
+  const { address } = bitcoin.payments.p2pkh({
+    pubkey: child.publicKey,
     network: actualNetwork,
   });
 
@@ -44,6 +48,13 @@ const generateWalletFromMnemonic = async (
   mnemonic: string,
   derivationPath?: string
 ) => {
+  if (derivationPath) {
+    const purpose = derivationPath?.split('/')[1];
+    if (purpose !== "44'") {
+      throw new Error('Invalid derivation path ');
+    }
+  }
+
   const seed = bip39.mnemonicToSeedSync(mnemonic);
   const path = derivationPath || "m/44'/0'/0'/0/0";
 
@@ -56,11 +67,8 @@ const generateWalletFromMnemonic = async (
       ? bitcoin.networks.testnet
       : bitcoin.networks.bitcoin;
 
-  const { address } = bitcoin.payments.p2sh({
-    redeem: bitcoin.payments.p2wpkh({
-      pubkey: child.publicKey,
-      network: actualNetwork,
-    }),
+  const { address } = bitcoin.payments.p2pkh({
+    pubkey: child.publicKey,
     network: actualNetwork,
   });
 
@@ -83,12 +91,11 @@ const getAddressFromPrivateKey = async (
       : network === 'bitcoin-testnet'
       ? bitcoin.networks.testnet
       : bitcoin.networks.bitcoin;
+      
   const keyPair = ECPair.fromWIF(privateKey);
-  const { address } = bitcoin.payments.p2sh({
-    redeem: bitcoin.payments.p2wpkh({
-      pubkey: keyPair.publicKey,
-      network: actualNetwork,
-    }),
+
+  const { address } = bitcoin.payments.p2pkh({
+    pubkey: keyPair.publicKey,
     network: actualNetwork,
   });
 
