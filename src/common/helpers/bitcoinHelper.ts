@@ -4,6 +4,14 @@ import { BIP32Factory } from 'bip32';
 import { ECPairFactory } from 'ecpair';
 import * as bip39 from 'bip39';
 import { successResponse } from '../utils';
+import BigNumber from 'bignumber.js';
+import { List } from 'immutable';
+import * as utxolib from '@bitgo/utxo-lib';
+
+import { _apiFallbacks } from '../fallbacks/btc';
+import { fallback, retryNTimes } from '../utils/retry';
+import { GetTransactionPayload, TransferPayload } from '../utils/types';
+import { BitgoUTXOLib } from '../libs/bitgoUtxoLib';
 
 const bip32 = BIP32Factory(ecc);
 const ECPair = ECPairFactory(ecc);
@@ -91,7 +99,7 @@ const getAddressFromPrivateKey = async (
       : network === 'bitcoin-testnet'
       ? bitcoin.networks.testnet
       : bitcoin.networks.bitcoin;
-      
+
   const keyPair = ECPair.fromWIF(privateKey);
 
   const { address } = bitcoin.payments.p2pkh({
@@ -104,8 +112,115 @@ const getAddressFromPrivateKey = async (
   });
 };
 
+const getBalance = async (address: string, network: string) => {
+  const testnet =
+    network === 'bitcoin' ? false : network === 'bitcoin-testnet' ? true : true;
+
+  const endpoints = _apiFallbacks.fetchUTXOs(testnet, address, 0);
+  const utxos = await fallback(endpoints);
+
+  const bn = utxos
+    .reduce((sum, utxo) => sum.plus(utxo.amount), new BigNumber(0))
+    .dividedBy(new BigNumber(10).exponentiatedBy(8));
+
+  return successResponse({
+    balance: bn.toNumber(),
+  });
+};
+
+const transfer = async (args: TransferPayload) => {
+  const testnet =
+    args.network === 'bitcoin'
+      ? false
+      : args.network === 'bitcoin-testnet'
+      ? true
+      : true;
+
+  const keyPair = ECPair.fromWIF(args.privateKey);
+
+  const privateKey = utxolib.ECPair.fromPrivateKeyBuffer(
+    keyPair.privateKey,
+    args.network === 'bitcoin'
+      ? utxolib.networks.bitcoin
+      : utxolib.networks.testnet
+  );
+
+  let txHash: string;
+
+  const fromAddress = await getAddressFromPrivateKey(
+    args.privateKey,
+    args.network
+  ).then(res => res.address);
+
+  const changeAddress = fromAddress;
+  const endpoints = _apiFallbacks.fetchUTXOs(testnet, fromAddress, 0);
+
+  const utxos = List(await fallback(endpoints))
+    .sortBy(utxo => utxo.amount)
+    .reverse()
+    .toArray();
+
+  const amount = new BigNumber(args.amount.toString());
+
+  const built = await BitgoUTXOLib.buildUTXO(
+    testnet ? utxolib.networks.testnet : utxolib.networks.bitcoin,
+    privateKey,
+    changeAddress,
+    args.recipientAddress,
+    amount.times(new BigNumber(10).exponentiatedBy(8)),
+    utxos,
+    {}
+  );
+
+  txHash = await retryNTimes(
+    () => fallback(_apiFallbacks.broadcastTransaction(testnet, built.toHex())),
+    3
+  );
+
+  try {
+    const transaction = await fallback(
+      _apiFallbacks.fetchUTXO(testnet, txHash, 0)
+    );
+
+    const bigAmount = new BigNumber(transaction.amount);
+
+    // Convert amount from Satoshi to Bitcoin
+    const amountToBtc = bigAmount.dividedBy(
+      new BigNumber(10).exponentiatedBy(8)
+    );
+
+    return successResponse({
+      ...transaction,
+      amount: amountToBtc.toNumber(),
+    });
+  } catch (e) {
+    return successResponse({
+      txHash,
+    });
+  }
+};
+
+const getTransaction = async ({ hash, network }: GetTransactionPayload) => {
+  const testnet =
+    network === 'bitcoin' ? false : network === 'bitcoin-testnet' ? true : true;
+
+  const transaction = await fallback(_apiFallbacks.fetchUTXO(testnet, hash, 0));
+  const bigAmount = new BigNumber(transaction.amount);
+
+  // Convert amount from Satoshi to Bitcoin
+  const amount = bigAmount.dividedBy(new BigNumber(10).exponentiatedBy(8));
+
+  return successResponse({
+    ...transaction,
+    amount: amount.toNumber(),
+  });
+};
+
 export default {
   createWallet,
   generateWalletFromMnemonic,
   getAddressFromPrivateKey,
+  getBalance,
+  transfer,
+  getTransaction,
 };
