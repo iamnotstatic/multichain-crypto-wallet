@@ -145,8 +145,6 @@ const transfer = async (args: TransferPayload) => {
       : utxolib.networks.testnet
   );
 
-  let txHash: string;
-
   const fromAddress = await getAddressFromPrivateKey(
     args.privateKey,
     args.network
@@ -172,7 +170,7 @@ const transfer = async (args: TransferPayload) => {
     {}
   );
 
-  txHash = await retryNTimes(
+  const txHash = await retryNTimes(
     () => fallback(_apiFallbacks.broadcastTransaction(testnet, built.toHex())),
     3
   );
