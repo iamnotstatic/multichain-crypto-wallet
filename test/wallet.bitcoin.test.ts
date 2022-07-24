@@ -2,6 +2,9 @@ import {
   createWallet,
   generateWalletFromMnemonic,
   getAddressFromPrivateKey,
+  getBalance,
+  transfer,
+  getTransaction,
 } from '../src';
 
 describe('MultichainCryptoWallet Bitcoin tests', () => {
@@ -10,7 +13,6 @@ describe('MultichainCryptoWallet Bitcoin tests', () => {
       derivationPath: "m/44'/0'/0'/0/0", // Leave empty to use default derivation path
       network: 'bitcoin', // 'bitcoin' or 'bitcoin-testnet'
     });
-
     expect(typeof wallet).toBe('object');
   });
 
@@ -21,7 +23,6 @@ describe('MultichainCryptoWallet Bitcoin tests', () => {
       derivationPath: "m/44'/0'/0'/0/0", // Leave empty to use default derivation path
       network: 'bitcoin', // 'bitcoin' or 'bitcoin-testnet'
     });
-
     expect(wallet.address).toBe('1NV8FPKDW1hxJFxc2dNVZDAp7iCqxCLeFu');
     expect(wallet.privateKey).toBe(
       'KxqTGtCMnX6oL9rxynDKCRJXt64Gm5ame4AEQcYncFhSSUxFBkeJ'
@@ -36,7 +37,35 @@ describe('MultichainCryptoWallet Bitcoin tests', () => {
       privateKey: 'KxqTGtCMnX6oL9rxynDKCRJXt64Gm5ame4AEQcYncFhSSUxFBkeJ',
       network: 'bitcoin', // 'bitcoin' or 'bitcoin-testnet'
     });
-
     expect(data.address).toBe('1NV8FPKDW1hxJFxc2dNVZDAp7iCqxCLeFu');
+  });
+
+  it('getBalance', async () => {
+    const data = await getBalance({
+      address: '2NAhbS79dEUeqcnbC27UppwnjoVSwET5bat',
+      network: 'bitcoin-testnet', // 'bitcoin' or 'bitcoin-testnet'
+    });
+
+    expect(typeof data.balance).toBe('number');
+  });
+
+  it('Transter', async () => {
+    const response = await transfer({
+      privateKey: 'L3tSvMViDit1GSp7mbV2xFCGv6M45kDNuSyNY9xyUxmUPBFrBkc4',
+      recipientAddress: '2NAhbS79dEUeqcnbC27UppwnjoVSwET5bat',
+      amount: 0.001,
+      network: 'bitcoin-testnet', // 'bitcoin' or 'bitcoin-testnet'
+    });
+
+    expect(typeof response).toBe('object');
+  });
+
+  it('Get transaction', async () => {
+    const receipt = await getTransaction({
+      network: 'bitcoin-testnet', // 'bitcoin' or 'bitcoin-testnet'
+      hash: '4f6c3661e0e6d190dbdfb6c0791396fccee653c5bf4a5249b049341c2b539ee1',
+    });
+
+    expect(typeof receipt).toBe('object');
   });
 });
