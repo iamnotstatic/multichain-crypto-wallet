@@ -6,7 +6,7 @@ export interface UTXO {
   readonly amount: number; // in sats
   readonly scriptPubKey?: string; // hex string without 0x prefix
   readonly confirmations: number;
-  readonly block?: number; 
+  readonly block?: number;
 }
 
 /**

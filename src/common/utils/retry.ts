@@ -79,7 +79,7 @@ export const retryNTimes = async <T>(
       } else {
         const errorMessage = extractError(error);
         if (errorMessage) {
-          // tslint:disable-next-line: no-object-mutation 
+          // tslint:disable-next-line: no-object-mutation
           error.message += ` (${errorMessage})`;
         }
         throw error;

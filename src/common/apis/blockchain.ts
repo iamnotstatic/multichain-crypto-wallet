@@ -107,7 +107,7 @@ const fetchTXs = (network: BlockchainNetwork) => async (
   limit: number = 25,
   offset: number = 0,
   onlyUnspent: boolean = false
-): Promise<readonly UTXO[]> => { 
+): Promise<readonly UTXO[]> => {
   const url = `https://api.blockchain.info/haskoin-store/${network}/address/${address}/transactions/full?limit=${limit}&offset=${offset}`;
   const response = (
     await axios.get<BlockchainTransaction[]>(url, {
@@ -166,7 +166,7 @@ export const broadcastTransaction = (network: BlockchainNetwork) => async (
   if ((response.data as any).error) {
     throw new Error((response.data as any).error);
   }
- 
+
   return response.data;
 };
 
