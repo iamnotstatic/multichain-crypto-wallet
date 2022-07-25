@@ -81,6 +81,7 @@
     "ecpair": "^2.0.1",
     "ed25519-hd-key": "^1.2.0",
     "ethers": "^5.6.2",
+    "immutable": "^4.1.0",
     "tiny-secp256k1": "^2.2.1"
   },
   "browser": {
