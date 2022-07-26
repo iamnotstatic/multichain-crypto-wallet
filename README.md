@@ -91,6 +91,12 @@ const wallet = await multichainWallet.createWallet({
   derivationPath: "m/44'/501'/0'/0'", // Leave empty to use default derivation path
   network: 'solana',
 });
+
+// Creating a Bitcoin wallet.
+const wallet = await multichainWallet.createWallet({
+      derivationPath: "m/44'/0'/0'/0/0", // Leave empty to use default derivation path
+      network: 'bitcoin', // 'bitcoin' or 'bitcoin-testnet'
+    });
 ```
 
 #### Response
@@ -106,23 +112,29 @@ const wallet = await multichainWallet.createWallet({
 ### Get Balance
 
 This gets the balance of the address passed in. The method accepts an object as the parameter.
-The parameters for this object depeding on the kind of balance to be gotten is in the form:
+The parameters for this object depending on the kind of balance to be gotten is in the form:
 
 #### Native coins
 
 ```javascript
-// Get the ETH balance of an address
+// Get the ETH balance of an address.
 const data = await multichainWallet.getBalance({
   address: '0x2455eC6700092991Ce0782365A89d5Cd89c8Fa22',
   network: 'ethereum',
   rpcUrl: 'https://rinkeby-light.eth.linkpool.io',
 });
 
-// Get the SOL balance of an address
+// Get the SOL balance of an address.
 const data = await multichainWallet.getBalance({
   address: 'DYgLjazTY6kMqagbDMsNttRHKQj9o6pNS8D6jMjWbmP7',
   network: 'solana',
   rpcUrl: 'https://api.devnet.solana.com',
+});
+
+// Get the BTC balance of an address.
+const data = await multichainWallet.getBalance({
+  address: '2NAhbS79dEUeqcnbC27UppwnjoVSwET5bat',
+  network: 'bitcoin-testnet', // 'bitcoin' or 'bitcoin-testnet'
 });
 ```
 
@@ -174,6 +186,14 @@ const wallet = await multichainWallet.generateWalletFromMnemonic({
   derivationPath: "m/44'/501'/0'/0'", // Leave empty to use default derivation path
   network: 'solana',
 });
+
+// Generate a Bitcoin wallet from mnemonic.
+const wallet = await multichainWallet.generateWalletFromMnemonic({
+  mnemonic:
+    'excess quit spot inspire stereo scrap cave wife narrow era pizza typical',
+  derivationPath: "m/44'/0'/0'/0/0", // Leave empty to use default derivation path
+  network: 'bitcoin', // 'bitcoin' or 'bitcoin-testnet'
+});
 ```
 
 #### Response
@@ -204,6 +224,12 @@ const address = await multichainWallet.getAddressFromPrivateKey({
     'bXXgTj2cgXMFAGpLHkF5GhnoNeUpmcJDsxXDhXQhQhL2BDpJumdwMGeC5Cs66stsN3GfkMH8oyHu24dnojKbtfp',
   network: 'solana',
 });
+
+// Get the address from the private key on the Bitcoin network.
+const data = await multichainWallet.getAddressFromPrivateKey({
+  privateKey: 'KxqTGtCMnX6oL9rxynDKCRJXt64Gm5ame4AEQcYncFhSSUxFBkeJ',
+  network: 'bitcoin', // 'bitcoin' or 'bitcoin-testnet'
+});
 ```
 
 #### Response
@@ -216,7 +242,7 @@ const address = await multichainWallet.getAddressFromPrivateKey({
 
 ### Get Transaction
 
-This gets the transcation receipt of a transaction from the transaction hash. The method accepts an object as the parameter. The parameters that this object takes are:
+This gets the transaction receipt of a transaction from the transaction hash. The method accepts an object as the parameter. The parameters that this object takes are:
 
 ```javascript
 // Get the transaction receipt on Ethereum network.
@@ -232,6 +258,12 @@ const receipt = await multichainWallet.getTransaction({
   hash:
     'CkG1ynQ2vN8bmNsBUKG8ix3moUUfELWwd8K2f7mmqDd7LifFFfgyFhBux6t22AncbY4NR3PsEU3DbH7mDBMXWk7',
   network: 'solana',
+});
+
+// Get the transaction receipt on Bitcoin network.
+const receipt = await getTransaction({
+  network: 'bitcoin-testnet', // 'bitcoin' or 'bitcoin-testnet'
+  hash: '4f6c3661e0e6d190dbdfb6c0791396fccee653c5bf4a5249b049341c2b539ee1',
 });
 ```
 
@@ -274,6 +306,14 @@ const transfer = await multichainWallet.transfer({
     '0f9e5c0bee6c7d06b95204ca22dea8d7f89bb04e8527a2c59e134d185d9af8ad',
   gasPrice: '10', // Gas price is in Gwei. leave empty to use default gas price
   tokenAddress: '0xdac17f958d2ee523a2206206994597c13d831ec7',
+});
+
+// Transferring BTC from one address to another.
+const response = await transfer({
+  privateKey: 'L3tSvMViDit1GSp7mbV2xFCGv6M45kDNuSyNY9xyUxmUPBFrBkc4',
+  recipientAddress: '2NAhbS79dEUeqcnbC27UppwnjoVSwET5bat',
+  amount: 0.001,
+  network: 'bitcoin-testnet', // 'bitcoin' or 'bitcoin-testnet'
 });
 ```
 
