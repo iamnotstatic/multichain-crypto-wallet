@@ -86,17 +86,17 @@ const wallet = await multichainWallet.createWallet({
   network: 'ethereum',
 });
 
+// Creating a Bitcoin wallet.
+const wallet = await multichainWallet.createWallet({
+  derivationPath: "m/44'/0'/0'/0/0", // Leave empty to use default derivation path
+  network: 'bitcoin', // 'bitcoin' or 'bitcoin-testnet'
+});
+
 // Creating a Solana wallet.
 const wallet = await multichainWallet.createWallet({
   derivationPath: "m/44'/501'/0'/0'", // Leave empty to use default derivation path
   network: 'solana',
 });
-
-// Creating a Bitcoin wallet.
-const wallet = await multichainWallet.createWallet({
-      derivationPath: "m/44'/0'/0'/0/0", // Leave empty to use default derivation path
-      network: 'bitcoin', // 'bitcoin' or 'bitcoin-testnet'
-    });
 ```
 
 #### Response
@@ -124,17 +124,17 @@ const data = await multichainWallet.getBalance({
   rpcUrl: 'https://rinkeby-light.eth.linkpool.io',
 });
 
+// Get the BTC balance of an address.
+const data = await multichainWallet.getBalance({
+  address: '2NAhbS79dEUeqcnbC27UppwnjoVSwET5bat',
+  network: 'bitcoin-testnet', // 'bitcoin' or 'bitcoin-testnet'
+});
+
 // Get the SOL balance of an address.
 const data = await multichainWallet.getBalance({
   address: 'DYgLjazTY6kMqagbDMsNttRHKQj9o6pNS8D6jMjWbmP7',
   network: 'solana',
   rpcUrl: 'https://api.devnet.solana.com',
-});
-
-// Get the BTC balance of an address.
-const data = await multichainWallet.getBalance({
-  address: '2NAhbS79dEUeqcnbC27UppwnjoVSwET5bat',
-  network: 'bitcoin-testnet', // 'bitcoin' or 'bitcoin-testnet'
 });
 ```
 
@@ -179,20 +179,20 @@ const wallet = await multichainWallet.generateWalletFromMnemonic({
   network: 'ethereum',
 });
 
-// Generate a Solana wallet from mnemonic.
-const wallet = await multichainWallet.generateWalletFromMnemonic({
-  mnemonic:
-    'base dry mango subject neither labor portion weekend range couple right document',
-  derivationPath: "m/44'/501'/0'/0'", // Leave empty to use default derivation path
-  network: 'solana',
-});
-
 // Generate a Bitcoin wallet from mnemonic.
 const wallet = await multichainWallet.generateWalletFromMnemonic({
   mnemonic:
     'excess quit spot inspire stereo scrap cave wife narrow era pizza typical',
   derivationPath: "m/44'/0'/0'/0/0", // Leave empty to use default derivation path
   network: 'bitcoin', // 'bitcoin' or 'bitcoin-testnet'
+});
+
+// Generate a Solana wallet from mnemonic.
+const wallet = await multichainWallet.generateWalletFromMnemonic({
+  mnemonic:
+    'base dry mango subject neither labor portion weekend range couple right document',
+  derivationPath: "m/44'/501'/0'/0'", // Leave empty to use default derivation path
+  network: 'solana',
 });
 ```
 
@@ -218,17 +218,17 @@ const address = await multichainWallet.getAddressFromPrivateKey({
   network: 'ethereum',
 });
 
+// Get the address from the private key on the Bitcoin network.
+const data = await multichainWallet.getAddressFromPrivateKey({
+  privateKey: 'KxqTGtCMnX6oL9rxynDKCRJXt64Gm5ame4AEQcYncFhSSUxFBkeJ',
+  network: 'bitcoin', // 'bitcoin' or 'bitcoin-testnet'
+});
+
 // Get the address from the private key on the Solana network.
 const address = await multichainWallet.getAddressFromPrivateKey({
   privateKey:
     'bXXgTj2cgXMFAGpLHkF5GhnoNeUpmcJDsxXDhXQhQhL2BDpJumdwMGeC5Cs66stsN3GfkMH8oyHu24dnojKbtfp',
   network: 'solana',
-});
-
-// Get the address from the private key on the Bitcoin network.
-const data = await multichainWallet.getAddressFromPrivateKey({
-  privateKey: 'KxqTGtCMnX6oL9rxynDKCRJXt64Gm5ame4AEQcYncFhSSUxFBkeJ',
-  network: 'bitcoin', // 'bitcoin' or 'bitcoin-testnet'
 });
 ```
 
@@ -252,18 +252,18 @@ const receipt = await multichainWallet.getTransaction({
   rpcUrl: 'https://rinkeby-light.eth.linkpool.io',
 });
 
+// Get the transaction receipt on Bitcoin network.
+const receipt = await getTransaction({
+  network: 'bitcoin-testnet', // 'bitcoin' or 'bitcoin-testnet'
+  hash: '4f6c3661e0e6d190dbdfb6c0791396fccee653c5bf4a5249b049341c2b539ee1',
+});
+
 // Get the transaction receipt on Solana network.
 const receipt = await multichainWallet.getTransaction({
   rpcUrl: 'https://api.devnet.solana.com',
   hash:
     'CkG1ynQ2vN8bmNsBUKG8ix3moUUfELWwd8K2f7mmqDd7LifFFfgyFhBux6t22AncbY4NR3PsEU3DbH7mDBMXWk7',
   network: 'solana',
-});
-
-// Get the transaction receipt on Bitcoin network.
-const receipt = await getTransaction({
-  network: 'bitcoin-testnet', // 'bitcoin' or 'bitcoin-testnet'
-  hash: '4f6c3661e0e6d190dbdfb6c0791396fccee653c5bf4a5249b049341c2b539ee1',
 });
 ```
 
@@ -307,14 +307,6 @@ const transfer = await multichainWallet.transfer({
   gasPrice: '10', // Gas price is in Gwei. leave empty to use default gas price
   tokenAddress: '0xdac17f958d2ee523a2206206994597c13d831ec7',
 });
-
-// Transferring BTC from one address to another.
-const response = await transfer({
-  privateKey: 'L3tSvMViDit1GSp7mbV2xFCGv6M45kDNuSyNY9xyUxmUPBFrBkc4',
-  recipientAddress: '2NAhbS79dEUeqcnbC27UppwnjoVSwET5bat',
-  amount: 0.001,
-  network: 'bitcoin-testnet', // 'bitcoin' or 'bitcoin-testnet'
-});
 ```
 
 The optional parameters that the object takes in are: gas price, nonce, and data.
@@ -348,6 +340,19 @@ const transfer = await multichainWallet.transfer({
   gasPrice: '10',
   tokenAddress: '0xdac17f958d2ee523a2206206994597c13d831ec7',
   nonce: 1, // The pending transaction nonce
+});
+```
+
+#### Bitcoin Network
+Allows for the transfer of BTC from one address to another.
+
+```javascript
+// Transferring BTC from one address to another.
+const response = await transfer({
+  privateKey: 'L3tSvMViDit1GSp7mbV2xFCGv6M45kDNuSyNY9xyUxmUPBFrBkc4',
+  recipientAddress: '2NAhbS79dEUeqcnbC27UppwnjoVSwET5bat',
+  amount: 0.001,
+  network: 'bitcoin-testnet', // 'bitcoin' or 'bitcoin-testnet'
 });
 ```
 
