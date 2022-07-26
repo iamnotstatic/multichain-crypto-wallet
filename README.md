@@ -343,6 +343,14 @@ const transfer = await multichainWallet.transfer({
 });
 ```
 
+#### Response
+
+```javascript
+{
+  object
+}
+```
+
 #### Bitcoin Network
 Allows for the transfer of BTC from one address to another.
 
@@ -363,6 +371,42 @@ const response = await transfer({
   object
 }
 ```
+
+#### Solana Network
+
+Allows for the transfer of SOL and tokens.
+
+```javascript
+// Transferring SOL from one address to another.
+const transfer = await MultichainCryptoWallet.transfer({
+  recipientAddress: '9DSRMyr3EfxPzxZo9wMBPku7mvcazHTHfyjhcfw5yucA',
+  amount: 1,
+  network: 'solana',
+  rpcUrl: 'https://api.devnet.solana.com',
+  privateKey:
+    'bXXgTj2cgXMFAGpLHkF5GhnoNeUpmcJDsxXDhXQhQhL2BDpJumdwMGeC5Cs66stsN3GfkMH8oyHu24dnojKbtfp',
+});
+
+// Transferring a token from one address to another.
+const transfer = await MultichainCryptoWallet.transfer({
+  recipientAddress: '9DSRMyr3EfxPzxZo9wMBPku7mvcazHTHfyjhcfw5yucA',
+  tokenAddress: 'DV2exYApRFWEVb9oQkedLRYeSm8ccxNReLfEksEE5FZm',
+  amount: 1,
+  network: 'solana',
+  rpcUrl: 'https://api.devnet.solana.com',
+  privateKey:
+    'h5KUPKU4z8c9nhMCQsvCLq4q6Xn9XK1B1cKjC9bJVLQLgJDvknKCBtZdHKDoKBHuATnSYaHRvjJSDdBWN8P67hh',
+});
+```
+
+#### Response
+
+```javascript
+{
+  hash: '3nGq2yczqCpm8bF2dyvdPtXpnFLJ1oGWkDfD6neLbRay8SjNqYNhWQBKE1ZFunxvFhJ47FyT6igNpYPP293jXCZk';
+}
+```
+
 
 ### Encryptions
 
@@ -438,41 +482,6 @@ const info = await multichainWallet.getTokenInfo({
   decimals: 6,
   address: '0x7fe03a082fd18a80a7dbd55e9b216bcf540557e4',
   totalSupply: 1000000000000
-}
-```
-
-#### Solana Network
-
-Allows for the transfer of SOL and tokens.
-
-```javascript
-// Transferring SOL from one address to another.
-const transfer = await MultichainCryptoWallet.transfer({
-  recipientAddress: '9DSRMyr3EfxPzxZo9wMBPku7mvcazHTHfyjhcfw5yucA',
-  amount: 1,
-  network: 'solana',
-  rpcUrl: 'https://api.devnet.solana.com',
-  privateKey:
-    'bXXgTj2cgXMFAGpLHkF5GhnoNeUpmcJDsxXDhXQhQhL2BDpJumdwMGeC5Cs66stsN3GfkMH8oyHu24dnojKbtfp',
-});
-
-// Transferring a token from one address to another.
-const transfer = await MultichainCryptoWallet.transfer({
-  recipientAddress: '9DSRMyr3EfxPzxZo9wMBPku7mvcazHTHfyjhcfw5yucA',
-  tokenAddress: 'DV2exYApRFWEVb9oQkedLRYeSm8ccxNReLfEksEE5FZm',
-  amount: 1,
-  network: 'solana',
-  rpcUrl: 'https://api.devnet.solana.com',
-  privateKey:
-    'h5KUPKU4z8c9nhMCQsvCLq4q6Xn9XK1B1cKjC9bJVLQLgJDvknKCBtZdHKDoKBHuATnSYaHRvjJSDdBWN8P67hh',
-});
-```
-
-#### Response
-
-```javascript
-{
-  hash: '3nGq2yczqCpm8bF2dyvdPtXpnFLJ1oGWkDfD6neLbRay8SjNqYNhWQBKE1ZFunxvFhJ47FyT6igNpYPP293jXCZk';
 }
 ```
 
