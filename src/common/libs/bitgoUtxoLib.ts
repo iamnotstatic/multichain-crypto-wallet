@@ -63,9 +63,7 @@ const buildUTXO = async (
   }
 
   // Add all inputs
-  usedUTXOs.map(utxo => {
-    tx.addInput(utxo.txHash, utxo.vOut);
-  });
+  usedUTXOs.map(utxo => tx.addInput(utxo.txHash, utxo.vOut));
 
   const change = sum.minus(value).minus(fees);
 
@@ -76,15 +74,15 @@ const buildUTXO = async (
   }
 
   // Sign inputs
-  usedUTXOs.map((utxo, i) => {
+  usedUTXOs.map((utxo, i) =>
     tx.sign(
       i,
       privateKey,
       null,
       options && options.signFlag !== undefined ? options.signFlag : null,
       utxo.amount
-    );
-  });
+    )
+  );
 
   return tx.build();
 };

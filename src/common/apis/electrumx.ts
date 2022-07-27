@@ -1,4 +1,5 @@
 import axios from 'axios';
+
 import { sortUTXOs, UTXO } from '../utils/utxo';
 
 const getURL = (network: string, testnet: boolean) =>
