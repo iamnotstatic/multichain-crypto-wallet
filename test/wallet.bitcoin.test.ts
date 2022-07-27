@@ -49,7 +49,7 @@ describe('MultichainCryptoWallet Bitcoin tests', () => {
     expect(typeof data.balance).toBe('number');
   });
 
-  it('Transter', async () => {
+  it('Transfer', async () => {
     const response = await transfer({
       privateKey: 'L3tSvMViDit1GSp7mbV2xFCGv6M45kDNuSyNY9xyUxmUPBFrBkc4',
       recipientAddress: '2NAhbS79dEUeqcnbC27UppwnjoVSwET5bat',
