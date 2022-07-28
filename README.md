@@ -1,6 +1,6 @@
 # Multichain Crypto Wallet
 
-A Multichain crypto wallet library that supports Ethereum, Solana and other EVM compatible blockchains.
+A Multichain crypto wallet library that supports Ethereum, Bitcoin, Solana and other EVM compatible blockchains.
 
 [![Build](https://img.shields.io/github/workflow/status/iamnotstatic/multichain-crypto-wallet/CI)](https://github.com/iamnotstatic/multichain-crypto-wallet)
 [![Version](https://img.shields.io/npm/v/multichain-crypto-wallet)](https://github.com/iamnotstatic/multichain-crypto-wallet)
@@ -358,7 +358,7 @@ Allows for the transfer of BTC from one address to another.
 
 ```javascript
 // Transferring BTC from one address to another.
-const response = await transfer({
+const response = await multichainWallet.transfer({
   privateKey: 'L3tSvMViDit1GSp7mbV2xFCGv6M45kDNuSyNY9xyUxmUPBFrBkc4',
   recipientAddress: '2NAhbS79dEUeqcnbC27UppwnjoVSwET5bat',
   amount: 0.001,
@@ -380,7 +380,7 @@ Allows for the transfer of SOL and tokens.
 
 ```javascript
 // Transferring SOL from one address to another.
-const transfer = await MultichainCryptoWallet.transfer({
+const transfer = await multichainWallet.transfer({
   recipientAddress: '9DSRMyr3EfxPzxZo9wMBPku7mvcazHTHfyjhcfw5yucA',
   amount: 1,
   network: 'solana',
@@ -390,7 +390,7 @@ const transfer = await MultichainCryptoWallet.transfer({
 });
 
 // Transferring a token from one address to another.
-const transfer = await MultichainCryptoWallet.transfer({
+const transfer = await multichainWallet.transfer({
   recipientAddress: '9DSRMyr3EfxPzxZo9wMBPku7mvcazHTHfyjhcfw5yucA',
   tokenAddress: 'DV2exYApRFWEVb9oQkedLRYeSm8ccxNReLfEksEE5FZm',
   amount: 1,
@@ -518,7 +518,7 @@ const info = await multichainWallet.getTokenInfo({
 This can be used to make custom smart contract calls by specifying the contract ABI and function types.
 ``` javascript
 // calling a read smart contract function.
-const data = await smartContractCall({
+const data = await multichainWallet.smartContractCall({
       rpcUrl: 'https://rinkeby-light.eth.linkpool.io',
       network: 'ethereum',
       contractAddress: '0x5592EC0cfb4dbc12D3aB100b257153436a1f0FEa',
@@ -533,7 +533,7 @@ const data = await smartContractCall({
   });
 
 // calling a write smart contract function.
-const data = await smartContractCall({
+const data = await multichainWallet.smartContractCall({
       rpcUrl: 'https://rinkeby-light.eth.linkpool.io',
       network: 'ethereum',
       contractAddress: '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D',
