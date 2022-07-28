@@ -41,7 +41,9 @@
     "blockchain",
     "cryptocurrency",
     "evm",
-    "solana"
+    "solana",
+    "bitcoin",
+    "evm"
   ],
   "repository": {
     "type": "git",
