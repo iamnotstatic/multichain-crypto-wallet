@@ -53,7 +53,7 @@ describe('MultichainCryptoWallet Bitcoin tests', () => {
     const response = await transfer({
       privateKey: 'L3tSvMViDit1GSp7mbV2xFCGv6M45kDNuSyNY9xyUxmUPBFrBkc4',
       recipientAddress: '2NAhbS79dEUeqcnbC27UppwnjoVSwET5bat',
-      amount: 0.001,
+      amount: 0.0001,
       network: 'bitcoin-testnet', // 'bitcoin' or 'bitcoin-testnet'
     });
 
