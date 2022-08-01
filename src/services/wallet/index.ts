@@ -1,4 +1,5 @@
-import ethereumHelper from '../../common/helpers/ethersHelper';
+import bitcoinHelper from '../../common/helpers/bitcoinHelper';
+import ethereumHelper from '../../common/helpers/ethereumHelper';
 import solanaHelper from '../../common/helpers/solanaHelper';
 
 import {
@@ -20,9 +21,11 @@ export async function getBalance(args: BalancePayload) {
       return await ethereumHelper.getBalance({ ...args });
     } else if (args.network === 'solana') {
       return await solanaHelper.getBalance({ ...args });
+    } else if (args.network.includes('bitcoin')) {
+      return await bitcoinHelper.getBalance(args.address, args.network);
     }
 
-    return;
+    throw new Error('Invalid network');
   } catch (error) {
     throw error;
   }
@@ -33,12 +36,17 @@ export async function getAddressFromPrivateKey(
 ) {
   try {
     if (args.network === 'ethereum') {
-      return await ethereumHelper.getAddressFromPrivateKey(args);
+      return await ethereumHelper.getAddressFromPrivateKey(args.privateKey);
     } else if (args.network === 'solana') {
-      return await solanaHelper.getAddressFromPrivateKey(args);
+      return await solanaHelper.getAddressFromPrivateKey(args.privateKey);
+    } else if (args.network.includes('bitcoin')) {
+      return await bitcoinHelper.getAddressFromPrivateKey(
+        args.privateKey,
+        args.network
+      );
     }
 
-    return;
+    throw new Error('Invalid network');
   } catch (error) {
     throw error;
   }
@@ -58,9 +66,15 @@ export async function generateWalletFromMnemonic(
         args.mnemonic,
         args.derivationPath
       );
+    } else if (args.network.includes('bitcoin')) {
+      return await bitcoinHelper.generateWalletFromMnemonic(
+        args.network,
+        args.mnemonic,
+        args.derivationPath
+      );
     }
 
-    return;
+    throw new Error('Invalid network');
   } catch (error) {
     throw error;
   }
@@ -72,9 +86,14 @@ export async function createWallet(args: CreateWalletPayload) {
       return await ethereumHelper.createWallet(args.derivationPath);
     } else if (args.network === 'solana') {
       return await solanaHelper.createWallet(args.derivationPath);
+    } else if (args.network.includes('bitcoin')) {
+      return await bitcoinHelper.createWallet(
+        args.network,
+        args.derivationPath
+      );
     }
 
-    return;
+    throw new Error('Invalid network');
   } catch (error) {
     throw error;
   }
@@ -86,9 +105,11 @@ export async function transfer(args: TransferPayload) {
       return await ethereumHelper.transfer({ ...args });
     } else if (args.network === 'solana') {
       return await solanaHelper.transfer({ ...args });
+    } else if (args.network.includes('bitcoin')) {
+      return await bitcoinHelper.transfer({ ...args });
     }
 
-    return;
+    throw new Error('Invalid network');
   } catch (error) {
     throw error;
   }
@@ -100,9 +121,11 @@ export async function getTransaction(args: GetTransactionPayload) {
       return await ethereumHelper.getTransaction({ ...args });
     } else if (args.network === 'solana') {
       return await solanaHelper.getTransaction({ ...args });
+    } else if (args.network.includes('bitcoin')) {
+      return await bitcoinHelper.getTransaction({ ...args });
     }
 
-    return;
+    throw new Error('Invalid network');
   } catch (error) {
     throw error;
   }
@@ -116,7 +139,7 @@ export async function getEncryptedJsonFromPrivateKey(
       return await ethereumHelper.getEncryptedJsonFromPrivateKey({ ...args });
     }
 
-    return;
+    throw new Error('Invalid network');
   } catch (error) {
     throw error;
   }
@@ -130,7 +153,7 @@ export async function getWalletFromEncryptedJson(
       return await ethereumHelper.getWalletFromEncryptedJson({ ...args });
     }
 
-    return;
+    throw new Error('Invalid network');
   } catch (error) {
     throw error;
   }
@@ -143,7 +166,7 @@ export async function getTokenInfo(args: IGetTokenInfoPayload) {
     } else if (args.network === 'solana') {
       return solanaHelper.getTokenInfo({ ...args });
     }
-    return;
+    throw new Error('Invalid network');
   } catch (error) {
     throw error;
   }

@@ -1,6 +1,6 @@
 # Multichain Crypto Wallet
 
-A Multichain crypto wallet library that supports Ethereum, Solana and other EVM compatible blockchains.
+A Multichain crypto wallet library that supports Ethereum, Bitcoin, Solana and other EVM compatible blockchains.
 
 [![Build](https://img.shields.io/github/workflow/status/iamnotstatic/multichain-crypto-wallet/CI)](https://github.com/iamnotstatic/multichain-crypto-wallet)
 [![Version](https://img.shields.io/npm/v/multichain-crypto-wallet)](https://github.com/iamnotstatic/multichain-crypto-wallet)
@@ -60,20 +60,22 @@ The following methods are available with this SDK:
     - [Transfer](#transfer)
       - [Ethereum Network](#ethereum-network)
       - [Response](#response-5)
+      - [Bitcoin Network](#bitcoin-network)
+      - [Response](#response-6)
       - [Solana Network](#solana-network)
-      - [Response](#response-9)
+      - [Response](#response-7)
     - [Encryptions](#encryptions)
       - [Encrypt Private Key](#encrypt-private-key)
-      - [Response](#response-6)
+      - [Response](#response-8)
       - [Decrypt Encrypted JSON](#decrypt-encrypted-json)
-      - [Response](#response-7)
+      - [Response](#response-9)
     - [Token Info](#token-info)
       - [Get ERC20 Token Info](#get-erc20-token-info)
-      - [Response](#response-8)
-      - [Get SPL Token Info](#get-spl-token-info)
       - [Response](#response-10)
-    - [Smart Contract Call](#smart-contract-call)
+      - [Get SPL Token Info](#get-spl-token-info)
       - [Response](#response-11)
+    - [Smart Contract Call](#smart-contract-call)
+      - [Response](#response-12)
 
 ### Create Wallet
 
@@ -84,6 +86,12 @@ This method creates a new wallet. The method accepts a payload object as the par
 const wallet = await multichainWallet.createWallet({
   derivationPath: "m/44'/60'/0'/0/0", // Leave empty to use default derivation path
   network: 'ethereum',
+});
+
+// Creating a Bitcoin wallet.
+const wallet = await multichainWallet.createWallet({
+  derivationPath: "m/44'/0'/0'/0/0", // Leave empty to use default derivation path
+  network: 'bitcoin', // 'bitcoin' or 'bitcoin-testnet'
 });
 
 // Creating a Solana wallet.
@@ -106,19 +114,25 @@ const wallet = await multichainWallet.createWallet({
 ### Get Balance
 
 This gets the balance of the address passed in. The method accepts an object as the parameter.
-The parameters for this object depeding on the kind of balance to be gotten is in the form:
+The parameters for this object depending on the kind of balance to be gotten is in the form:
 
 #### Native coins
 
 ```javascript
-// Get the ETH balance of an address
+// Get the ETH balance of an address.
 const data = await multichainWallet.getBalance({
   address: '0x2455eC6700092991Ce0782365A89d5Cd89c8Fa22',
   network: 'ethereum',
   rpcUrl: 'https://rinkeby-light.eth.linkpool.io',
 });
 
-// Get the SOL balance of an address
+// Get the BTC balance of an address.
+const data = await multichainWallet.getBalance({
+  address: '2NAhbS79dEUeqcnbC27UppwnjoVSwET5bat',
+  network: 'bitcoin-testnet', // 'bitcoin' or 'bitcoin-testnet'
+});
+
+// Get the SOL balance of an address.
 const data = await multichainWallet.getBalance({
   address: 'DYgLjazTY6kMqagbDMsNttRHKQj9o6pNS8D6jMjWbmP7',
   network: 'solana',
@@ -167,6 +181,14 @@ const wallet = await multichainWallet.generateWalletFromMnemonic({
   network: 'ethereum',
 });
 
+// Generate a Bitcoin wallet from mnemonic.
+const wallet = await multichainWallet.generateWalletFromMnemonic({
+  mnemonic:
+    'excess quit spot inspire stereo scrap cave wife narrow era pizza typical',
+  derivationPath: "m/44'/0'/0'/0/0", // Leave empty to use default derivation path
+  network: 'bitcoin', // 'bitcoin' or 'bitcoin-testnet'
+});
+
 // Generate a Solana wallet from mnemonic.
 const wallet = await multichainWallet.generateWalletFromMnemonic({
   mnemonic:
@@ -198,6 +220,12 @@ const address = await multichainWallet.getAddressFromPrivateKey({
   network: 'ethereum',
 });
 
+// Get the address from the private key on the Bitcoin network.
+const data = await multichainWallet.getAddressFromPrivateKey({
+  privateKey: 'KxqTGtCMnX6oL9rxynDKCRJXt64Gm5ame4AEQcYncFhSSUxFBkeJ',
+  network: 'bitcoin', // 'bitcoin' or 'bitcoin-testnet'
+});
+
 // Get the address from the private key on the Solana network.
 const address = await multichainWallet.getAddressFromPrivateKey({
   privateKey:
@@ -216,7 +244,7 @@ const address = await multichainWallet.getAddressFromPrivateKey({
 
 ### Get Transaction
 
-This gets the transcation receipt of a transaction from the transaction hash. The method accepts an object as the parameter. The parameters that this object takes are:
+This gets the transaction receipt of a transaction from the transaction hash. The method accepts an object as the parameter. The parameters that this object takes are:
 
 ```javascript
 // Get the transaction receipt on Ethereum network.
@@ -224,6 +252,12 @@ const receipt = await multichainWallet.getTransaction({
   hash: '0x5a90cea37e3a5dbee6e10190ff5a3769ad27a0c6f625458682104e26e0491055',
   network: 'ethereum',
   rpcUrl: 'https://rinkeby-light.eth.linkpool.io',
+});
+
+// Get the transaction receipt on Bitcoin network.
+const receipt = await getTransaction({
+  network: 'bitcoin-testnet', // 'bitcoin' or 'bitcoin-testnet'
+  hash: '4f6c3661e0e6d190dbdfb6c0791396fccee653c5bf4a5249b049341c2b539ee1',
 });
 
 // Get the transaction receipt on Solana network.
@@ -319,6 +353,63 @@ const transfer = await multichainWallet.transfer({
 }
 ```
 
+#### Bitcoin Network
+Allows for the transfer of BTC from one address to another.
+
+```javascript
+// Transferring BTC from one address to another.
+const response = await multichainWallet.transfer({
+  privateKey: 'L3tSvMViDit1GSp7mbV2xFCGv6M45kDNuSyNY9xyUxmUPBFrBkc4',
+  recipientAddress: '2NAhbS79dEUeqcnbC27UppwnjoVSwET5bat',
+  amount: 0.001,
+  network: 'bitcoin-testnet', // 'bitcoin' or 'bitcoin-testnet'
+});
+```
+
+#### Response
+
+```javascript
+{
+  object
+}
+```
+
+#### Solana Network
+
+Allows for the transfer of SOL and tokens.
+
+```javascript
+// Transferring SOL from one address to another.
+const transfer = await multichainWallet.transfer({
+  recipientAddress: '9DSRMyr3EfxPzxZo9wMBPku7mvcazHTHfyjhcfw5yucA',
+  amount: 1,
+  network: 'solana',
+  rpcUrl: 'https://api.devnet.solana.com',
+  privateKey:
+    'bXXgTj2cgXMFAGpLHkF5GhnoNeUpmcJDsxXDhXQhQhL2BDpJumdwMGeC5Cs66stsN3GfkMH8oyHu24dnojKbtfp',
+});
+
+// Transferring a token from one address to another.
+const transfer = await multichainWallet.transfer({
+  recipientAddress: '9DSRMyr3EfxPzxZo9wMBPku7mvcazHTHfyjhcfw5yucA',
+  tokenAddress: 'DV2exYApRFWEVb9oQkedLRYeSm8ccxNReLfEksEE5FZm',
+  amount: 1,
+  network: 'solana',
+  rpcUrl: 'https://api.devnet.solana.com',
+  privateKey:
+    'h5KUPKU4z8c9nhMCQsvCLq4q6Xn9XK1B1cKjC9bJVLQLgJDvknKCBtZdHKDoKBHuATnSYaHRvjJSDdBWN8P67hh',
+});
+```
+
+#### Response
+
+```javascript
+{
+  hash: '3nGq2yczqCpm8bF2dyvdPtXpnFLJ1oGWkDfD6neLbRay8SjNqYNhWQBKE1ZFunxvFhJ47FyT6igNpYPP293jXCZk';
+}
+```
+
+
 ### Encryptions
 
 #### Encrypt Private Key
@@ -396,41 +487,6 @@ const info = await multichainWallet.getTokenInfo({
 }
 ```
 
-#### Solana Network
-
-Allows for the transfer of SOL and tokens.
-
-```javascript
-// Transferring SOL from one address to another.
-const transfer = await MultichainCryptoWallet.transfer({
-  recipientAddress: '9DSRMyr3EfxPzxZo9wMBPku7mvcazHTHfyjhcfw5yucA',
-  amount: 1,
-  network: 'solana',
-  rpcUrl: 'https://api.devnet.solana.com',
-  privateKey:
-    'bXXgTj2cgXMFAGpLHkF5GhnoNeUpmcJDsxXDhXQhQhL2BDpJumdwMGeC5Cs66stsN3GfkMH8oyHu24dnojKbtfp',
-});
-
-// Transferring a token from one address to another.
-const transfer = await MultichainCryptoWallet.transfer({
-  recipientAddress: '9DSRMyr3EfxPzxZo9wMBPku7mvcazHTHfyjhcfw5yucA',
-  tokenAddress: 'DV2exYApRFWEVb9oQkedLRYeSm8ccxNReLfEksEE5FZm',
-  amount: 1,
-  network: 'solana',
-  rpcUrl: 'https://api.devnet.solana.com',
-  privateKey:
-    'h5KUPKU4z8c9nhMCQsvCLq4q6Xn9XK1B1cKjC9bJVLQLgJDvknKCBtZdHKDoKBHuATnSYaHRvjJSDdBWN8P67hh',
-});
-```
-
-#### Response
-
-```javascript
-{
-  hash: '3nGq2yczqCpm8bF2dyvdPtXpnFLJ1oGWkDfD6neLbRay8SjNqYNhWQBKE1ZFunxvFhJ47FyT6igNpYPP293jXCZk';
-}
-```
-
 ### Token Info
 
 #### Get SPL Token Info
@@ -462,7 +518,7 @@ const info = await multichainWallet.getTokenInfo({
 This can be used to make custom smart contract calls by specifying the contract ABI and function types.
 ``` javascript
 // calling a read smart contract function.
-const data = await smartContractCall({
+const data = await multichainWallet.smartContractCall({
       rpcUrl: 'https://rinkeby-light.eth.linkpool.io',
       network: 'ethereum',
       contractAddress: '0x5592EC0cfb4dbc12D3aB100b257153436a1f0FEa',
@@ -477,7 +533,7 @@ const data = await smartContractCall({
   });
 
 // calling a write smart contract function.
-const data = await smartContractCall({
+const data = await multichainWallet.smartContractCall({
       rpcUrl: 'https://rinkeby-light.eth.linkpool.io',
       network: 'ethereum',
       contractAddress: '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D',

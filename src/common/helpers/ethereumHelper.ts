@@ -3,7 +3,6 @@ import erc20Abi from '../../abis/erc20.json';
 import { ethers } from 'ethers';
 import {
   BalancePayload,
-  GetAddressFromPrivateKeyPayload,
   GetEncryptedJsonFromPrivateKey,
   GetTransactionPayload,
   GetWalletFromEncryptedjsonPayload,
@@ -15,7 +14,7 @@ import {
 import { successResponse } from '../utils';
 
 interface GetContract {
-  rpcUrl: string;
+  rpcUrl?: string;
   privateKey?: string;
   contractAddress?: string;
   abi?: any[];
@@ -107,10 +106,8 @@ const createWallet = async (derivationPath?: string) => {
   });
 };
 
-const getAddressFromPrivateKey = async (
-  args: GetAddressFromPrivateKeyPayload
-) => {
-  const wallet = new ethers.Wallet(args.privateKey);
+const getAddressFromPrivateKey = async (privateKey: string) => {
+  const wallet = new ethers.Wallet(privateKey);
 
   return successResponse({
     address: wallet.address,

@@ -7,7 +7,6 @@ import {
 } from '@solana/spl-token';
 import {
   BalancePayload,
-  GetAddressFromPrivateKeyPayload,
   GetTransactionPayload,
   IGetTokenInfoPayload,
   ISplTokenInfo,
@@ -34,7 +33,7 @@ export const chainId = {
   devnet: 103,
 };
 
-const getConnection = (rpcUrl: string) => {
+const getConnection = (rpcUrl?: string) => {
   const connection = provider(rpcUrl);
 
   return connection;
@@ -95,7 +94,6 @@ const generateWalletFromMnemonic = async (
   derivationPath?: string
 ) => {
   const path = derivationPath || "m/44'/501'/0'/0'";
-
   const seed = await bip39.mnemonicToSeed(mnemonic);
   const derivedSeed = derivePath(path, (seed as unknown) as string).key;
 
@@ -184,15 +182,13 @@ const transfer = async (args: TransferPayload) => {
   }
 };
 
-const getAddressFromPrivateKey = async (
-  args: GetAddressFromPrivateKeyPayload
-) => {
+const getAddressFromPrivateKey = async (privateKey: string) => {
   let secretKey;
 
-  if (args.privateKey.split(',').length > 1) {
-    secretKey = new Uint8Array(args.privateKey.split(',') as any);
+  if (privateKey.split(',').length > 1) {
+    secretKey = new Uint8Array(privateKey.split(',') as any);
   } else {
-    secretKey = bs58.decode(args.privateKey);
+    secretKey = bs58.decode(privateKey);
   }
 
   const keyPair = solanaWeb3.Keypair.fromSecretKey(secretKey, {

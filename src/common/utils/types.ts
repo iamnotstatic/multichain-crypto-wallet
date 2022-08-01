@@ -2,7 +2,7 @@ export interface TransferPayload {
   recipientAddress: string;
   amount: number;
   network: string;
-  rpcUrl: string;
+  rpcUrl?: string;
   privateKey: string;
   gasPrice?: string;
   tokenAddress?: string;
@@ -14,7 +14,7 @@ export interface TransferPayload {
 export interface BalancePayload {
   address: string;
   network: string;
-  rpcUrl: string;
+  rpcUrl?: string;
   tokenAddress?: string;
 }
 
@@ -29,7 +29,7 @@ export interface GetAddressFromPrivateKeyPayload {
 }
 
 export interface GetTransactionPayload {
-  rpcUrl: string;
+  rpcUrl?: string;
   hash: string;
   network: string;
 }

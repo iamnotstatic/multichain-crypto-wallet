@@ -41,7 +41,9 @@
     "blockchain",
     "cryptocurrency",
     "evm",
-    "solana"
+    "solana",
+    "bitcoin",
+    "evm"
   ],
   "repository": {
     "type": "git",
@@ -68,15 +70,22 @@
     "typescript": "^4.6.3"
   },
   "dependencies": {
+    "@bitgo/utxo-lib": "https://github.com/ren-forks/bitgo-utxo-lib#b848585e65b42c48b98c207e72d7d3006c9a5da0",
     "@solana/spl-token": "^0.2.0",
     "@solana/web3.js": "^1.39.1",
     "@truffle/hdwallet-provider": "^2.0.5",
     "axios": "^0.27.2",
+    "bip32": "^3.0.1",
     "bip39": "^3.0.4",
+    "bitcoinjs-lib": "^6.0.1",
     "bs58": "^5.0.0",
     "buffer-layout": "^1.2.2",
+    "ecpair": "^2.0.1",
     "ed25519-hd-key": "^1.2.0",
-    "ethers": "^5.6.2"
+    "ethers": "^5.6.2",
+    "immutable": "^4.1.0",
+    "tiny-secp256k1": "^2.2.1",
+    "url": "^0.11.0"
   },
   "browser": {
     "stream": false
