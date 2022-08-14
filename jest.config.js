@@ -1,5 +1,5 @@
 const config = {
-  testTimeout: 50000,
+  testTimeout: 100000, // 
 };
 
 module.exports = config;

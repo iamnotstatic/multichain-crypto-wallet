@@ -16,7 +16,7 @@ describe('MultichainCryptoWallet Ethereum tests', () => {
     const data = await getBalance({
       address: '0x2455eC6700092991Ce0782365A89d5Cd89c8Fa22',
       network: 'ethereum',
-      rpcUrl: 'https://rinkeby-light.eth.linkpool.io',
+      rpcUrl: 'https://eth-rinkeby.alchemyapi.io/v2/rWcJuDj_SqkaA530gZ_FI4WcgyNgPSZL',
     });
 
     expect(typeof data).toBe('object');
@@ -26,7 +26,7 @@ describe('MultichainCryptoWallet Ethereum tests', () => {
     const data = await getBalance({
       address: '0x2455eC6700092991Ce0782365A89d5Cd89c8Fa22',
       network: 'ethereum',
-      rpcUrl: 'https://rinkeby-light.eth.linkpool.io',
+      rpcUrl: 'https://eth-rinkeby.alchemyapi.io/v2/rWcJuDj_SqkaA530gZ_FI4WcgyNgPSZL',
       tokenAddress: '0x5592EC0cfb4dbc12D3aB100b257153436a1f0FEa',
     });
 
@@ -67,7 +67,7 @@ describe('MultichainCryptoWallet Ethereum tests', () => {
       recipientAddress: '0x2455eC6700092991Ce0782365A89d5Cd89c8Fa22',
       amount: 0.0001,
       network: 'ethereum',
-      rpcUrl: 'https://rinkeby-light.eth.linkpool.io',
+      rpcUrl: 'https://eth-rinkeby.alchemyapi.io/v2/rWcJuDj_SqkaA530gZ_FI4WcgyNgPSZL',
       privateKey:
         '0f9e5c0bee6c7d06b95204ca22dea8d7f89bb04e8527a2c59e134d185d9af8ad',
     };
@@ -81,7 +81,7 @@ describe('MultichainCryptoWallet Ethereum tests', () => {
       recipientAddress: '0x2455eC6700092991Ce0782365A89d5Cd89c8Fa22',
       amount: 5,
       network: 'ethereum',
-      rpcUrl: 'https://rinkeby-light.eth.linkpool.io',
+      rpcUrl: 'https://eth-rinkeby.alchemyapi.io/v2/rWcJuDj_SqkaA530gZ_FI4WcgyNgPSZL',
       privateKey:
         '0f9e5c0bee6c7d06b95204ca22dea8d7f89bb04e8527a2c59e134d185d9af8ad',
       tokenAddress: '0x5592EC0cfb4dbc12D3aB100b257153436a1f0FEa',
@@ -93,7 +93,7 @@ describe('MultichainCryptoWallet Ethereum tests', () => {
 
   it('Get transaction', async () => {
     const receipt = await getTransaction({
-      rpcUrl: 'https://rinkeby-light.eth.linkpool.io',
+      rpcUrl: 'https://eth-rinkeby.alchemyapi.io/v2/rWcJuDj_SqkaA530gZ_FI4WcgyNgPSZL',
       hash:
         '0x5a90cea37e3a5dbee6e10190ff5a3769ad27a0c6f625458682104e26e0491055',
       network: 'ethereum',
@@ -131,7 +131,7 @@ describe('MultichainCryptoWallet Ethereum tests', () => {
     const data = await getTokenInfo({
       address: '0x7fe03a082fd18a80a7dbd55e9b216bcf540557e4',
       network: 'ethereum',
-      rpcUrl: 'https://rinkeby-light.eth.linkpool.io',
+      rpcUrl: 'https://eth-rinkeby.alchemyapi.io/v2/rWcJuDj_SqkaA530gZ_FI4WcgyNgPSZL',
     });
 
     expect(typeof data).toBe('object');
@@ -144,7 +144,7 @@ describe('MultichainCryptoWallet Ethereum tests', () => {
 
   it('smart contract call (get token Balance)', async () => {
     const data = await smartContractCall({
-      rpcUrl: 'https://rinkeby-light.eth.linkpool.io',
+      rpcUrl: 'https://eth-rinkeby.alchemyapi.io/v2/rWcJuDj_SqkaA530gZ_FI4WcgyNgPSZL',
       network: 'ethereum',
       contractAddress: '0x5592EC0cfb4dbc12D3aB100b257153436a1f0FEa',
       method: 'balanceOf',
@@ -157,7 +157,7 @@ describe('MultichainCryptoWallet Ethereum tests', () => {
 
   it('smart contract call (ERC20 token transfer)', async () => {
     const data = await smartContractCall({
-      rpcUrl: 'https://rinkeby-light.eth.linkpool.io',
+      rpcUrl: 'https://eth-rinkeby.alchemyapi.io/v2/rWcJuDj_SqkaA530gZ_FI4WcgyNgPSZL',
       network: 'ethereum',
       contractAddress: '0x5592EC0cfb4dbc12D3aB100b257153436a1f0FEa',
       method: 'transfer',
@@ -175,7 +175,7 @@ describe('MultichainCryptoWallet Ethereum tests', () => {
 
   it('smart contract call (get factory Uniswap)', async () => {
     const data = await smartContractCall({
-      rpcUrl: 'https://rinkeby-light.eth.linkpool.io',
+      rpcUrl: 'https://eth-rinkeby.alchemyapi.io/v2/rWcJuDj_SqkaA530gZ_FI4WcgyNgPSZL',
       network: 'ethereum',
       contractAddress: '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D',
       method: 'factory',
