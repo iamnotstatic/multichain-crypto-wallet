@@ -20,6 +20,7 @@ export interface BalancePayload {
 
 export interface CreateWalletPayload {
   derivationPath?: string;
+  cluster?: string;
   network: string;
 }
 
@@ -37,6 +38,7 @@ export interface GetTransactionPayload {
 export interface GenerateWalletFromMnemonicPayload {
   mnemonic: string;
   derivationPath?: string;
+  cluster?: string;
   network: string;
 }
 
@@ -90,6 +92,7 @@ export interface ISmartContractCallPayload {
   method: string;
   methodType: 'read' | 'write';
   params: any[];
+  payment?: any[];
   value?: number;
   contractAbi?: any[];
   gasPrice?: string;

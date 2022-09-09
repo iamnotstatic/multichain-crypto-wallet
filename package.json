@@ -74,6 +74,8 @@
     "@solana/spl-token": "^0.2.0",
     "@solana/web3.js": "^1.39.1",
     "@truffle/hdwallet-provider": "^2.0.5",
+    "@waves/ts-lib-crypto": "^1.4.4-beta.1",
+    "@waves/waves-transactions": "^4.2.10",
     "axios": "^0.27.2",
     "bip32": "^3.0.1",
     "bip39": "^3.0.4",

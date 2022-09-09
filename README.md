@@ -64,18 +64,25 @@ The following methods are available with this SDK:
       - [Response](#response-6)
       - [Solana Network](#solana-network)
       - [Response](#response-7)
+      - [Waves Network](#waves-network)
+      - [Response](#response-8)
     - [Encryptions](#encryptions)
       - [Encrypt Private Key](#encrypt-private-key)
-      - [Response](#response-8)
-      - [Decrypt Encrypted JSON](#decrypt-encrypted-json)
       - [Response](#response-9)
+      - [Decrypt Encrypted JSON](#decrypt-encrypted-json)
+      - [Response](#response-10)
     - [Token Info](#token-info)
       - [Get ERC20 Token Info](#get-erc20-token-info)
-      - [Response](#response-10)
-      - [Get SPL Token Info](#get-spl-token-info)
       - [Response](#response-11)
-    - [Smart Contract Call](#smart-contract-call)
+      - [Get SPL Token Info](#get-spl-token-info)
       - [Response](#response-12)
+      - [Get Waves Token Info](#get-waves-token-info)
+      - [Response](#response-13)
+    - [Smart Contract Call](#smart-contract-call)
+      - [Ethereum network](#ethereum-network-1)
+      - [Waves network](#waves-network-1)
+      - [Response](#response-14)
+    - [Want to contribute?](#want-to-contribute)
 
 ### Create Wallet
 
@@ -98,6 +105,12 @@ const wallet = await multichainWallet.createWallet({
 const wallet = await multichainWallet.createWallet({
   derivationPath: "m/44'/501'/0'/0'", // Leave empty to use default derivation path
   network: 'solana',
+});
+
+// Creating a Waves wallet.
+const wallet = await multichainWallet.createWallet({
+  cluster: 'testnet' // Can also be mainnet,
+  network: 'waves',
 });
 ```
 
@@ -138,6 +151,13 @@ const data = await multichainWallet.getBalance({
   network: 'solana',
   rpcUrl: 'https://api.devnet.solana.com',
 });
+
+// Get the WAVES balance of an address.
+const data = await multichainWallet.getBalance({
+  network: 'waves',
+  address: '3NBE5tjbQn9BHczjD6NSSuFDKVHKsBRzTv9',
+  rpcUrl: 'https://nodes-testnet.wavesnodes.com',
+});
 ```
 
 #### Tokens
@@ -157,6 +177,14 @@ const data = await multichainWallet.getBalance({
   tokenAddress: 'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB',
   network: 'solana',
   rpcUrl: 'https://rpc.ankr.com/solana',
+});
+
+// Get the balance of a token on Waves.
+const data = await multichainWallet.getBalance({
+  network: 'waves',
+  address: '3NBE5tjbQn9BHczjD6NSSuFDKVHKsBRzTv9',
+  rpcUrl: 'https://nodes-testnet.wavesnodes.com',
+  tokenAddress: '39pnv8FVf3BX3xwtC6uhFxffy2sE3seXCPsf25eNn6qG',
 });
 ```
 
@@ -195,6 +223,14 @@ const wallet = await multichainWallet.generateWalletFromMnemonic({
     'base dry mango subject neither labor portion weekend range couple right document',
   derivationPath: "m/44'/501'/0'/0'", // Leave empty to use default derivation path
   network: 'solana',
+});
+
+// Generate a Waves wallet from mnemonic.
+const wallet = await multichainWallet.generateWalletFromMnemonic({
+  mnemonic:
+    'mushroom deliver work spray hire nuclear wrong deputy march six midnight outside motor differ adult',
+  cluster: 'testnet',
+  network: 'waves',
 });
 ```
 
@@ -267,13 +303,20 @@ const receipt = await multichainWallet.getTransaction({
     'CkG1ynQ2vN8bmNsBUKG8ix3moUUfELWwd8K2f7mmqDd7LifFFfgyFhBux6t22AncbY4NR3PsEU3DbH7mDBMXWk7',
   network: 'solana',
 });
+
+// Get the transaction receipt on Waves network.
+const receipt = await multichainWallet.getTransaction({
+  rpcUrl: 'https://nodes-testnet.wavesnodes.com',
+  hash: 'Barwuj1gCiQ9wCfLQ1nbdz2CSyQXLnRxnDEubtdTwJpd',
+  network: 'waves',
+});
 ```
 
 #### Response
 
 ```javascript
 {
-    object
+  object;
 }
 ```
 
@@ -295,7 +338,7 @@ const transfer = await multichainWallet.transfer({
   privateKey:
     '0f9e5c0bee6c7d06b95204ca22dea8d7f89bb04e8527a2c59e134d185d9af8ad',
   gasPrice: '10', // Gas price is in Gwei. Leave empty to use default gas price
-  data: "Money for transportation" // Send a message
+  data: 'Money for transportation', // Send a message
 });
 
 // Transferring ERC20 tokens from one address to another.
@@ -328,7 +371,7 @@ const transfer = await multichainWallet.transfer({
     '0f9e5c0bee6c7d06b95204ca22dea8d7f89bb04e8527a2c59e134d185d9af8ad',
   gasPrice: '10',
   nonce: 1, // The pending transaction nonce
-    data: "Money for feeding" // Send a message
+  data: 'Money for feeding', // Send a message
 });
 
 // Overriding ERC20 token pending transaction.
@@ -349,11 +392,12 @@ const transfer = await multichainWallet.transfer({
 
 ```javascript
 {
-  object
+  object;
 }
 ```
 
 #### Bitcoin Network
+
 Allows for the transfer of BTC from one address to another.
 
 ```javascript
@@ -370,7 +414,7 @@ const response = await multichainWallet.transfer({
 
 ```javascript
 {
-  object
+  object;
 }
 ```
 
@@ -409,6 +453,57 @@ const transfer = await multichainWallet.transfer({
 }
 ```
 
+#### Waves Network
+
+Allows for the transfer of WAVES and tokens.
+
+```javascript
+// Transferring WAVES from one address to another.
+
+const response = await multichainWallet.transfer({
+  recipientAddress: '3N4x4ML4D6fiU18Tpw86puRoN78FCTs9VQu',
+  amount: 0.0001,
+  network: 'waves',
+  rpcUrl: 'https://nodes-testnet.wavesnodes.com',
+  privateKey:
+    'mushroom deliver work spray hire nuclear wrong deputy march six midnight outside motor differ adult',
+});
+
+// Transferring a token from one address to another.
+const transfer = await multichainWallet.transfer({
+  recipientAddress: '3N4x4ML4D6fiU18Tpw86puRoN78FCTs9VQu',
+  tokenAddress: '39pnv8FVf3BX3xwtC6uhFxffy2sE3seXCPsf25eNn6qG',
+  amount: 1,
+  network: 'waves',
+  rpcUrl: 'https://nodes-testnet.wavesnodes.com',
+  privateKey:
+    'mushroom deliver work spray hire nuclear wrong deputy march six midnight outside motor differ adult',
+});
+```
+
+#### Response
+
+```javascript
+{
+  type: 4,
+  id: '9CbA3dsyEvbdf52gqeBvVkjEP5zBmCQPANjguNznHryf',
+  fee: 100000,
+  feeAssetId: null,
+  timestamp: 1661781621495,
+  version: 3,
+  chainId: 84,
+  sender: '3NBE5tjbQn9BHczjD6NSSuFDKVHKsBRzTv9',
+  senderPublicKey: '8JEFTsZfqp2Y7HpmaxqgGtiMLfsNAAq3bMkwZwGpUWPV',
+  proofs: [
+    '5m4DpkkYkVY4xkiMNyrNpiVUHNNAtyJrSH5UCkjWSnLTAabkCefLx6wWTFT1Xcb7K8C31H7ndZAX8mWrJLMrsqxr'
+  ],
+  recipient: '3N4x4ML4D6fiU18Tpw86puRoN78FCTs9VQu',
+  assetId: '39pnv8FVf3BX3xwtC6uhFxffy2sE3seXCPsf25eNn6qG',
+  feeAsset: null,
+  amount: 100000000,
+  attachment: ''
+}
+```
 
 ### Encryptions
 
@@ -426,6 +521,7 @@ const encrypted = await multichainWallet.getEncryptedJsonFromPrivateKey({
   password: 'walletpassword',
 });
 ```
+
 #### Response
 
 ```javascript
@@ -487,8 +583,6 @@ const info = await multichainWallet.getTokenInfo({
 }
 ```
 
-### Token Info
-
 #### Get SPL Token Info
 
 Allows for fetching SPL tokens info on the solana by the token address.
@@ -509,49 +603,103 @@ const info = await multichainWallet.getTokenInfo({
 
 ```javascript
 {
-  object
+  object;
+}
+```
+
+#### Get Waves Token Info
+
+Allows for fetching Waves based asset info
+
+```javascript
+// getting token info.
+
+const info = await multichainWallet.getTokenInfo({
+  network: 'waves',
+  rpcUrl: 'https://nodes-testnet.wavesnodes.com',
+  address: '39pnv8FVf3BX3xwtC6uhFxffy2sE3seXCPsf25eNn6qG',
+});
+```
+
+#### Response
+
+```javascript
+{
+  name: 'T-BTC',
+  symbol: 'T-BTC',
+  address: '39pnv8FVf3BX3xwtC6uhFxffy2sE3seXCPsf25eNn6qG',
+  decimals: 8,
+  totalSupply: 2100000000000000
 }
 ```
 
 ### Smart Contract Call
 
 This can be used to make custom smart contract calls by specifying the contract ABI and function types.
-``` javascript
+
+#### Ethereum network
+
+```javascript
 // calling a read smart contract function.
 const data = await multichainWallet.smartContractCall({
-      rpcUrl: 'https://rinkeby-light.eth.linkpool.io',
-      network: 'ethereum',
-      contractAddress: '0x5592EC0cfb4dbc12D3aB100b257153436a1f0FEa',
-      method: 'transfer',
-      methodType: 'write',
-      params: [
-        '0x2455eC6700092991Ce0782365A89d5Cd89c8Fa22',
-        '1000000000000000000',
-      ],
-      privateKey:
-        '0f9e5c0bee6c7d06b95204ca22dea8d7f89bb04e8527a2c59e134d185d9af8ad',
-  });
+  rpcUrl: 'https://rinkeby-light.eth.linkpool.io',
+  network: 'ethereum',
+  contractAddress: '0x5592EC0cfb4dbc12D3aB100b257153436a1f0FEa',
+  method: 'transfer',
+  methodType: 'write',
+  params: ['0x2455eC6700092991Ce0782365A89d5Cd89c8Fa22', '1000000000000000000'],
+  privateKey:
+    '0f9e5c0bee6c7d06b95204ca22dea8d7f89bb04e8527a2c59e134d185d9af8ad',
+});
 
 // calling a write smart contract function.
 const data = await multichainWallet.smartContractCall({
-      rpcUrl: 'https://rinkeby-light.eth.linkpool.io',
-      network: 'ethereum',
-      contractAddress: '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D',
-      method: 'factory',
-      methodType: 'read',
-      params: [],
-      contractAbi: [
-        {
-          inputs: [],
-          name: 'factory',
-          outputs: [{ internalType: 'address', name: '', type: 'address' }],
-          stateMutability: 'view',
-          type: 'function',
-        },
-      ],
-    });
+  rpcUrl: 'https://rinkeby-light.eth.linkpool.io',
+  network: 'ethereum',
+  contractAddress: '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D',
+  method: 'factory',
+  methodType: 'read',
+  params: [],
+  contractAbi: [
+    {
+      inputs: [],
+      name: 'factory',
+      outputs: [{ internalType: 'address', name: '', type: 'address' }],
+      stateMutability: 'view',
+      type: 'function',
+    },
+  ],
+});
 ```
-Some of the parameters available in this function are: 
+
+#### Waves network
+
+```javascript
+// calling a read smart contract function.
+const data = await multichainWallet.smartContractCall({
+  network: 'waves',
+  methodType: 'read',
+  rpcUrl: 'https://nodes-testnet.wavesnodes.com',
+  contractAddress: '3N9uzrTiArce1h9VCqK3QUUZmFqBgg5rZSW',
+  method: '3N1gVpA5MVY4WsMpzQ6RfcscpDDdqBbLx6n_balance',
+  params: [],
+});
+
+// calling a write smart contract function.
+const data = await multichainWallet.smartContractCall({
+  network: 'waves',
+  methodType: 'write',
+  rpcUrl: 'https://nodes-testnet.wavesnodes.com',
+  contractAddress: '3N9uzrTiArce1h9VCqK3QUUZmFqBgg5rZSW',
+  privateKey:
+    'mushroom deliver work spray hire nuclear wrong deputy march six midnight outside motor differ adult',
+  method: 'deposit',
+  payment: [{ assetId: null, amount: 1000 }],
+  params: [],
+});
+```
+
+Some of the parameters available in this function are:
 
 - The **method** parameter is the name of the smart contract function to be interacted with.
 - The **method type** is the type of action the method is meant to perform.
@@ -565,13 +713,16 @@ The optional parameters that the object takes in are: value, contractAbi, gas pr
 - The **gas limit** is the maximum amount of gas you are willing to pay for the transaction.
 - The **nonce** is the number of transactions that have been sent from the source address and is used to ensure that the transaction is unique. The transaction is unique because the nonce is incremented each time a transaction is sent.
 - The **private key** is a string parameter that can be passed to use as the signer. It is used to sign the transaction. This parameter is not needed when calling a smart contract read function.
+- The **payment** (only on Waves) payment is the payment (WAVES or Waves Asset) sent to the smart contract while interacting with it. If the smart contract function does not require any payment.
+
 #### Response
 
 ```javascript
 {
-  data: object
+  data: object;
 }
 ```
 
 ### Want to contribute?
+
 Contributions are welcome! Kindly refer to the [contribution guidelines](CONTRIBUTING.md).
