@@ -9,6 +9,8 @@ export interface TransferPayload {
   nonce?: number;
   data?: string;
   gasLimit?: number;
+  fee?: number; // defaults to 10000
+  subtractFee?: boolean; // defaults to false
 }
 
 export interface BalancePayload {
