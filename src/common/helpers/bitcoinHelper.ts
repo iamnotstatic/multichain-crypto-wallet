@@ -167,7 +167,10 @@ const transfer = async (args: TransferPayload) => {
     args.recipientAddress,
     amount.times(new BigNumber(10).exponentiatedBy(8)),
     utxos,
-    {}
+    {
+      fee: args.fee,
+      subtractFee: args.subtractFee,
+    }
   );
 
   const txHash = await retryNTimes(
