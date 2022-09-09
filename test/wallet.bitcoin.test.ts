@@ -55,6 +55,8 @@ describe('MultichainCryptoWallet Bitcoin tests', () => {
       recipientAddress: '2NAhbS79dEUeqcnbC27UppwnjoVSwET5bat',
       amount: 0.0001,
       network: 'bitcoin-testnet', // 'bitcoin' or 'bitcoin-testnet'
+      fee: 10000, // Optional param default value is 10000
+      subtractFee: false, // Optional param default value is false
     });
 
     expect(typeof response).toBe('object');
