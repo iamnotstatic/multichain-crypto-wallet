@@ -43,7 +43,12 @@
     "evm",
     "solana",
     "bitcoin",
-    "evm"
+    "evm",
+    "binance smart chain",
+    "polygon",
+    "avalanche",
+    "waves",
+    "cryptography"
   ],
   "repository": {
     "type": "git",
