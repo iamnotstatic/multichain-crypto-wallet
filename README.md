@@ -1,6 +1,6 @@
 # Multichain Crypto Wallet
 
-A Multichain crypto wallet library that supports Ethereum, Bitcoin, Solana and other EVM compatible blockchains.
+A Multichain crypto wallet library that supports Ethereum, Bitcoin, Solana, Waves and other EVM compatible blockchains E.g. Binance Smart Chain, Polygon, Avalanche etc.
 
 [![Build](https://img.shields.io/github/workflow/status/iamnotstatic/multichain-crypto-wallet/CI)](https://github.com/iamnotstatic/multichain-crypto-wallet)
 [![Version](https://img.shields.io/npm/v/multichain-crypto-wallet)](https://github.com/iamnotstatic/multichain-crypto-wallet)
@@ -93,7 +93,8 @@ This method creates a new wallet. The method accepts a payload object as the par
 const wallet = await multichainWallet.createWallet({
   derivationPath: "m/44'/60'/0'/0/0", // Leave empty to use default derivation path
   network: 'ethereum',
-});
+}); // NOTE - Address generated will work for EVM compatible blockchains E.g. Binance smart chain, Polygon etc
+
 
 // Creating a Bitcoin wallet.
 const wallet = await multichainWallet.createWallet({
@@ -132,11 +133,19 @@ The parameters for this object depending on the kind of balance to be gotten is 
 #### Native coins
 
 ```javascript
+
 // Get the ETH balance of an address.
 const data = await multichainWallet.getBalance({
   address: '0x2455eC6700092991Ce0782365A89d5Cd89c8Fa22',
   network: 'ethereum',
   rpcUrl: 'https://rinkeby-light.eth.linkpool.io',
+});  // NOTE - For otherEVM compatible blockchains all you have to do is change the rpcUrl.
+
+// Binance Smart chain
+const data = await multichainWallet.getBalance({
+  address: '0x2455eC6700092991Ce0782365A89d5Cd89c8Fa22',
+  network: 'ethereum',
+  rpcUrl: 'https://bsc-dataseed1.binance.org/',
 });
 
 // Get the BTC balance of an address.
@@ -163,13 +172,15 @@ const data = await multichainWallet.getBalance({
 #### Tokens
 
 ```javascript
+
 // Get the balance of an ERC20 token.
 const data = await multichainWallet.getBalance({
   address: '0x2455eC6700092991Ce0782365A89d5Cd89c8Fa22',
   network: 'ethereum',
   rpcUrl: 'https://rpc.ankr.com/eth',
   tokenAddress: '0xdac17f958d2ee523a2206206994597c13d831ec7',
-});
+}); // NOTE - For other EVM compatible blockchains all you have to do is change the rpcUrl.
+
 
 // Get the balance of a token on Solana.
 const data = await multichainWallet.getBalance({
@@ -207,7 +218,7 @@ const wallet = await multichainWallet.generateWalletFromMnemonic({
     'candy maple cake sugar pudding cream honey rich smooth crumble sweet treat',
   derivationPath: "m/44'/60'/0'/0/0", // Leave empty to use default derivation path
   network: 'ethereum',
-});
+}); // NOTE - Address generated will work for EVM compatible blockchains E.g. Binance smart chain, Polygon etc
 
 // Generate a Bitcoin wallet from mnemonic.
 const wallet = await multichainWallet.generateWalletFromMnemonic({
@@ -288,7 +299,7 @@ const receipt = await multichainWallet.getTransaction({
   hash: '0x5a90cea37e3a5dbee6e10190ff5a3769ad27a0c6f625458682104e26e0491055',
   network: 'ethereum',
   rpcUrl: 'https://rinkeby-light.eth.linkpool.io',
-});
+}); // NOTE - For other EVM compatible blockchains all you have to do is change the rpcUrl.
 
 // Get the transaction receipt on Bitcoin network.
 const receipt = await getTransaction({
@@ -339,7 +350,7 @@ const transfer = await multichainWallet.transfer({
     '0f9e5c0bee6c7d06b95204ca22dea8d7f89bb04e8527a2c59e134d185d9af8ad',
   gasPrice: '10', // Gas price is in Gwei. Leave empty to use default gas price
   data: 'Money for transportation', // Send a message
-});
+}); // NOTE - For other EVM compatible blockchains all you have to do is change the rpcUrl.
 
 // Transferring ERC20 tokens from one address to another.
 const transfer = await multichainWallet.transfer({
@@ -351,7 +362,7 @@ const transfer = await multichainWallet.transfer({
     '0f9e5c0bee6c7d06b95204ca22dea8d7f89bb04e8527a2c59e134d185d9af8ad',
   gasPrice: '10', // Gas price is in Gwei. leave empty to use default gas price
   tokenAddress: '0xdac17f958d2ee523a2206206994597c13d831ec7',
-});
+}); // NOTE - For other EVM compatible blockchains all you have to do is change the rpcUrl.
 ```
 
 The optional parameters that the object takes in are: gas price, nonce, and data.
@@ -407,6 +418,8 @@ const response = await multichainWallet.transfer({
   recipientAddress: '2NAhbS79dEUeqcnbC27UppwnjoVSwET5bat',
   amount: 0.001,
   network: 'bitcoin-testnet', // 'bitcoin' or 'bitcoin-testnet'
+  fee: 10000, // Optional param default value is 10000
+  subtractFee: false // Optional param default value is false
 });
 ```
 
@@ -568,7 +581,7 @@ const info = await multichainWallet.getTokenInfo({
   address: '0x7fe03a082fd18a80a7dbd55e9b216bcf540557e4',
   network: 'ethereum',
   rpcUrl: 'https://rinkeby-light.eth.linkpool.io',
-});
+}); // NOTE - For other EVM compatible blockchains all you have to do is change the rpcUrl.
 ```
 
 #### Response
@@ -650,7 +663,7 @@ const data = await multichainWallet.smartContractCall({
   params: ['0x2455eC6700092991Ce0782365A89d5Cd89c8Fa22', '1000000000000000000'],
   privateKey:
     '0f9e5c0bee6c7d06b95204ca22dea8d7f89bb04e8527a2c59e134d185d9af8ad',
-});
+}); // NOTE - For other EVM compatible blockchains all you have to do is change the rpcUrl.
 
 // calling a write smart contract function.
 const data = await multichainWallet.smartContractCall({
@@ -669,7 +682,7 @@ const data = await multichainWallet.smartContractCall({
       type: 'function',
     },
   ],
-});
+}); // NOTE - For other EVM compatible blockchains all you have to do is change the rpcUrl.
 ```
 
 #### Waves network
