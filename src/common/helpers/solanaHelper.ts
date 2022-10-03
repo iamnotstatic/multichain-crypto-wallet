@@ -58,7 +58,7 @@ const getBalance = async (args: BalancePayload) => {
           : 0;
 
       return successResponse({
-        balance,
+        balance: balance / solanaWeb3.LAMPORTS_PER_SOL,
       });
     }
 
@@ -66,7 +66,7 @@ const getBalance = async (args: BalancePayload) => {
     balance = await connection.getBalance(publicKey);
 
     return successResponse({
-      balance,
+      balance: balance / solanaWeb3.LAMPORTS_PER_SOL,
     });
   } catch (error) {
     throw error;
