@@ -60,6 +60,41 @@ const getContract = async ({
   };
 };
 
+const createWallet = (derivationPath?: string) => {
+  const path = derivationPath || "m/44'/60'/0'/0/0";
+  const wallet = ethers.Wallet.createRandom({
+    path,
+  });
+
+  return successResponse({
+    address: wallet.address,
+    privateKey: wallet.privateKey,
+    mnemonic: wallet.mnemonic.phrase,
+  });
+};
+
+const getAddressFromPrivateKey = (privateKey: string) => {
+  const wallet = new ethers.Wallet(privateKey);
+
+  return successResponse({
+    address: wallet.address,
+  });
+};
+
+const generateWalletFromMnemonic = (
+  mnemonic: string,
+  derivationPath?: string
+) => {
+  const path = derivationPath || "m/44'/60'/0'/0/0";
+  const wallet = ethers.Wallet.fromMnemonic(mnemonic, path);
+
+  return successResponse({
+    address: wallet.address,
+    privateKey: wallet.privateKey,
+    mnemonic: wallet.mnemonic.phrase,
+  });
+};
+
 const getBalance = async ({
   rpcUrl,
   tokenAddress,
@@ -93,40 +128,6 @@ const getBalance = async ({
   }
 };
 
-const createWallet = async (derivationPath?: string) => {
-  const path = derivationPath || "m/44'/60'/0'/0/0";
-  const wallet = ethers.Wallet.createRandom({
-    path,
-  });
-
-  return successResponse({
-    address: wallet.address,
-    privateKey: wallet.privateKey,
-    mnemonic: wallet.mnemonic.phrase,
-  });
-};
-
-const getAddressFromPrivateKey = async (privateKey: string) => {
-  const wallet = new ethers.Wallet(privateKey);
-
-  return successResponse({
-    address: wallet.address,
-  });
-};
-
-const generateWalletFromMnemonic = async (
-  mnemonic: string,
-  derivationPath?: string
-) => {
-  const path = derivationPath || "m/44'/60'/0'/0/0";
-  const wallet = ethers.Wallet.fromMnemonic(mnemonic, path);
-
-  return successResponse({
-    address: wallet.address,
-    privateKey: wallet.privateKey,
-    mnemonic: wallet.mnemonic.phrase,
-  });
-};
 const transfer = async ({
   privateKey,
   tokenAddress,

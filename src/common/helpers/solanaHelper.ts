@@ -39,6 +39,57 @@ const getConnection = (rpcUrl?: string) => {
   return connection;
 };
 
+const createWallet = (derivationPath?: string) => {
+  const path = derivationPath || "m/44'/501'/0'/0'";
+
+  const mnemonic = bip39.generateMnemonic();
+  const seed = bip39.mnemonicToSeedSync(mnemonic);
+  const derivedSeed = derivePath(path, (seed as unknown) as string).key;
+
+  const keyPair = solanaWeb3.Keypair.fromSeed(derivedSeed);
+
+  return successResponse({
+    address: keyPair.publicKey.toBase58(),
+    privateKey: bs58.encode(keyPair.secretKey),
+    mnemonic,
+  });
+};
+
+const generateWalletFromMnemonic = (
+  mnemonic: string,
+  derivationPath?: string
+) => {
+  const path = derivationPath || "m/44'/501'/0'/0'";
+  const seed = bip39.mnemonicToSeedSync(mnemonic);
+  const derivedSeed = derivePath(path, (seed as unknown) as string).key;
+
+  const keyPair = solanaWeb3.Keypair.fromSeed(derivedSeed);
+
+  return successResponse({
+    address: keyPair.publicKey.toBase58(),
+    privateKey: bs58.encode(keyPair.secretKey),
+    mnemonic,
+  });
+};
+
+const getAddressFromPrivateKey = (privateKey: string) => {
+  let secretKey;
+
+  if (privateKey.split(',').length > 1) {
+    secretKey = new Uint8Array(privateKey.split(',') as any);
+  } else {
+    secretKey = bs58.decode(privateKey);
+  }
+
+  const keyPair = solanaWeb3.Keypair.fromSecretKey(secretKey, {
+    skipValidation: true,
+  });
+
+  return successResponse({
+    address: keyPair.publicKey.toBase58(),
+  });
+};
+
 const getBalance = async (args: BalancePayload) => {
   const connection = getConnection(args.rpcUrl);
 
@@ -71,39 +122,6 @@ const getBalance = async (args: BalancePayload) => {
   } catch (error) {
     throw error;
   }
-};
-
-const createWallet = async (derivationPath?: string) => {
-  const path = derivationPath || "m/44'/501'/0'/0'";
-
-  const mnemonic = bip39.generateMnemonic();
-  const seed = await bip39.mnemonicToSeed(mnemonic);
-  const derivedSeed = derivePath(path, (seed as unknown) as string).key;
-
-  const keyPair = solanaWeb3.Keypair.fromSeed(derivedSeed);
-
-  return successResponse({
-    address: keyPair.publicKey.toBase58(),
-    privateKey: bs58.encode(keyPair.secretKey),
-    mnemonic,
-  });
-};
-
-const generateWalletFromMnemonic = async (
-  mnemonic: string,
-  derivationPath?: string
-) => {
-  const path = derivationPath || "m/44'/501'/0'/0'";
-  const seed = await bip39.mnemonicToSeed(mnemonic);
-  const derivedSeed = derivePath(path, (seed as unknown) as string).key;
-
-  const keyPair = solanaWeb3.Keypair.fromSeed(derivedSeed);
-
-  return successResponse({
-    address: keyPair.publicKey.toBase58(),
-    privateKey: bs58.encode(keyPair.secretKey),
-    mnemonic,
-  });
 };
 
 const transfer = async (args: TransferPayload) => {
@@ -180,24 +198,6 @@ const transfer = async (args: TransferPayload) => {
   } catch (error) {
     throw error;
   }
-};
-
-const getAddressFromPrivateKey = async (privateKey: string) => {
-  let secretKey;
-
-  if (privateKey.split(',').length > 1) {
-    secretKey = new Uint8Array(privateKey.split(',') as any);
-  } else {
-    secretKey = bs58.decode(privateKey);
-  }
-
-  const keyPair = solanaWeb3.Keypair.fromSecretKey(secretKey, {
-    skipValidation: true,
-  });
-
-  return successResponse({
-    address: keyPair.publicKey.toBase58(),
-  });
 };
 
 const getTransaction = async (args: GetTransactionPayload) => {

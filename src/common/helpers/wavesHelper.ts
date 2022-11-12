@@ -25,6 +25,27 @@ import axios from 'axios';
 
 const WAVES_DECIMALS = 8;
 
+const createWallet = (cluster?: string) => {
+  const seed = randomSeed();
+  const chainId = getChainIdWithCluster(cluster);
+
+  return successResponse({
+    address: address(seed, chainId),
+    privateKey: privateKey(seed),
+    mnemonic: seed,
+  });
+};
+
+const generateWalletFromMnemonic = (mnemonic: string, cluster?: string) => {
+  const chainId = getChainIdWithCluster(cluster);
+
+  return successResponse({
+    address: address(mnemonic, chainId),
+    privateKey: privateKey(mnemonic),
+    mnemonic: mnemonic,
+  });
+};
+
 const getBalance = async (args: BalancePayload) => {
   try {
     if (!args.rpcUrl) {
@@ -57,30 +78,6 @@ const getBalance = async (args: BalancePayload) => {
   } catch (error) {
     throw error;
   }
-};
-
-const createWallet = async (cluster?: string) => {
-  const seed = randomSeed();
-  const chainId = getChainIdWithCluster(cluster);
-
-  return successResponse({
-    address: address(seed, chainId),
-    privateKey: privateKey(seed),
-    mnemonic: seed,
-  });
-};
-
-const generateWalletFromMnemonic = async (
-  mnemonic: string,
-  cluster?: string
-) => {
-  const chainId = getChainIdWithCluster(cluster);
-
-  return successResponse({
-    address: address(mnemonic, chainId),
-    privateKey: privateKey(mnemonic),
-    mnemonic: mnemonic,
-  });
 };
 
 const transfer = async (args: TransferPayload) => {

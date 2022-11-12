@@ -16,7 +16,7 @@ import { BitgoUTXOLib } from '../libs/bitgoUtxoLib';
 const bip32 = BIP32Factory(ecc);
 const ECPair = ECPairFactory(ecc);
 
-const createWallet = async (network: string, derivationPath?: string) => {
+const createWallet = (network: string, derivationPath?: string) => {
   if (derivationPath) {
     const purpose = derivationPath?.split('/')[1];
     if (purpose !== "44'") {
@@ -51,7 +51,7 @@ const createWallet = async (network: string, derivationPath?: string) => {
   });
 };
 
-const generateWalletFromMnemonic = async (
+const generateWalletFromMnemonic = (
   network: string,
   mnemonic: string,
   derivationPath?: string
@@ -89,10 +89,7 @@ const generateWalletFromMnemonic = async (
   });
 };
 
-const getAddressFromPrivateKey = async (
-  privateKey: string,
-  network: string
-) => {
+const getAddressFromPrivateKey = (privateKey: string, network: string) => {
   const actualNetwork =
     network === 'bitcoin'
       ? bitcoin.networks.bitcoin
@@ -145,10 +142,7 @@ const transfer = async (args: TransferPayload) => {
       : utxolib.networks.testnet
   );
 
-  const fromAddress = await getAddressFromPrivateKey(
-    args.privateKey,
-    args.network
-  ).then(res => res.address);
+  const fromAddress = getAddressFromPrivateKey(args.privateKey, args.network).address;
 
   const changeAddress = fromAddress;
   const endpoints = _apiFallbacks.fetchUTXOs(testnet, fromAddress, 0);
