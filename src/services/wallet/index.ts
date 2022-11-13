@@ -1,3 +1,5 @@
+import * as bip39 from 'bip39';
+
 import bitcoinHelper from '../../common/helpers/bitcoinHelper';
 import ethereumHelper from '../../common/helpers/ethereumHelper';
 import solanaHelper from '../../common/helpers/solanaHelper';
@@ -16,34 +18,21 @@ import {
   ISmartContractCallPayload,
 } from '../../common/utils/types';
 
-export async function getBalance(args: BalancePayload) {
-  try {
-    if (args.network === 'ethereum') {
-      return await ethereumHelper.getBalance({ ...args });
-    } else if (args.network === 'solana') {
-      return await solanaHelper.getBalance({ ...args });
-    } else if (args.network.includes('bitcoin')) {
-      return await bitcoinHelper.getBalance(args.address, args.network);
-    } else if (args.network === 'waves') {
-      return await wavesHelper.getBalance({ ...args });
-    }
+export function generateMnemonic(numWords: number = 12): string {
+  const strength = (numWords / 3) * 32;
 
-    throw new Error('Invalid network');
-  } catch (error) {
-    throw error;
-  }
+  return bip39.generateMnemonic(strength);
 }
-
-export async function getAddressFromPrivateKey(
+export function getAddressFromPrivateKey(
   args: GetAddressFromPrivateKeyPayload
 ) {
   try {
     if (args.network === 'ethereum') {
-      return await ethereumHelper.getAddressFromPrivateKey(args.privateKey);
+      return ethereumHelper.getAddressFromPrivateKey(args.privateKey);
     } else if (args.network === 'solana') {
-      return await solanaHelper.getAddressFromPrivateKey(args.privateKey);
+      return solanaHelper.getAddressFromPrivateKey(args.privateKey);
     } else if (args.network.includes('bitcoin')) {
-      return await bitcoinHelper.getAddressFromPrivateKey(
+      return bitcoinHelper.getAddressFromPrivateKey(
         args.privateKey,
         args.network
       );
@@ -55,28 +44,28 @@ export async function getAddressFromPrivateKey(
   }
 }
 
-export async function generateWalletFromMnemonic(
+export function generateWalletFromMnemonic(
   args: GenerateWalletFromMnemonicPayload
 ) {
   try {
     if (args.network === 'ethereum') {
-      return await ethereumHelper.generateWalletFromMnemonic(
+      return ethereumHelper.generateWalletFromMnemonic(
         args.mnemonic,
         args.derivationPath
       );
     } else if (args.network === 'solana') {
-      return await solanaHelper.generateWalletFromMnemonic(
+      return solanaHelper.generateWalletFromMnemonic(
         args.mnemonic,
         args.derivationPath
       );
     } else if (args.network.includes('bitcoin')) {
-      return await bitcoinHelper.generateWalletFromMnemonic(
+      return bitcoinHelper.generateWalletFromMnemonic(
         args.network,
         args.mnemonic,
         args.derivationPath
       );
     } else if (args.network === 'waves') {
-      return await wavesHelper.generateWalletFromMnemonic(
+      return wavesHelper.generateWalletFromMnemonic(
         args.mnemonic,
         args.cluster
       );
@@ -88,19 +77,33 @@ export async function generateWalletFromMnemonic(
   }
 }
 
-export async function createWallet(args: CreateWalletPayload) {
+export function createWallet(args: CreateWalletPayload) {
   try {
     if (args.network === 'ethereum') {
-      return await ethereumHelper.createWallet(args.derivationPath);
+      return ethereumHelper.createWallet(args.derivationPath);
     } else if (args.network === 'solana') {
-      return await solanaHelper.createWallet(args.derivationPath);
+      return solanaHelper.createWallet(args.derivationPath);
     } else if (args.network.includes('bitcoin')) {
-      return await bitcoinHelper.createWallet(
-        args.network,
-        args.derivationPath
-      );
+      return bitcoinHelper.createWallet(args.network, args.derivationPath);
     } else if (args.network === 'waves') {
-      return await wavesHelper.createWallet(args.cluster);
+      return wavesHelper.createWallet(args.cluster);
+    }
+
+    throw new Error('Invalid network');
+  } catch (error) {
+    throw error;
+  }
+}
+export async function getBalance(args: BalancePayload) {
+  try {
+    if (args.network === 'ethereum') {
+      return await ethereumHelper.getBalance({ ...args });
+    } else if (args.network === 'solana') {
+      return await solanaHelper.getBalance({ ...args });
+    } else if (args.network.includes('bitcoin')) {
+      return await bitcoinHelper.getBalance(args.address, args.network);
+    } else if (args.network === 'waves') {
+      return await wavesHelper.getBalance({ ...args });
     }
 
     throw new Error('Invalid network');
