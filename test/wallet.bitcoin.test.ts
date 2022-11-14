@@ -10,7 +10,7 @@ import {
 
 describe('MultichainCryptoWallet Bitcoin tests', () => {
   it('generateMnemonic', () => {
-    const mnemonic = generateMnemonic(24); // default is 12
+    const mnemonic = generateMnemonic(); // default is 12
 
     expect(typeof mnemonic).toBe('string');
   });

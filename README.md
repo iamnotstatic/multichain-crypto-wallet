@@ -45,6 +45,8 @@ The following methods are available with this SDK:
     - [Javascript](#javascript)
     - [TypeScript](#typescript)
   - [Methods](#methods)
+    - [Generate mnemonic](#generate-mnemonic)
+      - [Response](#response)
     - [Create Wallet](#create-wallet)
       - [Response](#response)
     - [Get Balance](#get-balance)
@@ -84,26 +86,40 @@ The following methods are available with this SDK:
       - [Response](#response-14)
     - [Want to contribute?](#want-to-contribute)
 
+### Generate mnemonic
+This method is used to generate mnemonic. Default number of words is `12` but you can pass a number param if you want to generate more or less.
+
+```javascript
+const mnemonic = multichainWallet.generateMnemonic();
+
+// Note: Mnemonics with less than 12 words have low entropy and may be guessed by an attacker.
+```
+
+#### Response 
+```json
+net idle lava mango another capable inhale portion blossom fluid discover cruise
+```
+
 ### Create Wallet
 
 This method creates a new wallet. The method accepts a payload object as the parameter. The parameter of this payload is:
 
 ```javascript
 // Creating an Ethereum wallet.
-const wallet = await multichainWallet.createWallet({
+const wallet = multichainWallet.createWallet({
   derivationPath: "m/44'/60'/0'/0/0", // Leave empty to use default derivation path
   network: 'ethereum',
 }); // NOTE - Address generated will work for EVM compatible blockchains E.g. Binance smart chain, Polygon etc
 
 
 // Creating a Bitcoin wallet.
-const wallet = await multichainWallet.createWallet({
+const wallet = multichainWallet.createWallet({
   derivationPath: "m/44'/0'/0'/0/0", // Leave empty to use default derivation path
   network: 'bitcoin', // 'bitcoin' or 'bitcoin-testnet'
 });
 
 // Creating a Solana wallet.
-const wallet = await multichainWallet.createWallet({
+const wallet = multichainWallet.createWallet({
   derivationPath: "m/44'/501'/0'/0'", // Leave empty to use default derivation path
   network: 'solana',
 });
@@ -213,7 +229,7 @@ This generates a wallet from Mnemonic phrase. The method accepts an object as th
 
 ```javascript
 // Generate an Ethereum wallet from mnemonic.
-const wallet = await multichainWallet.generateWalletFromMnemonic({
+const wallet = multichainWallet.generateWalletFromMnemonic({
   mnemonic:
     'candy maple cake sugar pudding cream honey rich smooth crumble sweet treat',
   derivationPath: "m/44'/60'/0'/0/0", // Leave empty to use default derivation path
@@ -221,7 +237,7 @@ const wallet = await multichainWallet.generateWalletFromMnemonic({
 }); // NOTE - Address generated will work for EVM compatible blockchains E.g. Binance smart chain, Polygon etc
 
 // Generate a Bitcoin wallet from mnemonic.
-const wallet = await multichainWallet.generateWalletFromMnemonic({
+const wallet = multichainWallet.generateWalletFromMnemonic({
   mnemonic:
     'excess quit spot inspire stereo scrap cave wife narrow era pizza typical',
   derivationPath: "m/44'/0'/0'/0/0", // Leave empty to use default derivation path
@@ -229,7 +245,7 @@ const wallet = await multichainWallet.generateWalletFromMnemonic({
 });
 
 // Generate a Solana wallet from mnemonic.
-const wallet = await multichainWallet.generateWalletFromMnemonic({
+const wallet = multichainWallet.generateWalletFromMnemonic({
   mnemonic:
     'base dry mango subject neither labor portion weekend range couple right document',
   derivationPath: "m/44'/501'/0'/0'", // Leave empty to use default derivation path
@@ -237,7 +253,7 @@ const wallet = await multichainWallet.generateWalletFromMnemonic({
 });
 
 // Generate a Waves wallet from mnemonic.
-const wallet = await multichainWallet.generateWalletFromMnemonic({
+const wallet = multichainWallet.generateWalletFromMnemonic({
   mnemonic:
     'mushroom deliver work spray hire nuclear wrong deputy march six midnight outside motor differ adult',
   cluster: 'testnet',
@@ -261,20 +277,20 @@ This gets the address from the private key passed in. The method accepts an obje
 
 ```javascript
 // Get the address from the private key on the Ethereum network.
-const address = await multichainWallet.getAddressFromPrivateKey({
+const address = multichainWallet.getAddressFromPrivateKey({
   privateKey:
     '0f9e5c0bee6c7d06b95204ca22dea8d7f89bb04e8527a2c59e134d185d9af8ad',
   network: 'ethereum',
 });
 
 // Get the address from the private key on the Bitcoin network.
-const data = await multichainWallet.getAddressFromPrivateKey({
+const data = multichainWallet.getAddressFromPrivateKey({
   privateKey: 'KxqTGtCMnX6oL9rxynDKCRJXt64Gm5ame4AEQcYncFhSSUxFBkeJ',
   network: 'bitcoin', // 'bitcoin' or 'bitcoin-testnet'
 });
 
 // Get the address from the private key on the Solana network.
-const address = await multichainWallet.getAddressFromPrivateKey({
+const address = multichainWallet.getAddressFromPrivateKey({
   privateKey:
     'bXXgTj2cgXMFAGpLHkF5GhnoNeUpmcJDsxXDhXQhQhL2BDpJumdwMGeC5Cs66stsN3GfkMH8oyHu24dnojKbtfp',
   network: 'solana',
