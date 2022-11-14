@@ -1,4 +1,5 @@
 import {
+  generateMnemonic,
   createWallet,
   generateWalletFromMnemonic,
   getAddressFromPrivateKey,
@@ -8,16 +9,23 @@ import {
 } from '../src';
 
 describe('MultichainCryptoWallet Bitcoin tests', () => {
-  it('createWallet', async () => {
-    const wallet = await createWallet({
+  it('generateMnemonic', () => {
+    const mnemonic = generateMnemonic(24); // default is 12
+
+    expect(typeof mnemonic).toBe('string');
+  });
+
+  it('createWallet', () => {
+    const wallet = createWallet({
       derivationPath: "m/44'/0'/0'/0/0", // Leave empty to use default derivation path
       network: 'bitcoin', // 'bitcoin' or 'bitcoin-testnet'
     });
+
     expect(typeof wallet).toBe('object');
   });
 
-  it('generateWalletFromMnemonic', async () => {
-    const wallet = await generateWalletFromMnemonic({
+  it('generateWalletFromMnemonic', () => {
+    const wallet = generateWalletFromMnemonic({
       mnemonic:
         'excess quit spot inspire stereo scrap cave wife narrow era pizza typical',
       derivationPath: "m/44'/0'/0'/0/0", // Leave empty to use default derivation path
@@ -32,8 +40,8 @@ describe('MultichainCryptoWallet Bitcoin tests', () => {
     );
   });
 
-  it('getAddressFromPrivateKey', async () => {
-    const data = await getAddressFromPrivateKey({
+  it('getAddressFromPrivateKey', () => {
+    const data = getAddressFromPrivateKey({
       privateKey: 'KxqTGtCMnX6oL9rxynDKCRJXt64Gm5ame4AEQcYncFhSSUxFBkeJ',
       network: 'bitcoin', // 'bitcoin' or 'bitcoin-testnet'
     });
@@ -42,7 +50,7 @@ describe('MultichainCryptoWallet Bitcoin tests', () => {
 
   it('getBalance', async () => {
     const data = await getBalance({
-      address: '2NAhbS79dEUeqcnbC27UppwnjoVSwET5bat',
+      address: 'mqFyLbaKmH2Z4jEdtveZbqLHsycFZgC5Se',
       network: 'bitcoin-testnet', // 'bitcoin' or 'bitcoin-testnet'
     });
 
@@ -53,7 +61,7 @@ describe('MultichainCryptoWallet Bitcoin tests', () => {
     const response = await transfer({
       privateKey: 'L3tSvMViDit1GSp7mbV2xFCGv6M45kDNuSyNY9xyUxmUPBFrBkc4',
       recipientAddress: '2NAhbS79dEUeqcnbC27UppwnjoVSwET5bat',
-      amount: 0.0001,
+      amount: 0.0000001,
       network: 'bitcoin-testnet', // 'bitcoin' or 'bitcoin-testnet'
       fee: 10000, // Optional param default value is 10000
       subtractFee: false, // Optional param default value is false

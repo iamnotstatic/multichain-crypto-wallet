@@ -1,7 +1,8 @@
 import {
-  getBalance,
+  generateMnemonic,
   createWallet,
   generateWalletFromMnemonic,
+  getBalance,
   getTransaction,
   getTokenInfo,
   transfer,
@@ -9,6 +10,36 @@ import {
 } from '../src';
 
 describe('MultichainCryptoWallet Waves tests', () => {
+  it('generateMnemonic', () => {
+    const mnemonic = generateMnemonic();
+
+    expect(typeof mnemonic).toBe('string');
+  });
+
+  it('createWallet', () => {
+    const wallet = createWallet({ cluster: 'mainnet', network: 'waves' });
+
+    expect(typeof wallet).toBe('object');
+    expect(typeof wallet.address).toBe('string');
+    expect(typeof wallet.mnemonic).toBe('string');
+    expect(typeof wallet.privateKey).toBe('string');
+  });
+
+  it('generateWalletFromMnemonic', () => {
+    const wallet = generateWalletFromMnemonic({
+      mnemonic:
+        'mushroom deliver work spray hire nuclear wrong deputy march six midnight outside motor differ adult',
+      cluster: 'testnet',
+      network: 'waves',
+    });
+
+    expect(typeof wallet).toBe('object');
+    expect(typeof wallet.address).toBe('string');
+    expect(typeof wallet.mnemonic).toBe('string');
+    expect(typeof wallet.privateKey).toBe('string');
+    expect(wallet.address).toBe('3NBE5tjbQn9BHczjD6NSSuFDKVHKsBRzTv9');
+  });
+
   it('getBalance WAVES', async () => {
     const data = await getBalance({
       network: 'waves',
@@ -30,30 +61,6 @@ describe('MultichainCryptoWallet Waves tests', () => {
 
     expect(typeof data).toBe('object');
     expect(typeof data.balance).toBe('number');
-  });
-
-  it('createWallet', async () => {
-    const wallet = await createWallet({ cluster: 'mainnet', network: 'waves' });
-
-    expect(typeof wallet).toBe('object');
-    expect(typeof wallet.address).toBe('string');
-    expect(typeof wallet.mnemonic).toBe('string');
-    expect(typeof wallet.privateKey).toBe('string');
-  });
-
-  it('generateWalletFromMnemonic', async () => {
-    const wallet = await generateWalletFromMnemonic({
-      mnemonic:
-        'mushroom deliver work spray hire nuclear wrong deputy march six midnight outside motor differ adult',
-      cluster: 'testnet',
-      network: 'waves',
-    });
-
-    expect(typeof wallet).toBe('object');
-    expect(typeof wallet.address).toBe('string');
-    expect(typeof wallet.mnemonic).toBe('string');
-    expect(typeof wallet.privateKey).toBe('string');
-    expect(wallet.address).toBe('3NBE5tjbQn9BHczjD6NSSuFDKVHKsBRzTv9');
   });
 
   it('transfer WAVES', async () => {

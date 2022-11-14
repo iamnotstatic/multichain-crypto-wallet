@@ -1,14 +1,51 @@
 import {
-  getBalance,
   createWallet,
+  generateMnemonic,
   generateWalletFromMnemonic,
   getAddressFromPrivateKey,
+  getBalance,
   getTransaction,
   transfer,
   getTokenInfo,
 } from '../src';
 
 describe('MultichainCryptoWallet Solana tests', () => {
+  it('generateMnemonic', () => {
+    const mnemonic = generateMnemonic();
+
+    expect(typeof mnemonic).toBe('string');
+  });
+
+  it('createWallet', () => {
+    const wallet = createWallet({
+      derivationPath: "m/44'/501'/0'/0'", // Leave empty to use default derivation path
+      network: 'solana',
+    });
+
+    expect(typeof wallet).toBe('object');
+  });
+
+  it('generateWalletFromMnemonic', () => {
+    const wallet = generateWalletFromMnemonic({
+      mnemonic:
+        'base dry mango subject neither labor portion weekend range couple right document',
+      derivationPath: "m/44'/501'/0'/0'", // Leave empty to use default derivation path
+      network: 'solana',
+    });
+
+    expect(typeof wallet).toBe('object');
+  });
+
+  it('getAddressFromPrivateKey', () => {
+    const address = getAddressFromPrivateKey({
+      privateKey:
+        'bXXgTj2cgXMFAGpLHkF5GhnoNeUpmcJDsxXDhXQhQhL2BDpJumdwMGeC5Cs66stsN3GfkMH8oyHu24dnojKbtfp',
+      network: 'solana',
+    });
+
+    expect(typeof address).toBe('object');
+  });
+
   it('getBalance SOL', async () => {
     const data = await getBalance({
       address: '9DSRMyr3EfxPzxZo9wMBPku7mvcazHTHfyjhcfw5yucA',
@@ -28,36 +65,6 @@ describe('MultichainCryptoWallet Solana tests', () => {
     });
 
     expect(typeof data).toBe('object');
-  });
-
-  it('createWallet', async () => {
-    const wallet = await createWallet({
-      derivationPath: "m/44'/501'/0'/0'", // Leave empty to use default derivation path
-      network: 'solana',
-    });
-
-    expect(typeof wallet).toBe('object');
-  });
-
-  it('generateWalletFromMnemonic', async () => {
-    const wallet = await generateWalletFromMnemonic({
-      mnemonic:
-        'base dry mango subject neither labor portion weekend range couple right document',
-      derivationPath: "m/44'/501'/0'/0'", // Leave empty to use default derivation path
-      network: 'solana',
-    });
-
-    expect(typeof wallet).toBe('object');
-  });
-
-  it('getAddressFromPrivateKey', async () => {
-    const address = await getAddressFromPrivateKey({
-      privateKey:
-        'bXXgTj2cgXMFAGpLHkF5GhnoNeUpmcJDsxXDhXQhQhL2BDpJumdwMGeC5Cs66stsN3GfkMH8oyHu24dnojKbtfp',
-      network: 'solana',
-    });
-
-    expect(typeof address).toBe('object');
   });
 
   it('transfer', async () => {

@@ -1,8 +1,9 @@
 import {
-  getBalance,
   createWallet,
+  generateMnemonic,
   generateWalletFromMnemonic,
   getAddressFromPrivateKey,
+  getBalance,
   getTransaction,
   transfer,
   getWalletFromEncryptedJson,
@@ -12,11 +13,46 @@ import {
 } from '../src';
 
 describe('MultichainCryptoWallet Ethereum tests', () => {
+  it('createWallet', () => {
+    const wallet = createWallet({
+      derivationPath: "m/44'/60'/0'/0/0", // Leave empty to use default derivation path
+      network: 'ethereum',
+    });
+
+    expect(typeof wallet).toBe('object');
+  });
+
+  it('generateMnemonic', () => {
+    const mnemonic = generateMnemonic(); // default is 12
+
+    expect(typeof mnemonic).toBe('string');
+  });
+
+  it('generateWalletFromMnemonic', () => {
+    const wallet = generateWalletFromMnemonic({
+      mnemonic:
+        'candy maple cake sugar pudding cream honey rich smooth crumble sweet treat',
+      derivationPath: "m/44'/60'/0'/0/0", // Leave empty to use default derivation path
+      network: 'ethereum',
+    });
+
+    expect(typeof wallet).toBe('object');
+  });
+  it('getAddressFromPrivateKey', () => {
+    const address = getAddressFromPrivateKey({
+      privateKey:
+        '0f9e5c0bee6c7d06b95204ca22dea8d7f89bb04e8527a2c59e134d185d9af8ad',
+      network: 'ethereum',
+    });
+
+    expect(typeof address).toBe('object');
+  });
+
   it('getBalance ETH balance', async () => {
     const data = await getBalance({
       address: '0x2455eC6700092991Ce0782365A89d5Cd89c8Fa22',
       network: 'ethereum',
-      rpcUrl: 'https://eth-rinkeby.alchemyapi.io/v2/rWcJuDj_SqkaA530gZ_FI4WcgyNgPSZL',
+      rpcUrl: 'https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
     });
 
     expect(typeof data).toBe('object');
@@ -26,40 +62,11 @@ describe('MultichainCryptoWallet Ethereum tests', () => {
     const data = await getBalance({
       address: '0x2455eC6700092991Ce0782365A89d5Cd89c8Fa22',
       network: 'ethereum',
-      rpcUrl: 'https://eth-rinkeby.alchemyapi.io/v2/rWcJuDj_SqkaA530gZ_FI4WcgyNgPSZL',
-      tokenAddress: '0x5592EC0cfb4dbc12D3aB100b257153436a1f0FEa',
+      rpcUrl: 'https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
+      tokenAddress: '0x326C977E6efc84E512bB9C30f76E30c160eD06FB',
     });
 
     expect(typeof data).toBe('object');
-  });
-
-  it('createWallet', async () => {
-    const wallet = await createWallet({
-      derivationPath: "m/44'/60'/0'/0/0", // Leave empty to use default derivation path
-      network: 'ethereum',
-    });
-
-    expect(typeof wallet).toBe('object');
-  });
-
-  it('generateWalletFromMnemonic', async () => {
-    const wallet = await generateWalletFromMnemonic({
-      mnemonic:
-        'candy maple cake sugar pudding cream honey rich smooth crumble sweet treat',
-      derivationPath: "m/44'/60'/0'/0/0", // Leave empty to use default derivation path
-      network: 'ethereum',
-    });
-
-    expect(typeof wallet).toBe('object');
-  });
-  it('getAddressFromPrivateKey', async () => {
-    const address = await getAddressFromPrivateKey({
-      privateKey:
-        '0f9e5c0bee6c7d06b95204ca22dea8d7f89bb04e8527a2c59e134d185d9af8ad',
-      network: 'ethereum',
-    });
-
-    expect(typeof address).toBe('object');
   });
 
   it('transfer', async () => {
@@ -67,7 +74,7 @@ describe('MultichainCryptoWallet Ethereum tests', () => {
       recipientAddress: '0x2455eC6700092991Ce0782365A89d5Cd89c8Fa22',
       amount: 0.0001,
       network: 'ethereum',
-      rpcUrl: 'https://eth-rinkeby.alchemyapi.io/v2/rWcJuDj_SqkaA530gZ_FI4WcgyNgPSZL',
+      rpcUrl: 'https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
       privateKey:
         '0f9e5c0bee6c7d06b95204ca22dea8d7f89bb04e8527a2c59e134d185d9af8ad',
     };
@@ -79,12 +86,12 @@ describe('MultichainCryptoWallet Ethereum tests', () => {
   it('transfer ERC20 Token', async () => {
     const payload = {
       recipientAddress: '0x2455eC6700092991Ce0782365A89d5Cd89c8Fa22',
-      amount: 5,
+      amount: 0.00001,
       network: 'ethereum',
-      rpcUrl: 'https://eth-rinkeby.alchemyapi.io/v2/rWcJuDj_SqkaA530gZ_FI4WcgyNgPSZL',
+      rpcUrl: 'https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
       privateKey:
         '0f9e5c0bee6c7d06b95204ca22dea8d7f89bb04e8527a2c59e134d185d9af8ad',
-      tokenAddress: '0x5592EC0cfb4dbc12D3aB100b257153436a1f0FEa',
+      tokenAddress: '0x326C977E6efc84E512bB9C30f76E30c160eD06FB',
     };
 
     const response = await transfer(payload);
@@ -93,9 +100,9 @@ describe('MultichainCryptoWallet Ethereum tests', () => {
 
   it('Get transaction', async () => {
     const receipt = await getTransaction({
-      rpcUrl: 'https://eth-rinkeby.alchemyapi.io/v2/rWcJuDj_SqkaA530gZ_FI4WcgyNgPSZL',
+      rpcUrl: 'https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
       hash:
-        '0x5a90cea37e3a5dbee6e10190ff5a3769ad27a0c6f625458682104e26e0491055',
+        '0x2c2feb9aeeaf2ccfddb618428fb090624d72e27a04da26f3980c429ed9ab5d2e',
       network: 'ethereum',
     });
 
@@ -129,9 +136,9 @@ describe('MultichainCryptoWallet Ethereum tests', () => {
 
   it('get ERC20 token info', async () => {
     const data = await getTokenInfo({
-      address: '0x7fe03a082fd18a80a7dbd55e9b216bcf540557e4',
+      address: '0x326C977E6efc84E512bB9C30f76E30c160eD06FB',
       network: 'ethereum',
-      rpcUrl: 'https://eth-rinkeby.alchemyapi.io/v2/rWcJuDj_SqkaA530gZ_FI4WcgyNgPSZL',
+      rpcUrl: 'https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
     });
 
     expect(typeof data).toBe('object');
@@ -144,9 +151,9 @@ describe('MultichainCryptoWallet Ethereum tests', () => {
 
   it('smart contract call (get token Balance)', async () => {
     const data = await smartContractCall({
-      rpcUrl: 'https://eth-rinkeby.alchemyapi.io/v2/rWcJuDj_SqkaA530gZ_FI4WcgyNgPSZL',
+      rpcUrl: 'https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
       network: 'ethereum',
-      contractAddress: '0x5592EC0cfb4dbc12D3aB100b257153436a1f0FEa',
+      contractAddress: '0x326C977E6efc84E512bB9C30f76E30c160eD06FB',
       method: 'balanceOf',
       methodType: 'read',
       params: ['0x2455eC6700092991Ce0782365A89d5Cd89c8Fa22'],
@@ -155,27 +162,27 @@ describe('MultichainCryptoWallet Ethereum tests', () => {
     expect(typeof data).toBe('object');
   });
 
-  it('smart contract call (ERC20 token transfer)', async () => {
-    const data = await smartContractCall({
-      rpcUrl: 'https://eth-rinkeby.alchemyapi.io/v2/rWcJuDj_SqkaA530gZ_FI4WcgyNgPSZL',
-      network: 'ethereum',
-      contractAddress: '0x5592EC0cfb4dbc12D3aB100b257153436a1f0FEa',
-      method: 'transfer',
-      methodType: 'write',
-      params: [
-        '0x2455eC6700092991Ce0782365A89d5Cd89c8Fa22',
-        '1000000000000000000',
-      ],
-      privateKey:
-        '0f9e5c0bee6c7d06b95204ca22dea8d7f89bb04e8527a2c59e134d185d9af8ad',
-    });
+  // it('smart contract call (ERC20 token transfer)', async () => {
+  //   const data = await smartContractCall({
+  //     rpcUrl: 'https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
+  //     network: 'ethereum',
+  //     contractAddress: '0x326C977E6efc84E512bB9C30f76E30c160eD06FB',
+  //     method: 'transfer',
+  //     methodType: 'write',
+  //     params: [
+  //       '0x2455eC6700092991Ce0782365A89d5Cd89c8Fa22',
+  //       '1000000000000000000',
+  //     ],
+  //     privateKey:
+  //       '0f9e5c0bee6c7d06b95204ca22dea8d7f89bb04e8527a2c59e134d185d9af8ad',
+  //   });
 
-    expect(typeof data).toBe('object');
-  });
+  //   expect(typeof data).toBe('object');
+  // });
 
   it('smart contract call (get factory Uniswap)', async () => {
     const data = await smartContractCall({
-      rpcUrl: 'https://eth-rinkeby.alchemyapi.io/v2/rWcJuDj_SqkaA530gZ_FI4WcgyNgPSZL',
+      rpcUrl: 'https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
       network: 'ethereum',
       contractAddress: '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D',
       method: 'factory',
