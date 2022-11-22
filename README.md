@@ -96,7 +96,7 @@ const mnemonic = multichainWallet.generateMnemonic();
 ```
 
 #### Response 
-```json
+```javascript
 net idle lava mango another capable inhale portion blossom fluid discover cruise
 ```
 
