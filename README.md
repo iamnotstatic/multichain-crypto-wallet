@@ -87,6 +87,7 @@ The following methods are available with this SDK:
     - [Want to contribute?](#want-to-contribute)
 
 ### Generate mnemonic
+
 This method is used to generate mnemonic. Default number of words is `12` but you can pass a number param if you want to generate more or less.
 
 ```javascript
@@ -95,7 +96,8 @@ const mnemonic = multichainWallet.generateMnemonic();
 // Note: Mnemonics with less than 12 words have low entropy and may be guessed by an attacker.
 ```
 
-#### Response 
+#### Response
+
 ```json
 net idle lava mango another capable inhale portion blossom fluid discover cruise
 ```
@@ -149,19 +151,18 @@ The parameters for this object depending on the kind of balance to be gotten is 
 #### Native coins
 
 ```javascript
-
 // Get the ETH balance of an address.
 const data = await multichainWallet.getBalance({
   address: '0x2455eC6700092991Ce0782365A89d5Cd89c8Fa22',
   network: 'ethereum',
-  rpcUrl: 'https://rinkeby-light.eth.linkpool.io',
-});  // NOTE - For otherEVM compatible blockchains all you have to do is change the rpcUrl.
+  rpcUrl: 'https://rpc.ankr.com/eth_goerli',
+}); // NOTE - For otherEVM compatible blockchains all you have to do is change the rpcUrl.
 
 // Binance Smart chain
 const data = await multichainWallet.getBalance({
   address: '0x2455eC6700092991Ce0782365A89d5Cd89c8Fa22',
   network: 'ethereum',
-  rpcUrl: 'https://bsc-dataseed1.binance.org/',
+  rpcUrl: 'https://rpc.ankr.com/eth_goerli',
 });
 
 // Get the BTC balance of an address.
@@ -188,15 +189,13 @@ const data = await multichainWallet.getBalance({
 #### Tokens
 
 ```javascript
-
 // Get the balance of an ERC20 token.
 const data = await multichainWallet.getBalance({
   address: '0x2455eC6700092991Ce0782365A89d5Cd89c8Fa22',
   network: 'ethereum',
-  rpcUrl: 'https://rpc.ankr.com/eth',
+  rpcUrl: 'https://rpc.ankr.com/eth_goerli',
   tokenAddress: '0xdac17f958d2ee523a2206206994597c13d831ec7',
 }); // NOTE - For other EVM compatible blockchains all you have to do is change the rpcUrl.
-
 
 // Get the balance of a token on Solana.
 const data = await multichainWallet.getBalance({
@@ -314,7 +313,7 @@ This gets the transaction receipt of a transaction from the transaction hash. Th
 const receipt = await multichainWallet.getTransaction({
   hash: '0x5a90cea37e3a5dbee6e10190ff5a3769ad27a0c6f625458682104e26e0491055',
   network: 'ethereum',
-  rpcUrl: 'https://rinkeby-light.eth.linkpool.io',
+  rpcUrl: 'https://rpc.ankr.com/eth_goerli',
 }); // NOTE - For other EVM compatible blockchains all you have to do is change the rpcUrl.
 
 // Get the transaction receipt on Bitcoin network.
@@ -361,7 +360,7 @@ const transfer = await multichainWallet.transfer({
   recipientAddress: '0x2455eC6700092991Ce0782365A89d5Cd89c8Fa22',
   amount: 1,
   network: 'ethereum',
-  rpcUrl: 'https://rinkeby-light.eth.linkpool.io',
+  rpcUrl: 'https://rpc.ankr.com/eth_goerli',
   privateKey:
     '0f9e5c0bee6c7d06b95204ca22dea8d7f89bb04e8527a2c59e134d185d9af8ad',
   gasPrice: '10', // Gas price is in Gwei. Leave empty to use default gas price
@@ -373,7 +372,7 @@ const transfer = await multichainWallet.transfer({
   recipientAddress: '0x2455eC6700092991Ce0782365A89d5Cd89c8Fa22',
   amount: 10,
   network: 'ethereum',
-  rpcUrl: 'https://rinkeby-light.eth.linkpool.io',
+  rpcUrl: 'https://rpc.ankr.com/eth_goerli',
   privateKey:
     '0f9e5c0bee6c7d06b95204ca22dea8d7f89bb04e8527a2c59e134d185d9af8ad',
   gasPrice: '10', // Gas price is in Gwei. leave empty to use default gas price
@@ -393,7 +392,7 @@ const transfer = await multichainWallet.transfer({
   recipientAddress: '0x2455eC6700092991Ce0782365A89d5Cd89c8Fa22',
   amount: 0,
   network: 'ethereum',
-  rpcUrl: 'https://rinkeby-light.eth.linkpool.io',
+  rpcUrl: 'https://rpc.ankr.com/eth_goerli',
   privateKey:
     '0f9e5c0bee6c7d06b95204ca22dea8d7f89bb04e8527a2c59e134d185d9af8ad',
   gasPrice: '10',
@@ -406,7 +405,7 @@ const transfer = await multichainWallet.transfer({
   recipientAddress: '0x2455eC6700092991Ce0782365A89d5Cd89c8Fa22',
   amount: 0,
   network: 'ethereum',
-  rpcUrl: 'https://rinkeby-light.eth.linkpool.io',
+  rpcUrl: 'https://rpc.ankr.com/eth_goerli',
   privateKey:
     '0f9e5c0bee6c7d06b95204ca22dea8d7f89bb04e8527a2c59e134d185d9af8ad',
   gasPrice: '10',
@@ -435,7 +434,7 @@ const response = await multichainWallet.transfer({
   amount: 0.001,
   network: 'bitcoin-testnet', // 'bitcoin' or 'bitcoin-testnet'
   fee: 10000, // Optional param default value is 10000
-  subtractFee: false // Optional param default value is false
+  subtractFee: false, // Optional param default value is false
 });
 ```
 
@@ -596,7 +595,7 @@ Allows for fetching ERC20 tokens info from compatible blockchains by the token a
 const info = await multichainWallet.getTokenInfo({
   address: '0x7fe03a082fd18a80a7dbd55e9b216bcf540557e4',
   network: 'ethereum',
-  rpcUrl: 'https://rinkeby-light.eth.linkpool.io',
+  rpcUrl: 'https://rpc.ankr.com/eth_goerli',
 }); // NOTE - For other EVM compatible blockchains all you have to do is change the rpcUrl.
 ```
 
@@ -664,26 +663,40 @@ const info = await multichainWallet.getTokenInfo({
 
 ### Smart Contract Call
 
-This can be used to make custom smart contract calls by specifying the contract ABI and function types.
+This can be used to make custom smart contract interaction by specifying the contract ABI and function types.
 
 #### Ethereum network
 
 ```javascript
-// calling a read smart contract function.
+// Calling a read smart contract function.
 const data = await multichainWallet.smartContractCall({
-  rpcUrl: 'https://rinkeby-light.eth.linkpool.io',
+  rpcUrl: 'https://rpc.ankr.com/eth_goerli',
   network: 'ethereum',
   contractAddress: '0x5592EC0cfb4dbc12D3aB100b257153436a1f0FEa',
   method: 'transfer',
   methodType: 'write',
   params: ['0x2455eC6700092991Ce0782365A89d5Cd89c8Fa22', '1000000000000000000'],
+  contractAbi: [
+    {
+      constant: false,
+      inputs: [
+        { name: '_to', type: 'address' },
+        { name: '_value', type: 'uint256' },
+      ],
+      name: 'transfer',
+      outputs: [{ name: '', type: 'bool' }],
+      payable: false,
+      stateMutability: 'nonpayable',
+      type: 'function',
+    },
+  ],
   privateKey:
     '0f9e5c0bee6c7d06b95204ca22dea8d7f89bb04e8527a2c59e134d185d9af8ad',
 }); // NOTE - For other EVM compatible blockchains all you have to do is change the rpcUrl.
 
 // calling a write smart contract function.
 const data = await multichainWallet.smartContractCall({
-  rpcUrl: 'https://rinkeby-light.eth.linkpool.io',
+  rpcUrl: 'https://rpc.ankr.com/eth_goerli',
   network: 'ethereum',
   contractAddress: '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D',
   method: 'factory',
