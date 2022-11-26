@@ -96,9 +96,8 @@ const mnemonic = multichainWallet.generateMnemonic();
 // Note: Mnemonics with less than 12 words have low entropy and may be guessed by an attacker.
 ```
 
-#### Response
-
-```json
+#### Response 
+```javascript
 net idle lava mango another capable inhale portion blossom fluid discover cruise
 ```
 
