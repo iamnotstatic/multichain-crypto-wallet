@@ -38,6 +38,7 @@ describe('MultichainCryptoWallet Ethereum tests', () => {
 
     expect(typeof wallet).toBe('object');
   });
+
   it('getAddressFromPrivateKey', () => {
     const address = getAddressFromPrivateKey({
       privateKey:
@@ -52,7 +53,7 @@ describe('MultichainCryptoWallet Ethereum tests', () => {
     const data = await getBalance({
       address: '0x2455eC6700092991Ce0782365A89d5Cd89c8Fa22',
       network: 'ethereum',
-      rpcUrl: 'https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
+      rpcUrl: 'https://rpc.ankr.com/eth_goerli',
     });
 
     expect(typeof data).toBe('object');
@@ -62,7 +63,7 @@ describe('MultichainCryptoWallet Ethereum tests', () => {
     const data = await getBalance({
       address: '0x2455eC6700092991Ce0782365A89d5Cd89c8Fa22',
       network: 'ethereum',
-      rpcUrl: 'https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
+      rpcUrl: 'https://rpc.ankr.com/eth_goerli',
       tokenAddress: '0x326C977E6efc84E512bB9C30f76E30c160eD06FB',
     });
 
@@ -74,7 +75,7 @@ describe('MultichainCryptoWallet Ethereum tests', () => {
       recipientAddress: '0x2455eC6700092991Ce0782365A89d5Cd89c8Fa22',
       amount: 0.0001,
       network: 'ethereum',
-      rpcUrl: 'https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
+      rpcUrl: 'https://rpc.ankr.com/eth_goerli',
       privateKey:
         '0f9e5c0bee6c7d06b95204ca22dea8d7f89bb04e8527a2c59e134d185d9af8ad',
     };
@@ -88,7 +89,7 @@ describe('MultichainCryptoWallet Ethereum tests', () => {
       recipientAddress: '0x2455eC6700092991Ce0782365A89d5Cd89c8Fa22',
       amount: 0.00001,
       network: 'ethereum',
-      rpcUrl: 'https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
+      rpcUrl: 'https://rpc.ankr.com/eth_goerli',
       privateKey:
         '0f9e5c0bee6c7d06b95204ca22dea8d7f89bb04e8527a2c59e134d185d9af8ad',
       tokenAddress: '0x326C977E6efc84E512bB9C30f76E30c160eD06FB',
@@ -100,9 +101,9 @@ describe('MultichainCryptoWallet Ethereum tests', () => {
 
   it('Get transaction', async () => {
     const receipt = await getTransaction({
-      rpcUrl: 'https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
+      rpcUrl: 'https://rpc.ankr.com/eth_goerli',
       hash:
-        '0x2c2feb9aeeaf2ccfddb618428fb090624d72e27a04da26f3980c429ed9ab5d2e',
+        '0x45aa3634a7a15a7f5e23265fc98b229adba9ffa89ad68c1b48d6b0a27ef51398',
       network: 'ethereum',
     });
 
@@ -138,7 +139,7 @@ describe('MultichainCryptoWallet Ethereum tests', () => {
     const data = await getTokenInfo({
       address: '0x326C977E6efc84E512bB9C30f76E30c160eD06FB',
       network: 'ethereum',
-      rpcUrl: 'https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
+      rpcUrl: 'https://rpc.ankr.com/eth_goerli',
     });
 
     expect(typeof data).toBe('object');
@@ -151,7 +152,7 @@ describe('MultichainCryptoWallet Ethereum tests', () => {
 
   it('smart contract call (get token Balance)', async () => {
     const data = await smartContractCall({
-      rpcUrl: 'https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
+      rpcUrl: 'https://rpc.ankr.com/eth_goerli',
       network: 'ethereum',
       contractAddress: '0x326C977E6efc84E512bB9C30f76E30c160eD06FB',
       method: 'balanceOf',
@@ -162,27 +163,42 @@ describe('MultichainCryptoWallet Ethereum tests', () => {
     expect(typeof data).toBe('object');
   });
 
-  // it('smart contract call (ERC20 token transfer)', async () => {
-  //   const data = await smartContractCall({
-  //     rpcUrl: 'https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
-  //     network: 'ethereum',
-  //     contractAddress: '0x326C977E6efc84E512bB9C30f76E30c160eD06FB',
-  //     method: 'transfer',
-  //     methodType: 'write',
-  //     params: [
-  //       '0x2455eC6700092991Ce0782365A89d5Cd89c8Fa22',
-  //       '1000000000000000000',
-  //     ],
-  //     privateKey:
-  //       '0f9e5c0bee6c7d06b95204ca22dea8d7f89bb04e8527a2c59e134d185d9af8ad',
-  //   });
+  it('smart contract call (ERC20 token transfer)', async () => {
+    const data = await smartContractCall({
+      rpcUrl: 'https://rpc.ankr.com/eth_goerli',
+      network: 'ethereum',
+      contractAddress: '0x326C977E6efc84E512bB9C30f76E30c160eD06FB',
+      method: 'transfer',
+      methodType: 'write',
+      params: [
+        '0x2455eC6700092991Ce0782365A89d5Cd89c8Fa22',
+        '1000000000000000000',
+      ],
+      contractAbi: [
+        {
+          constant: false,
+          inputs: [
+            { name: '_to', type: 'address' },
+            { name: '_value', type: 'uint256' },
+          ],
+          name: 'transfer',
+          outputs: [{ name: '', type: 'bool' }],
+          payable: false,
+          stateMutability: 'nonpayable',
+          type: 'function',
+        },
+      ],
+      privateKey:
+        '0f9e5c0bee6c7d06b95204ca22dea8d7f89bb04e8527a2c59e134d185d9af8ad',
+      gasLimit: 60000,
+    });
 
-  //   expect(typeof data).toBe('object');
-  // });
+    expect(typeof data).toBe('object');
+  });
 
   it('smart contract call (get factory Uniswap)', async () => {
     const data = await smartContractCall({
-      rpcUrl: 'https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
+      rpcUrl: 'https://rpc.ankr.com/eth_goerli',
       network: 'ethereum',
       contractAddress: '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D',
       method: 'factory',
