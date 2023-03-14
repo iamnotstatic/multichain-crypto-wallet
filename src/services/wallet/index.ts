@@ -18,14 +18,12 @@ import {
   ISmartContractCallPayload,
 } from '../../common/utils/types';
 
-export function generateMnemonic(numWords: number = 12): string {
+function generateMnemonic(numWords: number = 12): string {
   const strength = (numWords / 3) * 32;
 
   return bip39.generateMnemonic(strength);
 }
-export function getAddressFromPrivateKey(
-  args: GetAddressFromPrivateKeyPayload
-) {
+function getAddressFromPrivateKey(args: GetAddressFromPrivateKeyPayload) {
   try {
     if (args.network === 'ethereum') {
       return ethereumHelper.getAddressFromPrivateKey(args.privateKey);
@@ -44,9 +42,7 @@ export function getAddressFromPrivateKey(
   }
 }
 
-export function generateWalletFromMnemonic(
-  args: GenerateWalletFromMnemonicPayload
-) {
+function generateWalletFromMnemonic(args: GenerateWalletFromMnemonicPayload) {
   try {
     if (args.network === 'ethereum') {
       return ethereumHelper.generateWalletFromMnemonic(
@@ -77,7 +73,7 @@ export function generateWalletFromMnemonic(
   }
 }
 
-export function createWallet(args: CreateWalletPayload) {
+function createWallet(args: CreateWalletPayload) {
   try {
     if (args.network === 'ethereum') {
       return ethereumHelper.createWallet(args.derivationPath);
@@ -94,7 +90,7 @@ export function createWallet(args: CreateWalletPayload) {
     throw error;
   }
 }
-export async function getBalance(args: BalancePayload) {
+async function getBalance(args: BalancePayload) {
   try {
     if (args.network === 'ethereum') {
       return await ethereumHelper.getBalance({ ...args });
@@ -112,7 +108,7 @@ export async function getBalance(args: BalancePayload) {
   }
 }
 
-export async function transfer(args: TransferPayload) {
+async function transfer(args: TransferPayload) {
   try {
     if (args.network === 'ethereum') {
       return await ethereumHelper.transfer({ ...args });
@@ -130,7 +126,7 @@ export async function transfer(args: TransferPayload) {
   }
 }
 
-export async function getTransaction(args: GetTransactionPayload) {
+async function getTransaction(args: GetTransactionPayload) {
   try {
     if (args.network === 'ethereum') {
       return await ethereumHelper.getTransaction({ ...args });
@@ -148,7 +144,7 @@ export async function getTransaction(args: GetTransactionPayload) {
   }
 }
 
-export async function getEncryptedJsonFromPrivateKey(
+async function getEncryptedJsonFromPrivateKey(
   args: GetEncryptedJsonFromPrivateKey
 ) {
   try {
@@ -162,7 +158,7 @@ export async function getEncryptedJsonFromPrivateKey(
   }
 }
 
-export async function getWalletFromEncryptedJson(
+async function getWalletFromEncryptedJson(
   args: GetWalletFromEncryptedjsonPayload
 ) {
   try {
@@ -176,7 +172,7 @@ export async function getWalletFromEncryptedJson(
   }
 }
 
-export async function getTokenInfo(args: IGetTokenInfoPayload) {
+async function getTokenInfo(args: IGetTokenInfoPayload) {
   try {
     if (args.network === 'ethereum') {
       return await ethereumHelper.getTokenInfo({ ...args });
@@ -192,7 +188,7 @@ export async function getTokenInfo(args: IGetTokenInfoPayload) {
   }
 }
 
-export async function smartContractCall(args: ISmartContractCallPayload) {
+async function smartContractCall(args: ISmartContractCallPayload) {
   try {
     if (args.network === 'ethereum') {
       return await ethereumHelper.smartContractCall({ ...args });
@@ -205,3 +201,17 @@ export async function smartContractCall(args: ISmartContractCallPayload) {
     throw error;
   }
 }
+
+export {
+  generateMnemonic,
+  getAddressFromPrivateKey,
+  generateWalletFromMnemonic,
+  createWallet,
+  getBalance,
+  transfer,
+  getTransaction,
+  getEncryptedJsonFromPrivateKey,
+  getWalletFromEncryptedJson,
+  getTokenInfo,
+  smartContractCall,
+};
