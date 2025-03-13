@@ -18,11 +18,29 @@ import {
   ISmartContractCallPayload,
 } from '../../common/utils/types';
 
+/**
+ * Generates a mnemonic phrase.
+ *
+ * @param numWords - The number of words in the mnemonic (default is 12).
+ * @returns A mnemonic phrase as a string.
+ *
+ * @remarks The strength is calculated as (numWords / 3) * 32.
+ */
 function generateMnemonic(numWords: number = 12): string {
   const strength = (numWords / 3) * 32;
-
   return bip39.generateMnemonic(strength);
 }
+
+/**
+ * Retrieves the blockchain address from a private key.
+ *
+ * @param args - The payload containing the private key and network information.
+ * @returns The derived blockchain address.
+ *
+ * @throws {Error} When an unsupported or invalid network is provided.
+ *
+ * @remarks Supported networks: Ethereum, Solana, and Bitcoin variants.
+ */
 function getAddressFromPrivateKey(args: GetAddressFromPrivateKeyPayload) {
   try {
     if (args.network === 'ethereum') {
@@ -42,6 +60,16 @@ function getAddressFromPrivateKey(args: GetAddressFromPrivateKeyPayload) {
   }
 }
 
+/**
+ * Generates a wallet from a mnemonic phrase.
+ *
+ * @param args - The payload containing the mnemonic, derivation path, and network details.
+ * @returns A wallet object generated from the provided mnemonic.
+ *
+ * @throws {Error} When an unsupported or invalid network is provided.
+ *
+ * @remarks Supported networks: Ethereum, Solana, Bitcoin variants, and Waves.
+ */
 function generateWalletFromMnemonic(args: GenerateWalletFromMnemonicPayload) {
   try {
     if (args.network === 'ethereum') {
@@ -73,6 +101,17 @@ function generateWalletFromMnemonic(args: GenerateWalletFromMnemonicPayload) {
   }
 }
 
+/**
+ * Creates a new wallet for the specified network.
+ *
+ * @param args - The payload containing network information and configuration parameters
+ *               (such as derivation path or cluster details).
+ * @returns The newly created wallet.
+ *
+ * @throws {Error} When an unsupported or invalid network is provided.
+ *
+ * @remarks Supported networks: Ethereum, Solana, Bitcoin variants, and Waves.
+ */
 function createWallet(args: CreateWalletPayload) {
   try {
     if (args.network === 'ethereum') {
@@ -90,6 +129,17 @@ function createWallet(args: CreateWalletPayload) {
     throw error;
   }
 }
+
+/**
+ * Retrieves the balance for a given address or wallet.
+ *
+ * @param args - The payload containing the address and network information.
+ * @returns The balance of the specified address or wallet.
+ *
+ * @throws {Error} When an unsupported or invalid network is provided.
+ *
+ * @remarks Supported networks: Ethereum, Solana, Bitcoin variants, and Waves.
+ */
 async function getBalance(args: BalancePayload) {
   try {
     if (args.network === 'ethereum') {
@@ -108,6 +158,16 @@ async function getBalance(args: BalancePayload) {
   }
 }
 
+/**
+ * Executes a transfer transaction on the specified network.
+ *
+ * @param args - The payload containing transfer details, including sender, recipient, amount, and network.
+ * @returns The result of the transfer operation.
+ *
+ * @throws {Error} When an unsupported or invalid network is provided.
+ *
+ * @remarks Supported networks: Ethereum, Solana, Bitcoin variants, and Waves.
+ */
 async function transfer(args: TransferPayload) {
   try {
     if (args.network === 'ethereum') {
@@ -126,6 +186,16 @@ async function transfer(args: TransferPayload) {
   }
 }
 
+/**
+ * Retrieves details of a specific transaction.
+ *
+ * @param args - The payload containing transaction identification and network details.
+ * @returns The transaction details.
+ *
+ * @throws {Error} When an unsupported or invalid network is provided.
+ *
+ * @remarks Supported networks: Ethereum, Solana, Bitcoin variants, and Waves.
+ */
 async function getTransaction(args: GetTransactionPayload) {
   try {
     if (args.network === 'ethereum') {
@@ -144,6 +214,16 @@ async function getTransaction(args: GetTransactionPayload) {
   }
 }
 
+/**
+ * Generates an encrypted JSON wallet from a private key for Ethereum.
+ *
+ * @param args - The payload containing the private key and network information.
+ * @returns A promise that resolves to the encrypted JSON wallet.
+ *
+ * @throws {Error} When an unsupported or invalid network is provided.
+ *
+ * @remarks Currently, only the Ethereum network is supported.
+ */
 async function getEncryptedJsonFromPrivateKey(
   args: GetEncryptedJsonFromPrivateKey
 ) {
@@ -158,6 +238,16 @@ async function getEncryptedJsonFromPrivateKey(
   }
 }
 
+/**
+ * Retrieves a wallet from its encrypted JSON representation for Ethereum.
+ *
+ * @param args - The payload containing the encrypted JSON and network details.
+ * @returns A promise that resolves to the decrypted wallet.
+ *
+ * @throws {Error} When an unsupported or invalid network is provided.
+ *
+ * @remarks Currently, only the Ethereum network is supported.
+ */
 async function getWalletFromEncryptedJson(
   args: GetWalletFromEncryptedjsonPayload
 ) {
@@ -172,6 +262,16 @@ async function getWalletFromEncryptedJson(
   }
 }
 
+/**
+ * Fetches token information from the specified network.
+ *
+ * @param args - The payload containing token and network details.
+ * @returns The token information.
+ *
+ * @throws {Error} When an unsupported or invalid network is provided.
+ *
+ * @remarks Supported networks: Ethereum, Solana, and Waves.
+ */
 async function getTokenInfo(args: IGetTokenInfoPayload) {
   try {
     if (args.network === 'ethereum') {
@@ -188,6 +288,16 @@ async function getTokenInfo(args: IGetTokenInfoPayload) {
   }
 }
 
+/**
+ * Executes a smart contract call on the specified network.
+ *
+ * @param args - The payload containing smart contract call details and network information.
+ * @returns The result of the smart contract call.
+ *
+ * @throws {Error} When an unsupported or invalid network is provided, or if the network is not Ethereum or Waves.
+ *
+ * @remarks Currently, only Ethereum and Waves networks are supported.
+ */
 async function smartContractCall(args: ISmartContractCallPayload) {
   try {
     if (args.network === 'ethereum') {
