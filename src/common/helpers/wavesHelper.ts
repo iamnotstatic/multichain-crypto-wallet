@@ -146,7 +146,7 @@ const getTokenInfo = async (args: IGetTokenInfoPayload) => {
       symbol: data.name,
       address: data.assetId,
       decimals: data.decimals,
-      totalSupply: data.quantity,
+      totalSupply: data.quantity.toString(),
     };
 
     return successResponse({ ...info });
