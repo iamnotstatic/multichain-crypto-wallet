@@ -20,7 +20,7 @@ import {
   Network,
 } from '../../common/utils/types';
 
-const networkHelpers: Record<Network, any > = {
+const networkHelpers: Record<Network, any> = {
   ethereum: ethereumHelper,
   solana: solanaHelper,
   tron: tronHelper,

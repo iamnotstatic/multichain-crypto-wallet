@@ -100,7 +100,7 @@ const getBalance = async ({
 
   try {
     if (contract && tokenAddress) {
-      const balance = await contract.balanceOf(address).call();
+      const balance = await contract.methods.balanceOf(address).call();
 
       return successResponse({
         balance: TronWeb.fromSun(Number(balance)),
@@ -195,10 +195,10 @@ const getTokenInfo = async ({
   if (contract) {
     try {
       const [name, symbol, decimals, totalSupply] = await Promise.all([
-        contract.name().call(),
-        contract.symbol().call(),
-        contract.decimals().call(),
-        contract.totalSupply().call(),
+        contract.methods.name().call(),
+        contract.methods.symbol().call(),
+        contract.methods.decimals().call(),
+        contract.methods.totalSupply().call(),
       ]);
 
       const data = {
