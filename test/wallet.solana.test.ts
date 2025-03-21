@@ -68,21 +68,19 @@ describe('MultichainCryptoWallet Solana tests', () => {
   });
 
   it('transfer', async () => {
-    const payload = {
+    const response = await transfer({
       recipientAddress: '9DSRMyr3EfxPzxZo9wMBPku7mvcazHTHfyjhcfw5yucA',
       amount: 0.0001,
       network: 'solana',
       rpcUrl: 'https://api.devnet.solana.com',
       privateKey:
         'qUfgDqNZ8EmZtG7FCdvo8ETTQb8crmzcYUdrVdpjfxZiVkrwSjQ9L2ov55oRt25ZSJXCjHw6hqtKJnxdnoGtp1M',
-    };
-
-    const response = await transfer(payload);
+    });
     expect(typeof response).toBe('object');
   });
 
   it('transfer Token on Solana', async () => {
-    const payload = {
+    const response = await transfer({
       recipientAddress: '9DSRMyr3EfxPzxZo9wMBPku7mvcazHTHfyjhcfw5yucA',
       tokenAddress: '6xRPFqbtpkS7iVd9SysZDXdYn6iWceXF7p3T91N3EcAc',
       amount: 1,
@@ -90,9 +88,7 @@ describe('MultichainCryptoWallet Solana tests', () => {
       rpcUrl: 'https://api.devnet.solana.com',
       privateKey:
         'qUfgDqNZ8EmZtG7FCdvo8ETTQb8crmzcYUdrVdpjfxZiVkrwSjQ9L2ov55oRt25ZSJXCjHw6hqtKJnxdnoGtp1M',
-    };
-
-    const response = await transfer(payload);
+    });
 
     expect(typeof response).toBe('object');
   });
@@ -121,6 +117,6 @@ describe('MultichainCryptoWallet Solana tests', () => {
     expect(typeof (data && data.symbol)).toBe('string');
     expect(typeof (data && data.address)).toBe('string');
     expect(typeof (data && data.decimals)).toBe('number');
-    expect(typeof (data && data.totalSupply)).toBe('number');
+    expect(typeof (data && data.totalSupply)).toBe('string');
   });
 });

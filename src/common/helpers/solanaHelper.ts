@@ -44,9 +44,11 @@ const createWallet = (derivationPath?: string) => {
 
   const mnemonic = bip39.generateMnemonic();
   const seed = bip39.mnemonicToSeedSync(mnemonic);
-  const derivedSeed = derivePath(path, (seed as unknown) as string).key;
+  const derivedSeed = derivePath(path, seed.toString('hex')).key;
 
-  const keyPair = solanaWeb3.Keypair.fromSeed(derivedSeed);
+  const keyPair = solanaWeb3.Keypair.fromSeed(
+    (derivedSeed as unknown) as Uint8Array
+  );
 
   return successResponse({
     address: keyPair.publicKey.toBase58(),
@@ -61,9 +63,11 @@ const generateWalletFromMnemonic = (
 ) => {
   const path = derivationPath || "m/44'/501'/0'/0'";
   const seed = bip39.mnemonicToSeedSync(mnemonic);
-  const derivedSeed = derivePath(path, (seed as unknown) as string).key;
+  const derivedSeed = derivePath(path, seed.toString('hex')).key;
 
-  const keyPair = solanaWeb3.Keypair.fromSeed(derivedSeed);
+  const keyPair = solanaWeb3.Keypair.fromSeed(
+    (derivedSeed as unknown) as Uint8Array
+  );
 
   return successResponse({
     address: keyPair.publicKey.toBase58(),
@@ -182,7 +186,6 @@ const transfer = async (args: TransferPayload) => {
         })
       );
 
-      // Sign transaction, broadcast, and confirm
       signature = await solanaWeb3.sendAndConfirmTransaction(
         connection,
         transaction,
@@ -190,7 +193,9 @@ const transfer = async (args: TransferPayload) => {
       );
     }
 
-    const tx = await connection.getTransaction(signature);
+    const tx = await connection.getTransaction(signature, {
+      maxSupportedTransactionVersion: 0,
+    });
 
     return successResponse({
       ...tx,
@@ -204,7 +209,9 @@ const getTransaction = async (args: GetTransactionPayload) => {
   const connection = getConnection(args.rpcUrl);
 
   try {
-    const tx = await connection.getTransaction(args.hash);
+    const tx = await connection.getTransaction(args.hash, {
+      maxSupportedTransactionVersion: 0,
+    });
 
     return successResponse({
       ...tx,
@@ -227,13 +234,13 @@ const getTokenInfo = async (args: IGetTokenInfoPayload) => {
         address: token.address,
         decimals: token.decimals,
         logoUrl: token.logoURI,
-        totalSupply: 0,
+        totalSupply: '0',
       };
 
       const tokenSupply = await connection.getTokenSupply(
         new solanaWeb3.PublicKey(data.address)
       );
-      data.totalSupply = tokenSupply.value.uiAmount!;
+      data.totalSupply = tokenSupply.value.uiAmount!.toString();
 
       return successResponse({ ...data });
     }
