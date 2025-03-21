@@ -23,7 +23,11 @@ yan start // npm run start
 ``` javascript
 yarn test // npm run test
 ```
-3. Make your necessary changes and accompany each function with a test.
+3. Run tests for a specific file. Jest tests are setup to run in watch mode.
+``` javascript
+yarn test test/file.test.ts  // npm run test test/file.test.ts
+```
+4. Make your necessary changes and accompany each function with a test.
 
 
 ✨ Thanks for contributing to **multichain-crypto-wallet**! ✨
