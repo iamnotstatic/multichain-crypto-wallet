@@ -1,5 +1,5 @@
 {
-  "version": "0.2.8",
+  "version": "0.2.9",
   "license": "MIT",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -32,7 +32,7 @@
     "trailingComma": "es5"
   },
   "name": "multichain-crypto-wallet",
-  "author": "iamnotstatic",
+  "author": "Abdulfatai Suleiman <abdulfataisuleiman67@gmail.com>",
   "keywords": [
     "multichain",
     "crypto",
@@ -48,7 +48,11 @@
     "polygon",
     "avalanche",
     "waves",
-    "cryptography"
+    "cryptography",
+    "tron",
+    "tronweb",
+    "TRC20",
+    "ERC20"
   ],
   "repository": {
     "type": "git",
