@@ -68,22 +68,27 @@ The following methods are available with this SDK:
       - [Response](#response-7)
       - [Waves Network](#waves-network)
       - [Response](#response-8)
+      - [Tron Network](#tron-network)
+      - [Response](#response-9)
     - [Encryptions](#encryptions)
       - [Encrypt Private Key](#encrypt-private-key)
-      - [Response](#response-9)
-      - [Decrypt Encrypted JSON](#decrypt-encrypted-json)
       - [Response](#response-10)
+      - [Decrypt Encrypted JSON](#decrypt-encrypted-json)
+      - [Response](#response-11)
     - [Token Info](#token-info)
       - [Get ERC20 Token Info](#get-erc20-token-info)
-      - [Response](#response-11)
-      - [Get SPL Token Info](#get-spl-token-info)
       - [Response](#response-12)
-      - [Get Waves Token Info](#get-waves-token-info)
+      - [Get SPL Token Info](#get-spl-token-info)
       - [Response](#response-13)
+      - [Get Waves Token Info](#get-waves-token-info)
+      - [Response](#response-14)
+      - [Get TRC20 Token Info](#get-tron-token-info)
+      - [Response](#response-15)
     - [Smart Contract Call](#smart-contract-call)
       - [Ethereum network](#ethereum-network-1)
       - [Waves network](#waves-network-1)
-      - [Response](#response-14)
+      - [Tron network](#tron-network-1)
+      - [Response](#response-17)
     - [Want to contribute?](#want-to-contribute)
 
 ### Generate mnemonic
@@ -96,7 +101,8 @@ const mnemonic = multichainWallet.generateMnemonic();
 // Note: Mnemonics with less than 12 words have low entropy and may be guessed by an attacker.
 ```
 
-#### Response 
+#### Response
+
 ```javascript
 net idle lava mango another capable inhale portion blossom fluid discover cruise
 ```
@@ -130,6 +136,12 @@ const wallet = await multichainWallet.createWallet({
   cluster: 'testnet' // Can also be mainnet,
   network: 'waves',
 });
+
+// Creating a Tron wallet
+const wallet = await multichainWallet.createWallet({
+  network: 'tron',
+});
+
 ```
 
 #### Response
@@ -154,14 +166,14 @@ The parameters for this object depending on the kind of balance to be gotten is 
 const data = await multichainWallet.getBalance({
   address: '0x2455eC6700092991Ce0782365A89d5Cd89c8Fa22',
   network: 'ethereum',
-  rpcUrl: 'https://rpc.ankr.com/eth_goerli',
+  rpcUrl: 'https://ethereum-sepolia-rpc.publicnode.com',
 }); // NOTE - For otherEVM compatible blockchains all you have to do is change the rpcUrl.
 
 // Binance Smart chain
 const data = await multichainWallet.getBalance({
   address: '0x2455eC6700092991Ce0782365A89d5Cd89c8Fa22',
   network: 'ethereum',
-  rpcUrl: 'https://rpc.ankr.com/eth_goerli',
+  rpcUrl: 'https://ethereum-sepolia-rpc.publicnode.com',
 });
 
 // Get the BTC balance of an address.
@@ -183,6 +195,13 @@ const data = await multichainWallet.getBalance({
   address: '3NBE5tjbQn9BHczjD6NSSuFDKVHKsBRzTv9',
   rpcUrl: 'https://nodes-testnet.wavesnodes.com',
 });
+
+// Get the Tron balance of an address.
+const data = await multichainWallet.getBalance({
+  network: 'tron',
+  address: 'TDdHvW9nU1JaX1P7roYtDvjErTTR17GPJJ',
+  rpcUrl: 'https://nile.trongrid.io',
+});
 ```
 
 #### Tokens
@@ -192,7 +211,7 @@ const data = await multichainWallet.getBalance({
 const data = await multichainWallet.getBalance({
   address: '0x2455eC6700092991Ce0782365A89d5Cd89c8Fa22',
   network: 'ethereum',
-  rpcUrl: 'https://rpc.ankr.com/eth_goerli',
+  rpcUrl: 'https://ethereum-sepolia-rpc.publicnode.com',
   tokenAddress: '0xdac17f958d2ee523a2206206994597c13d831ec7',
 }); // NOTE - For other EVM compatible blockchains all you have to do is change the rpcUrl.
 
@@ -211,13 +230,21 @@ const data = await multichainWallet.getBalance({
   rpcUrl: 'https://nodes-testnet.wavesnodes.com',
   tokenAddress: '39pnv8FVf3BX3xwtC6uhFxffy2sE3seXCPsf25eNn6qG',
 });
+
+// Get the balance of a token on tron.
+const data = await multichainWallet.getBalance({
+  network: 'tron',
+  address: 'TDdHvW9nU1JaX1P7roYtDvjErTTR17GPJJ',
+  rpcUrl: 'https://nile.trongrid.io',
+  tokenAddress: 'TXLAQ63Xg1NAzckPwKHvzw7CSEmLMEqcdj',
+});
 ```
 
 #### Response
 
 ```javascript
 {
-  balance: 2;
+  balance: '2';
 }
 ```
 
@@ -257,6 +284,21 @@ const wallet = multichainWallet.generateWalletFromMnemonic({
   cluster: 'testnet',
   network: 'waves',
 });
+
+// Generate a Waves wallet from mnemonic.
+const wallet = multichainWallet.generateWalletFromMnemonic({
+  mnemonic:
+    'mushroom deliver work spray hire nuclear wrong deputy march six midnight outside motor differ adult',
+  cluster: 'testnet',
+  network: 'waves',
+});
+
+// Generate a Tron wallet from mnemonic.
+const wallet = multichainWallet.generateWalletFromMnemonic({
+  mnemonic:
+    'mushroom deliver work spray hire nuclear wrong deputy march six midnight outside motor differ adult',
+  network: 'tron',
+});
 ```
 
 #### Response
@@ -293,6 +335,13 @@ const address = multichainWallet.getAddressFromPrivateKey({
     'bXXgTj2cgXMFAGpLHkF5GhnoNeUpmcJDsxXDhXQhQhL2BDpJumdwMGeC5Cs66stsN3GfkMH8oyHu24dnojKbtfp',
   network: 'solana',
 });
+
+// Get the address from the private key on the Tron network.
+const address = multichainWallet.getAddressFromPrivateKey({
+  privateKey:
+    'fa01dc6efd5fd64e4897aadf255ae715cf34138c7ada5f6a7efb0bdd0bd9c8c4',
+  network: 'tron',
+});
 ```
 
 #### Response
@@ -312,7 +361,7 @@ This gets the transaction receipt of a transaction from the transaction hash. Th
 const receipt = await multichainWallet.getTransaction({
   hash: '0x5a90cea37e3a5dbee6e10190ff5a3769ad27a0c6f625458682104e26e0491055',
   network: 'ethereum',
-  rpcUrl: 'https://rpc.ankr.com/eth_goerli',
+  rpcUrl: 'https://ethereum-sepolia-rpc.publicnode.com',
 }); // NOTE - For other EVM compatible blockchains all you have to do is change the rpcUrl.
 
 // Get the transaction receipt on Bitcoin network.
@@ -334,6 +383,13 @@ const receipt = await multichainWallet.getTransaction({
   rpcUrl: 'https://nodes-testnet.wavesnodes.com',
   hash: 'Barwuj1gCiQ9wCfLQ1nbdz2CSyQXLnRxnDEubtdTwJpd',
   network: 'waves',
+});
+
+// Get the transaction receipt on Tron network.
+const receipt = await multichainWallet.getTransaction({
+  hash: '34f27486cbe693d5182c4b5e18c1779d918668f86f396ed62a279d8b519b81cc',
+  network: 'tron',
+  rpcUrl: 'https://nile.trongrid.io',
 });
 ```
 
@@ -359,7 +415,7 @@ const transfer = await multichainWallet.transfer({
   recipientAddress: '0x2455eC6700092991Ce0782365A89d5Cd89c8Fa22',
   amount: 1,
   network: 'ethereum',
-  rpcUrl: 'https://rpc.ankr.com/eth_goerli',
+  rpcUrl: 'https://ethereum-sepolia-rpc.publicnode.com',
   privateKey:
     '0f9e5c0bee6c7d06b95204ca22dea8d7f89bb04e8527a2c59e134d185d9af8ad',
   gasPrice: '10', // Gas price is in Gwei. Leave empty to use default gas price
@@ -371,7 +427,7 @@ const transfer = await multichainWallet.transfer({
   recipientAddress: '0x2455eC6700092991Ce0782365A89d5Cd89c8Fa22',
   amount: 10,
   network: 'ethereum',
-  rpcUrl: 'https://rpc.ankr.com/eth_goerli',
+  rpcUrl: 'https://ethereum-sepolia-rpc.publicnode.com',
   privateKey:
     '0f9e5c0bee6c7d06b95204ca22dea8d7f89bb04e8527a2c59e134d185d9af8ad',
   gasPrice: '10', // Gas price is in Gwei. leave empty to use default gas price
@@ -391,7 +447,7 @@ const transfer = await multichainWallet.transfer({
   recipientAddress: '0x2455eC6700092991Ce0782365A89d5Cd89c8Fa22',
   amount: 0,
   network: 'ethereum',
-  rpcUrl: 'https://rpc.ankr.com/eth_goerli',
+  rpcUrl: 'https://ethereum-sepolia-rpc.publicnode.com',
   privateKey:
     '0f9e5c0bee6c7d06b95204ca22dea8d7f89bb04e8527a2c59e134d185d9af8ad',
   gasPrice: '10',
@@ -404,7 +460,7 @@ const transfer = await multichainWallet.transfer({
   recipientAddress: '0x2455eC6700092991Ce0782365A89d5Cd89c8Fa22',
   amount: 0,
   network: 'ethereum',
-  rpcUrl: 'https://rpc.ankr.com/eth_goerli',
+  rpcUrl: 'https://ethereum-sepolia-rpc.publicnode.com',
   privateKey:
     '0f9e5c0bee6c7d06b95204ca22dea8d7f89bb04e8527a2c59e134d185d9af8ad',
   gasPrice: '10',
@@ -532,6 +588,42 @@ const transfer = await multichainWallet.transfer({
 }
 ```
 
+#### Tron Network
+
+Allows for the transfer of TRX and TRC20 tokens.
+
+```javascript
+// Transferring TRX from one address to another.
+const transfer = await multichainWallet.transfer({
+  rpcUrl: 'https://nile.trongrid.io',
+  recipientAddress: 'TEVuGfgLkQCVXs7EtjMiQp3ZSSUkEbNnVS',
+  amount: 0.0001,
+  network: 'tron',
+  privateKey:
+    'fa01dc6efd5fd64e4897aadf255ae715cf34138c7ada5f6a7efb0bdd0bd9c8c4',
+});
+
+// Transferring TRC20 tokens from one address to another.
+const transfer = await multichainWallet.transfer({
+  rpcUrl: 'https://nile.trongrid.io',
+  recipientAddress: 'TEVuGfgLkQCVXs7EtjMiQp3ZSSUkEbNnVS',
+  privateKey:
+    'fa01dc6efd5fd64e4897aadf255ae715cf34138c7ada5f6a7efb0bdd0bd9c8c4',
+  amount: 0.1,
+  network: 'tron',
+  tokenAddress: 'TXLAQ63Xg1NAzckPwKHvzw7CSEmLMEqcdj',
+});
+```
+
+#### Response
+
+```javascript
+{
+  txid
+  ..object;
+}
+```
+
 ### Encryptions
 
 #### Encrypt Private Key
@@ -594,7 +686,7 @@ Allows for fetching ERC20 tokens info from compatible blockchains by the token a
 const info = await multichainWallet.getTokenInfo({
   address: '0x7fe03a082fd18a80a7dbd55e9b216bcf540557e4',
   network: 'ethereum',
-  rpcUrl: 'https://rpc.ankr.com/eth_goerli',
+  rpcUrl: 'https://ethereum-sepolia-rpc.publicnode.com',
 }); // NOTE - For other EVM compatible blockchains all you have to do is change the rpcUrl.
 ```
 
@@ -606,7 +698,7 @@ const info = await multichainWallet.getTokenInfo({
   symbol: 'USDT',
   decimals: 6,
   address: '0x7fe03a082fd18a80a7dbd55e9b216bcf540557e4',
-  totalSupply: 1000000000000
+  totalSupply: '1000000000000'
 }
 ```
 
@@ -634,17 +726,42 @@ const info = await multichainWallet.getTokenInfo({
 }
 ```
 
-#### Get Waves Token Info
+#### Get ERC20 Token Info
 
-Allows for fetching Waves based asset info
+Allows for fetching ERC20 tokens info from compatible blockchains by the token address
 
 ```javascript
 // getting token info.
 
 const info = await multichainWallet.getTokenInfo({
-  network: 'waves',
-  rpcUrl: 'https://nodes-testnet.wavesnodes.com',
-  address: '39pnv8FVf3BX3xwtC6uhFxffy2sE3seXCPsf25eNn6qG',
+  address: '0x7fe03a082fd18a80a7dbd55e9b216bcf540557e4',
+  network: 'ethereum',
+  rpcUrl: 'https://ethereum-sepolia-rpc.publicnode.com',
+}); // NOTE - For other EVM compatible blockchains all you have to do is change the rpcUrl.
+```
+
+#### Response
+
+```javascript
+{
+  name: 'Mocked USDT',
+  symbol: 'USDT',
+  decimals: 6,
+  address: '0x7fe03a082fd18a80a7dbd55e9b216bcf540557e4',
+  totalSupply: '1000000000000'
+}
+```
+
+
+#### Get Tron Token Info
+
+Allows for fetching Tron token info
+
+```javascript
+const info = await multichainWallet.getTokenInfo({
+  address: 'TXLAQ63Xg1NAzckPwKHvzw7CSEmLMEqcdj',
+  network: 'tron',
+  rpcUrl: 'https://nile.trongrid.io',
 });
 ```
 
@@ -652,11 +769,11 @@ const info = await multichainWallet.getTokenInfo({
 
 ```javascript
 {
-  name: 'T-BTC',
-  symbol: 'T-BTC',
-  address: '39pnv8FVf3BX3xwtC6uhFxffy2sE3seXCPsf25eNn6qG',
-  decimals: 8,
-  totalSupply: 2100000000000000
+  name: 'Tether USD',
+  symbol: 'USDT',
+  address: 'TXLAQ63Xg1NAzckPwKHvzw7CSEmLMEqcdj',
+  decimals: 6,
+  totalSupply: '2100000000000000'
 }
 ```
 
@@ -667,9 +784,9 @@ This can be used to make custom smart contract interaction by specifying the con
 #### Ethereum network
 
 ```javascript
-// Calling a read smart contract function.
+// Calling a write smart contract function.
 const data = await multichainWallet.smartContractCall({
-  rpcUrl: 'https://rpc.ankr.com/eth_goerli',
+  rpcUrl: 'https://ethereum-sepolia-rpc.publicnode.com',
   network: 'ethereum',
   contractAddress: '0x5592EC0cfb4dbc12D3aB100b257153436a1f0FEa',
   method: 'transfer',
@@ -693,9 +810,9 @@ const data = await multichainWallet.smartContractCall({
     '0f9e5c0bee6c7d06b95204ca22dea8d7f89bb04e8527a2c59e134d185d9af8ad',
 }); // NOTE - For other EVM compatible blockchains all you have to do is change the rpcUrl.
 
-// calling a write smart contract function.
+// calling a read smart contract function.
 const data = await multichainWallet.smartContractCall({
-  rpcUrl: 'https://rpc.ankr.com/eth_goerli',
+  rpcUrl: 'https://ethereum-sepolia-rpc.publicnode.com',
   network: 'ethereum',
   contractAddress: '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D',
   method: 'factory',
@@ -740,6 +857,60 @@ const data = await multichainWallet.smartContractCall({
 });
 ```
 
+#### Tron network
+
+```javascript
+// Calling a write smart contract function.
+const data = await multichainWallet.smartContractCall({
+  network: 'tron',
+  rpcUrl: 'https://nile.trongrid.io',
+  contractAddress: 'TXLAQ63Xg1NAzckPwKHvzw7CSEmLMEqcdj',
+  method: 'transfer(address,uint256)',
+  methodType: 'write',
+  contractAbi: [
+    {
+      constant: false,
+      inputs: [
+        { name: '_to', type: 'address' },
+        { name: '_value', type: 'uint256' },
+      ],
+      name: 'transfer',
+      outputs: [{ name: '', type: 'bool' }],
+      payable: false,
+      stateMutability: 'nonpayable',
+      type: 'function',
+    },
+  ],
+  params: [
+    { type: 'address', value: 'TEVuGfgLkQCVXs7EtjMiQp3ZSSUkEbNnVS' },
+    { type: 'uint256', value: 1000000 },
+  ],
+  privateKey:
+    'fa01dc6efd5fd64e4897aadf255ae715cf34138c7ada5f6a7efb0bdd0bd9c8c4',
+});
+
+// calling a read smart contract function.
+const data = await multichainWallet.smartContractCall({
+  network: 'tron',
+  rpcUrl: 'https://nile.trongrid.io',
+  contractAddress: 'TXLAQ63Xg1NAzckPwKHvzw7CSEmLMEqcdj',
+  method: 'balanceOf',
+  methodType: 'read',
+  contractAbi: [
+    {
+      constant: true,
+      inputs: [{ name: '_owner', type: 'address' }],
+      name: 'balanceOf',
+      outputs: [{ name: 'balance', type: 'uint256' }],
+      payable: false,
+      stateMutability: 'view',
+      type: 'function',
+    },
+  ],
+  params: [{ type: 'address', value: 'TEVuGfgLkQCVXs7EtjMiQp3ZSSUkEbNnVS' }],
+});
+```
+
 Some of the parameters available in this function are:
 
 - The **method** parameter is the name of the smart contract function to be interacted with.
@@ -755,6 +926,7 @@ The optional parameters that the object takes in are: value, contractAbi, gas pr
 - The **nonce** is the number of transactions that have been sent from the source address and is used to ensure that the transaction is unique. The transaction is unique because the nonce is incremented each time a transaction is sent.
 - The **private key** is a string parameter that can be passed to use as the signer. It is used to sign the transaction. This parameter is not needed when calling a smart contract read function.
 - The **payment** (only on Waves) payment is the payment (WAVES or Waves Asset) sent to the smart contract while interacting with it. If the smart contract function does not require any payment.
+- The **feeLimt** (only on Tron) is the max amount of fee you're willing to pay for the transaction
 
 #### Response
 

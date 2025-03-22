@@ -26,6 +26,10 @@ const getContract = async ({
   privateKey,
   abi,
 }: GetContract) => {
+  if (!rpcUrl) {
+    throw new Error('RPC URL is required');
+  }
+
   const providerInstance = provider(rpcUrl);
   const gasPrice = await providerInstance.getGasPrice();
   const gas = ethers.BigNumber.from(21000);
@@ -189,7 +193,7 @@ const getTransaction = async ({ hash, rpcUrl }: GetTransactionPayload) => {
   const { providerInstance } = await getContract({ rpcUrl });
 
   try {
-    const tx = await providerInstance.getTransaction(hash);
+    const tx = await providerInstance.getTransactionReceipt(hash);
     return successResponse({
       ...tx,
     });
@@ -237,11 +241,12 @@ const getTokenInfo = async ({ address, rpcUrl }: IGetTokenInfoPayload) => {
       symbol,
       decimals,
       address: contract.address,
-      totalSupply: parseInt(ethers.utils.formatUnits(totalSupply, decimals)),
+      totalSupply: ethers.utils.formatUnits(totalSupply, decimals).toString(),
     };
     return successResponse({ ...data });
   }
-  return;
+
+  throw new Error('Contract not found');
 };
 
 const smartContractCall = async (args: ISmartContractCallPayload) => {

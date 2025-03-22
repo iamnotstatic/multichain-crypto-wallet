@@ -53,7 +53,7 @@ describe('MultichainCryptoWallet Ethereum tests', () => {
     const data = await getBalance({
       address: '0x2455eC6700092991Ce0782365A89d5Cd89c8Fa22',
       network: 'ethereum',
-      rpcUrl: 'https://rpc.ankr.com/eth_goerli',
+      rpcUrl: 'https://ethereum-sepolia-rpc.publicnode.com',
     });
 
     expect(typeof data).toBe('object');
@@ -63,45 +63,49 @@ describe('MultichainCryptoWallet Ethereum tests', () => {
     const data = await getBalance({
       address: '0x2455eC6700092991Ce0782365A89d5Cd89c8Fa22',
       network: 'ethereum',
-      rpcUrl: 'https://rpc.ankr.com/eth_goerli',
-      tokenAddress: '0x326C977E6efc84E512bB9C30f76E30c160eD06FB',
+      rpcUrl: 'https://ethereum-sepolia-rpc.publicnode.com',
+      tokenAddress: '0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238',
     });
 
     expect(typeof data).toBe('object');
   });
 
   it('transfer', async () => {
-    const payload = {
+    const data = await transfer({
       recipientAddress: '0x2455eC6700092991Ce0782365A89d5Cd89c8Fa22',
       amount: 0.0001,
       network: 'ethereum',
-      rpcUrl: 'https://rpc.ankr.com/eth_goerli',
+      rpcUrl: 'https://ethereum-sepolia-rpc.publicnode.com',
       privateKey:
         '0f9e5c0bee6c7d06b95204ca22dea8d7f89bb04e8527a2c59e134d185d9af8ad',
-    };
+    });
 
-    const data = await transfer(payload);
+    const tx = await getTransaction({
+      hash: data.hash,
+      network: 'ethereum',
+      rpcUrl: 'https://ethereum-sepolia-rpc.publicnode.com',
+    });
+
     expect(typeof data).toBe('object');
+    expect(typeof tx).toBe('object');
   });
 
   it('transfer ERC20 Token', async () => {
-    const payload = {
+    const response = await transfer({
       recipientAddress: '0x2455eC6700092991Ce0782365A89d5Cd89c8Fa22',
       amount: 0.00001,
       network: 'ethereum',
-      rpcUrl: 'https://rpc.ankr.com/eth_goerli',
+      rpcUrl: 'https://ethereum-sepolia-rpc.publicnode.com',
       privateKey:
         '0f9e5c0bee6c7d06b95204ca22dea8d7f89bb04e8527a2c59e134d185d9af8ad',
-      tokenAddress: '0x326C977E6efc84E512bB9C30f76E30c160eD06FB',
-    };
-
-    const response = await transfer(payload);
+      tokenAddress: '0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238',
+    });
     expect(typeof response).toBe('object');
   });
 
   it('Get transaction', async () => {
     const receipt = await getTransaction({
-      rpcUrl: 'https://rpc.ankr.com/eth_goerli',
+      rpcUrl: 'https://ethereum-sepolia-rpc.publicnode.com',
       hash:
         '0x45aa3634a7a15a7f5e23265fc98b229adba9ffa89ad68c1b48d6b0a27ef51398',
       network: 'ethereum',
@@ -113,7 +117,7 @@ describe('MultichainCryptoWallet Ethereum tests', () => {
   it('encrypts ethereum address privatekey and returns the encrypted json', async () => {
     const data = await getEncryptedJsonFromPrivateKey({
       privateKey:
-        '0f9e5c0bee6c7d06b95204ca22dea8d7f89bb04e8527a2c59e134d185d9af8ad',
+        '0xdc062e5c5013699c844ee942b517b0ee663bd22786e186e6e437db45e8790d2c',
       network: 'ethereum',
       password: 'walletpassword',
     });
@@ -137,9 +141,9 @@ describe('MultichainCryptoWallet Ethereum tests', () => {
 
   it('get ERC20 token info', async () => {
     const data = await getTokenInfo({
-      address: '0x326C977E6efc84E512bB9C30f76E30c160eD06FB',
+      address: '0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238',
       network: 'ethereum',
-      rpcUrl: 'https://rpc.ankr.com/eth_goerli',
+      rpcUrl: 'https://ethereum-sepolia-rpc.publicnode.com',
     });
 
     expect(typeof data).toBe('object');
@@ -147,14 +151,14 @@ describe('MultichainCryptoWallet Ethereum tests', () => {
     expect(typeof (data && data.symbol)).toBe('string');
     expect(typeof (data && data.address)).toBe('string');
     expect(typeof (data && data.decimals)).toBe('number');
-    expect(typeof (data && data.totalSupply)).toBe('number');
+    expect(typeof (data && data.totalSupply)).toBe('string');
   });
 
   it('smart contract call (get token Balance)', async () => {
     const data = await smartContractCall({
-      rpcUrl: 'https://rpc.ankr.com/eth_goerli',
+      rpcUrl: 'https://ethereum-sepolia-rpc.publicnode.com',
       network: 'ethereum',
-      contractAddress: '0x326C977E6efc84E512bB9C30f76E30c160eD06FB',
+      contractAddress: '0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238',
       method: 'balanceOf',
       methodType: 'read',
       params: ['0x2455eC6700092991Ce0782365A89d5Cd89c8Fa22'],
@@ -165,9 +169,9 @@ describe('MultichainCryptoWallet Ethereum tests', () => {
 
   it('smart contract call (ERC20 token transfer)', async () => {
     const data = await smartContractCall({
-      rpcUrl: 'https://rpc.ankr.com/eth_goerli',
+      rpcUrl: 'https://ethereum-sepolia-rpc.publicnode.com',
       network: 'ethereum',
-      contractAddress: '0x326C977E6efc84E512bB9C30f76E30c160eD06FB',
+      contractAddress: '0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238',
       method: 'transfer',
       methodType: 'write',
       params: [
@@ -190,7 +194,6 @@ describe('MultichainCryptoWallet Ethereum tests', () => {
       ],
       privateKey:
         '0f9e5c0bee6c7d06b95204ca22dea8d7f89bb04e8527a2c59e134d185d9af8ad',
-      gasLimit: 60000,
     });
 
     expect(typeof data).toBe('object');
@@ -198,9 +201,9 @@ describe('MultichainCryptoWallet Ethereum tests', () => {
 
   it('smart contract call (get factory Uniswap)', async () => {
     const data = await smartContractCall({
-      rpcUrl: 'https://rpc.ankr.com/eth_goerli',
+      rpcUrl: 'https://ethereum-sepolia-rpc.publicnode.com',
       network: 'ethereum',
-      contractAddress: '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D',
+      contractAddress: '0xeE567Fe1712Faf6149d80dA1E6934E354124CfE3',
       method: 'factory',
       methodType: 'read',
       params: [],

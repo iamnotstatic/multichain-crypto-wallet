@@ -4,6 +4,7 @@ import bitcoinHelper from '../../common/helpers/bitcoinHelper';
 import ethereumHelper from '../../common/helpers/ethereumHelper';
 import solanaHelper from '../../common/helpers/solanaHelper';
 import wavesHelper from '../../common/helpers/wavesHelper';
+import tronHelper from '../../common/helpers/tronHelper';
 
 import {
   TransferPayload,
@@ -16,27 +17,80 @@ import {
   GetEncryptedJsonFromPrivateKey,
   IGetTokenInfoPayload,
   ISmartContractCallPayload,
+  Network,
 } from '../../common/utils/types';
+
+const networkHelpers: Record<Network, any> = {
+  ethereum: ethereumHelper,
+  solana: solanaHelper,
+  tron: tronHelper,
+  waves: wavesHelper,
+  bitcoin: bitcoinHelper,
+  'bitcoin-testnet': bitcoinHelper,
+};
+
+const baseFeatures = [
+  'createWallet',
+  'getAddressFromPrivateKey',
+  'generateWalletFromMnemonic',
+  'getBalance',
+  'transfer',
+  'getTransaction',
+];
+
+const supportedFeatures = {
+  ethereum: [
+    ...baseFeatures,
+    'getEncryptedJsonFromPrivateKey',
+    'getWalletFromEncryptedJson',
+    'getTokenInfo',
+    'smartContractCall',
+  ],
+  solana: [...baseFeatures, 'getTokenInfo'],
+  bitcoin: [...baseFeatures],
+  'bitcoin-testnet': [...baseFeatures],
+  waves: [
+    ...baseFeatures.filter(feature => feature !== 'getAddressFromPrivateKey'),
+    'getTokenInfo',
+    'smartContractCall',
+  ],
+  tron: [...baseFeatures, 'getTokenInfo', 'smartContractCall'],
+};
+
+function getNetworkHelper(network: Network) {
+  const helper = networkHelpers[network];
+  if (!helper) {
+    throw new Error(`Unsupported network: ${network}`);
+  }
+
+  return helper;
+}
+
+function isFeatureSupported(network: Network, feature: string): boolean {
+  return supportedFeatures[network]?.includes(feature) || false;
+}
 
 function generateMnemonic(numWords: number = 12): string {
   const strength = (numWords / 3) * 32;
 
   return bip39.generateMnemonic(strength);
 }
+
 function getAddressFromPrivateKey(args: GetAddressFromPrivateKeyPayload) {
   try {
-    if (args.network === 'ethereum') {
-      return ethereumHelper.getAddressFromPrivateKey(args.privateKey);
-    } else if (args.network === 'solana') {
-      return solanaHelper.getAddressFromPrivateKey(args.privateKey);
-    } else if (args.network.includes('bitcoin')) {
-      return bitcoinHelper.getAddressFromPrivateKey(
-        args.privateKey,
-        args.network
+    if (!isFeatureSupported(args.network, 'getAddressFromPrivateKey')) {
+      throw new Error(
+        `getAddressFromPrivateKey is not supported for ${args.network}`
       );
     }
 
-    throw new Error('Invalid network');
+    const helper = getNetworkHelper(args.network);
+
+    if (!helper) {
+      throw new Error('Invalid network');
+    }
+
+    return helper.getAddressFromPrivateKey(args.privateKey);
   } catch (error) {
     throw error;
   }
@@ -44,30 +98,22 @@ function getAddressFromPrivateKey(args: GetAddressFromPrivateKeyPayload) {
 
 function generateWalletFromMnemonic(args: GenerateWalletFromMnemonicPayload) {
   try {
-    if (args.network === 'ethereum') {
-      return ethereumHelper.generateWalletFromMnemonic(
-        args.mnemonic,
-        args.derivationPath
-      );
-    } else if (args.network === 'solana') {
-      return solanaHelper.generateWalletFromMnemonic(
-        args.mnemonic,
-        args.derivationPath
-      );
-    } else if (args.network.includes('bitcoin')) {
-      return bitcoinHelper.generateWalletFromMnemonic(
-        args.network,
-        args.mnemonic,
-        args.derivationPath
-      );
-    } else if (args.network === 'waves') {
-      return wavesHelper.generateWalletFromMnemonic(
-        args.mnemonic,
-        args.cluster
+    if (!isFeatureSupported(args.network, 'generateWalletFromMnemonic')) {
+      throw new Error(
+        `generateWalletFromMnemonic is not supported for ${args.network}`
       );
     }
 
-    throw new Error('Invalid network');
+    const helper = getNetworkHelper(args.network);
+
+    if (!helper) {
+      throw new Error('Invalid network');
+    }
+
+    return helper.generateWalletFromMnemonic(
+      args.mnemonic,
+      args.derivationPath
+    );
   } catch (error) {
     throw error;
   }
@@ -75,34 +121,35 @@ function generateWalletFromMnemonic(args: GenerateWalletFromMnemonicPayload) {
 
 function createWallet(args: CreateWalletPayload) {
   try {
-    if (args.network === 'ethereum') {
-      return ethereumHelper.createWallet(args.derivationPath);
-    } else if (args.network === 'solana') {
-      return solanaHelper.createWallet(args.derivationPath);
-    } else if (args.network.includes('bitcoin')) {
-      return bitcoinHelper.createWallet(args.network, args.derivationPath);
-    } else if (args.network === 'waves') {
-      return wavesHelper.createWallet(args.cluster);
+    if (!isFeatureSupported(args.network, 'createWallet')) {
+      throw new Error(`createWallet is not supported for ${args.network}`);
     }
 
-    throw new Error('Invalid network');
+    const helper = getNetworkHelper(args.network);
+
+    if (!helper) {
+      throw new Error('Invalid network');
+    }
+
+    return helper.createWallet(args.derivationPath);
   } catch (error) {
     throw error;
   }
 }
+
 async function getBalance(args: BalancePayload) {
   try {
-    if (args.network === 'ethereum') {
-      return await ethereumHelper.getBalance({ ...args });
-    } else if (args.network === 'solana') {
-      return await solanaHelper.getBalance({ ...args });
-    } else if (args.network.includes('bitcoin')) {
-      return await bitcoinHelper.getBalance(args.address, args.network);
-    } else if (args.network === 'waves') {
-      return await wavesHelper.getBalance({ ...args });
+    if (!isFeatureSupported(args.network, 'getBalance')) {
+      throw new Error(`getBalance is not supported for ${args.network}`);
     }
 
-    throw new Error('Invalid network');
+    const helper = getNetworkHelper(args.network);
+
+    if (!helper) {
+      throw new Error('Invalid network');
+    }
+
+    return helper.getBalance({ ...args });
   } catch (error) {
     throw error;
   }
@@ -110,17 +157,17 @@ async function getBalance(args: BalancePayload) {
 
 async function transfer(args: TransferPayload) {
   try {
-    if (args.network === 'ethereum') {
-      return await ethereumHelper.transfer({ ...args });
-    } else if (args.network === 'solana') {
-      return await solanaHelper.transfer({ ...args });
-    } else if (args.network.includes('bitcoin')) {
-      return await bitcoinHelper.transfer({ ...args });
-    } else if (args.network === 'waves') {
-      return await wavesHelper.transfer({ ...args });
+    if (!isFeatureSupported(args.network, 'transfer')) {
+      throw new Error(`transfer is not supported for ${args.network}`);
     }
 
-    throw new Error('Invalid network');
+    const helper = getNetworkHelper(args.network);
+
+    if (!helper) {
+      throw new Error('Invalid network');
+    }
+
+    return helper.transfer({ ...args });
   } catch (error) {
     throw error;
   }
@@ -128,17 +175,17 @@ async function transfer(args: TransferPayload) {
 
 async function getTransaction(args: GetTransactionPayload) {
   try {
-    if (args.network === 'ethereum') {
-      return await ethereumHelper.getTransaction({ ...args });
-    } else if (args.network === 'solana') {
-      return await solanaHelper.getTransaction({ ...args });
-    } else if (args.network.includes('bitcoin')) {
-      return await bitcoinHelper.getTransaction({ ...args });
-    } else if (args.network === 'waves') {
-      return await wavesHelper.getTransaction({ ...args });
+    if (!isFeatureSupported(args.network, 'getTransaction')) {
+      throw new Error(`getTransaction is not supported for ${args.network}`);
     }
 
-    throw new Error('Invalid network');
+    const helper = getNetworkHelper(args.network);
+
+    if (!helper) {
+      throw new Error('Invalid network');
+    }
+
+    return helper.getTransaction({ ...args });
   } catch (error) {
     throw error;
   }
@@ -148,11 +195,19 @@ async function getEncryptedJsonFromPrivateKey(
   args: GetEncryptedJsonFromPrivateKey
 ) {
   try {
-    if (args.network === 'ethereum') {
-      return await ethereumHelper.getEncryptedJsonFromPrivateKey({ ...args });
+    if (!isFeatureSupported(args.network, 'getEncryptedJsonFromPrivateKey')) {
+      throw new Error(
+        `getEncryptedJsonFromPrivateKey is not supported for ${args.network}`
+      );
     }
 
-    throw new Error('Invalid network');
+    const helper = getNetworkHelper(args.network);
+
+    if (!helper) {
+      throw new Error('Invalid network');
+    }
+
+    return helper.getEncryptedJsonFromPrivateKey({ ...args });
   } catch (error) {
     throw error;
   }
@@ -162,11 +217,19 @@ async function getWalletFromEncryptedJson(
   args: GetWalletFromEncryptedjsonPayload
 ) {
   try {
-    if (args.network === 'ethereum') {
-      return await ethereumHelper.getWalletFromEncryptedJson({ ...args });
+    if (!isFeatureSupported(args.network, 'getWalletFromEncryptedJson')) {
+      throw new Error(
+        `getWalletFromEncryptedJson is not supported for ${args.network}`
+      );
     }
 
-    throw new Error('Invalid network');
+    const helper = getNetworkHelper(args.network);
+
+    if (!helper) {
+      throw new Error('Invalid network');
+    }
+
+    return helper.getWalletFromEncryptedJson({ ...args });
   } catch (error) {
     throw error;
   }
@@ -174,15 +237,17 @@ async function getWalletFromEncryptedJson(
 
 async function getTokenInfo(args: IGetTokenInfoPayload) {
   try {
-    if (args.network === 'ethereum') {
-      return await ethereumHelper.getTokenInfo({ ...args });
-    } else if (args.network === 'solana') {
-      return solanaHelper.getTokenInfo({ ...args });
-    } else if (args.network === 'waves') {
-      return wavesHelper.getTokenInfo({ ...args });
+    if (!isFeatureSupported(args.network, 'getTokenInfo')) {
+      throw new Error(`getTokenInfo is not supported for ${args.network}`);
     }
 
-    throw new Error('Invalid network');
+    const helper = getNetworkHelper(args.network);
+
+    if (!helper) {
+      throw new Error('Invalid network');
+    }
+
+    return helper.getTokenInfo({ ...args });
   } catch (error) {
     throw error;
   }
@@ -190,13 +255,17 @@ async function getTokenInfo(args: IGetTokenInfoPayload) {
 
 async function smartContractCall(args: ISmartContractCallPayload) {
   try {
-    if (args.network === 'ethereum') {
-      return await ethereumHelper.smartContractCall({ ...args });
-    } else if (args.network === 'waves') {
-      return await wavesHelper.smartContractCall({ ...args });
-    } else {
-      throw new Error('Only Ethereum and Waves is supported at this time');
+    if (!isFeatureSupported(args.network, 'smartContractCall')) {
+      throw new Error(`smartContractCall is not supported for ${args.network}`);
     }
+
+    const helper = getNetworkHelper(args.network);
+
+    if (!helper) {
+      throw new Error('Invalid network');
+    }
+
+    return helper.smartContractCall({ ...args });
   } catch (error) {
     throw error;
   }

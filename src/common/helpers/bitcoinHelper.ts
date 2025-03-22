@@ -142,7 +142,8 @@ const transfer = async (args: TransferPayload) => {
       : utxolib.networks.testnet
   );
 
-  const fromAddress = getAddressFromPrivateKey(args.privateKey, args.network).address;
+  const fromAddress = getAddressFromPrivateKey(args.privateKey, args.network)
+    .address;
 
   const changeAddress = fromAddress;
   const endpoints = _apiFallbacks.fetchUTXOs(testnet, fromAddress, 0);
