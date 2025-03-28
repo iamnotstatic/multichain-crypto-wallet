@@ -936,6 +936,19 @@ The optional parameters that the object takes in are: value, contractAbi, gas pr
 }
 ```
 
+### Signing Message
+
+```javascript
+// EVM (Ethereum, BSC, etc.)
+const evmSignature = await signMessage("hello", "0xYourPrivateKey", "evm");
+
+// Solana
+
+const solanaKey = new Uint8Array([...]); // 64-byte Key
+
+const solanaSignature = await signMessage("hello", solanaKey, "solana");
+
+
 ### Want to contribute?
 
 Contributions are welcome! Kindly refer to the [contribution guidelines](CONTRIBUTING.md).
