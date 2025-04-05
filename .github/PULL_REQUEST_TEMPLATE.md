@@ -1,6 +1,6 @@
 ## Description
 
-Please include a summary of the changes and be sure to follow our [Contribution Guidelines](CONTRIBUTING.md).
+Please include a summary of the changes and be sure to follow our [Contribution Guidelines](../CONTRIBUTING.md).
 
 <!--
 Optional if an issue is fixed:
