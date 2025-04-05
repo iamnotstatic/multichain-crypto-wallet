@@ -1,0 +1,45 @@
+name: "✨ Feature Request"
+description: Suggest an idea to improve the Multichain Crypto Wallet
+title: "[Feature]: "
+labels: ["enhancement", "needs triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Thanks for suggesting a feature! Let's make this wallet better together 🙌
+
+  - type: textarea
+    id: feature
+    attributes:
+      label: Describe the Feature
+      description: What's the problem or improvement you're proposing?
+      placeholder: "It would be great if..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: motivation
+    attributes:
+      label: Motivation / Use Case
+      description: Why do you want this feature? What problem does it solve?
+      placeholder: "As a user, I want to..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: implementation
+    attributes:
+      label: Possible Implementation
+      description: Any thoughts on how this could be built?
+      placeholder: "Maybe we could use..."
+      render: markdown
+
+  - type: checkboxes
+    id: impact
+    attributes:
+      label: Potential Impact
+      options:
+        - label: This would improve developer experience
+        - label: This would improve end-user experience
+        - label: This would support new chains or protocols
+        - label: This could affect existing functionality
