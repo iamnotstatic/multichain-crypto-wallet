@@ -291,6 +291,43 @@ const smartContractCall = async (args: ISmartContractCallPayload) => {
   }
 };
 
+export async function signEvmMessage(
+  message: string,
+  privateKey: string
+): Promise<string> {
+  // Input validation
+  if (!message?.trim()) {
+    throw new Error("Message cannot be empty or whitespace");
+  }
+
+  if (!validateEthPrivateKey(privateKey)) {
+    throw new Error(
+      "Invalid private Key: Must be 64-byte hex string with 0x prefix"
+    );
+  }
+
+  try {
+    const wallet = new ethers.Wallet(privateKey);
+    const signature = await wallet.signMessage(message);
+
+    // Paranoid output validation
+    if (!ethers.utils.isHexString(signature) || signature.length !== 132) {
+      throw new Error("Received malformed signature from wallet");
+    }
+
+    return signature;
+  } catch (err) {
+    throw new Error(
+      `Signing failed: ${err instanceof Error ? err.message : "Unknown error"}`
+    );
+  }
+}
+
+export function validateEthPrivateKey(Key: string): boolean {
+  return /^0x[a-fA-F0-9]{64}$/.test(Key);
+}
+
+
 export default {
   getBalance,
   createWallet,
