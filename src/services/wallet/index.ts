@@ -5,6 +5,8 @@ import ethereumHelper from '../../common/helpers/ethereumHelper';
 import solanaHelper from '../../common/helpers/solanaHelper';
 import wavesHelper from '../../common/helpers/wavesHelper';
 import tronHelper from '../../common/helpers/tronHelper';
+import { PolkadotChain } from './chains/polkadot';
+import { Chain, ChainType } from '../../types';
 
 import {
   TransferPayload,
@@ -268,6 +270,15 @@ async function smartContractCall(args: ISmartContractCallPayload) {
     return helper.smartContractCall({ ...args });
   } catch (error) {
     throw error;
+  }
+}
+
+export function createChain(chainType: ChainType): Chain {
+  switch (chainType) {
+    case 'polkadot':
+      return new PolkadotChain();
+    default:
+      throw new Error('Unsupported chain type: ${chainType}'); 
   }
 }
 

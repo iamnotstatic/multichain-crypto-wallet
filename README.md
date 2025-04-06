@@ -936,6 +936,42 @@ The optional parameters that the object takes in are: value, contractAbi, gas pr
 }
 ```
 
+## PolkadotChain Usage
+
+### Initialize PolkadotChain
+
+```typescript
+
+import { PolkadotChain } from './services/wallet/chains/polkadot';
+
+const polkadot = new PolkadotChain();
+await polkadot.init();
+
+
+// Generate a wallet
+
+const wallet = await polkadot.generateWallet();
+console.log(wallet);
+
+
+// Get Balance
+
+const balance = await polkadot.getBalance('address');
+console.log(balance);
+
+// Disconnect
+
+await polkadot.disconnect();
+```
+
+## RPC Requirements
+
+The `PolkadotChain` class requires a WebSocket RPC endpoint.
+
+```typescript
+await polkadot.init('wss://custom-rpc-url');
+```
+
 ### Want to contribute?
 
 Contributions are welcome! Kindly refer to the [contribution guidelines](CONTRIBUTING.md).
