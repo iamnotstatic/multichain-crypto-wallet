@@ -142,10 +142,18 @@ const transfer = async (args: TransferPayload) => {
       : utxolib.networks.testnet
   );
 
-  const fromAddress = getAddressFromPrivateKey(args.privateKey, args.network)
-    .address;
+  const fromAddress = getAddressFromPrivateKey(args.privateKey, args.network).data.address;
 
-  const changeAddress = fromAddress;
+  if (!fromAddress) {
+    throw new Error('Failed to retrieve the address from the private Key');
+  }
+  const response = successResponse({
+    address: fromAddress,
+  });
+  const address = response.data.address; 
+  console.log('Wallet Address:', address);   
+ 
+  const changeAddress = fromAddress;  
   const endpoints = _apiFallbacks.fetchUTXOs(testnet, fromAddress, 0);
 
   const utxos = List(await fallback(endpoints))

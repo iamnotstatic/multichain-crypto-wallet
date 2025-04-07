@@ -9,3 +9,11 @@ export function isValidPolkadotAddress(address: string, ss58Format: number = 0):
         return false;
     }
 }
+
+export function successResponse<T>(data: T, message: string = 'Success') {
+    return {
+        success: true,
+        message,
+        data,
+    };
+}

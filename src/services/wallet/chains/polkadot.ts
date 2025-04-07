@@ -47,7 +47,9 @@ export class PolkadotChain implements Chain {
         try {
             const accountInfo = await this.api.query.system.account(address);
             if (accountInfo && typeof accountInfo === 'object' && 'data' in accountInfo) {
-                const accountData = accountInfo.data as { free: any };
+                const accountData = (accountInfo as any).data as { free: any };
+
+                if (accountData && accountData.free) 
                 return accountData.free.toString();
             }
             throw new Error('invalid account info format');
