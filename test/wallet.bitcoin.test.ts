@@ -21,6 +21,12 @@ describe('MultichainCryptoWallet Bitcoin tests', () => {
       network: 'bitcoin', // 'bitcoin' or 'bitcoin-testnet'
     });
 
+    console.log('Wallet:', {
+      address: wallet.address,
+      privateKey: wallet.privateKey,
+      mnemonic: wallet.mnemonic,
+    });
+
     expect(typeof wallet).toBe('object');
   });
 
@@ -31,6 +37,13 @@ describe('MultichainCryptoWallet Bitcoin tests', () => {
       derivationPath: "m/44'/0'/0'/0/0", // Leave empty to use default derivation path
       network: 'bitcoin', // 'bitcoin' or 'bitcoin-testnet'
     });
+
+    console.log('Wallet from mnemonic:', {
+      address: wallet.address,
+      privateKey: wallet.privateKey,
+      mnemonic: wallet.mnemonic,
+    });
+
     expect(wallet.address).toBe('1NV8FPKDW1hxJFxc2dNVZDAp7iCqxCLeFu');
     expect(wallet.privateKey).toBe(
       'KxqTGtCMnX6oL9rxynDKCRJXt64Gm5ame4AEQcYncFhSSUxFBkeJ'
