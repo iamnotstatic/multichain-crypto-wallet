@@ -81,9 +81,13 @@ const generateWalletFromMnemonic = (
   const path = derivationPath || "m/44'/195'/0'/0/0";
   const account = TronWeb.fromMnemonic(mnemonic, path);
 
+  const privateKey = account.privateKey.startsWith('0x')
+    ? account.privateKey.substring(2)
+    : account.privateKey;
+
   return successResponse({
     address: account.address,
-    privateKey: account.privateKey,
+    privateKey: privateKey,
     mnemonic: mnemonic,
   });
 };
