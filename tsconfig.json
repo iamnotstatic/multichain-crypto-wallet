@@ -1,5 +1,10 @@
 {
   "compilerOptions": {
+    "baseUrl": "./src",
+    "paths": {
+      "@/*": ["./*"]
+    },
+    "types": ["node"],
     /* Visit https://aka.ms/tsconfig.json to read more about this file */
 
     /* Basic Options */

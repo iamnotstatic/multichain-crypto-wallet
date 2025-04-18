@@ -24,7 +24,6 @@
     "size": "size-limit",
     "analyze": "size-limit --why"
   },
-  "peerDependencies": {},
   "husky": {
     "hooks": {
       "pre-commit": "tsdx lint"
@@ -85,6 +84,9 @@
   },
   "dependencies": {
     "@bitgo/utxo-lib": "https://github.com/ren-forks/bitgo-utxo-lib#b848585e65b42c48b98c207e72d7d3006c9a5da0",
+    "@polkadot/api": "^15.9.1",
+    "@polkadot/keyring": "^13.4.3",
+    "@polkadot/util-crypto": "^13.4.3",
     "@solana/spl-token": "^0.2.0",
     "@solana/web3.js": "^1.39.1",
     "@truffle/hdwallet-provider": "^2.0.5",

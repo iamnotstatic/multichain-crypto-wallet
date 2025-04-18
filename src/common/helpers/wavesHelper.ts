@@ -66,7 +66,7 @@ const getBalance = async (args: BalancePayload) => {
       });
 
       return successResponse({
-        balance: Number(balance) / Math.pow(10, tokenInfo.decimals),
+        balance: Number(balance) / Math.pow(10, tokenInfo.data.decimals),
       });
     }
 
@@ -94,7 +94,7 @@ const transfer = async (args: TransferPayload) => {
         network: args.network,
       });
 
-      amount = args.amount * Math.pow(10, tokenInfo.decimals);
+      amount = args.amount * Math.pow(10, tokenInfo.data.decimals);
     } else {
       amount = args.amount * Math.pow(10, WAVES_DECIMALS);
     }

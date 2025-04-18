@@ -231,7 +231,7 @@ const smartContractCall = async ({
   methodType,
   feeLimit,
   contractAbi,
-}: ISmartContractCallPayload) => {
+}: ISmartContractCallPayload): Promise<BroadcastReturn_response_code>  => {
   const { tronWeb } = await getContract({
     rpcUrl,
     contractAddress,
@@ -272,16 +272,37 @@ const smartContractCall = async ({
         params
       );
       const signedTx = await tronWeb.trx.sign(txRaw.transaction);
-      result = await tronWeb.trx.sendRawTransaction(signedTx);
+      const txResult = await tronWeb.trx.sendRawTransaction(signedTx); 
+
+      result = {
+        result: txResult.result,
+        code: txResult.result ? 0 : 1,
+        message: txResult.result ? 'Transaction successful' : 'Transaction failed',
+        transaction: txResult.transaction,
+      };
     }
 
-    return successResponse({
-      data: result,
-    });
+    return {
+      result: true,
+      code: 0,
+      message: 'Smart contract call successful',
+      transaction: result,
+    };
   } catch (error) {
-    throw error;
+    return {
+      result: false,
+      code: 1,
+      message: error instanceof Error ? error.message : 'Unknown error',
+    };
   }
 };
+
+export interface BroadcastReturn_response_code {
+  result: boolean;
+  code: number;
+  message?: string;
+  transaction?: any;
+}
 
 export default {
   getBalance,
@@ -292,4 +313,6 @@ export default {
   getTransaction,
   getTokenInfo,
   smartContractCall,
+} as {
+  smartContractCall: (payload: ISmartContractCallPayload) => Promise<BroadcastReturn_response_code>;
 };
