@@ -10,13 +10,25 @@ import * as utxolib from '@bitgo/utxo-lib';
 
 import { _apiFallbacks } from '../fallbacks/btc';
 import { fallback, retryNTimes } from '../utils/retry';
-import { GetTransactionPayload, TransferPayload } from '../utils/types';
+import {
+  BalancePayload,
+  CreateWalletPayload,
+  GenerateWalletFromMnemonicPayload,
+  GetAddressFromPrivateKeyPayload,
+  GetTransactionPayload,
+  IResponse,
+  Network,
+  TransferPayload,
+} from '../utils/types';
 import { BitgoUTXOLib } from '../libs/bitgoUtxoLib';
 
 const bip32 = BIP32Factory(ecc);
 const ECPair = ECPairFactory(ecc);
 
-const createWallet = (network: string, derivationPath?: string) => {
+const createWallet = ({
+  network,
+  derivationPath,
+}: CreateWalletPayload): IResponse => {
   if (derivationPath) {
     const purpose = derivationPath?.split('/')[1];
     if (purpose !== "44'") {
@@ -30,12 +42,7 @@ const createWallet = (network: string, derivationPath?: string) => {
 
   const node = bip32.fromSeed(seed);
   const child = node.derivePath(path);
-  const actualNetwork =
-    network === 'bitcoin'
-      ? bitcoin.networks.bitcoin
-      : network === 'bitcoin-testnet'
-      ? bitcoin.networks.testnet
-      : bitcoin.networks.bitcoin;
+  const actualNetwork = getNetwork(network);
 
   const { address } = bitcoin.payments.p2pkh({
     pubkey: child.publicKey,
@@ -51,11 +58,11 @@ const createWallet = (network: string, derivationPath?: string) => {
   });
 };
 
-const generateWalletFromMnemonic = (
-  network: string,
-  mnemonic: string,
-  derivationPath?: string
-) => {
+const generateWalletFromMnemonic = ({
+  network,
+  mnemonic,
+  derivationPath,
+}: GenerateWalletFromMnemonicPayload): IResponse => {
   if (derivationPath) {
     const purpose = derivationPath?.split('/')[1];
     if (purpose !== "44'") {
@@ -68,12 +75,7 @@ const generateWalletFromMnemonic = (
 
   const node = bip32.fromSeed(seed);
   const child = node.derivePath(path);
-  const actualNetwork =
-    network === 'bitcoin'
-      ? bitcoin.networks.bitcoin
-      : network === 'bitcoin-testnet'
-      ? bitcoin.networks.testnet
-      : bitcoin.networks.bitcoin;
+  const actualNetwork = getNetwork(network);
 
   const { address } = bitcoin.payments.p2pkh({
     pubkey: child.publicKey,
@@ -89,13 +91,11 @@ const generateWalletFromMnemonic = (
   });
 };
 
-const getAddressFromPrivateKey = (privateKey: string, network: string) => {
-  const actualNetwork =
-    network === 'bitcoin'
-      ? bitcoin.networks.bitcoin
-      : network === 'bitcoin-testnet'
-      ? bitcoin.networks.testnet
-      : bitcoin.networks.bitcoin;
+const getAddressFromPrivateKey = ({
+  privateKey,
+  network,
+}: GetAddressFromPrivateKeyPayload): IResponse => {
+  const actualNetwork = getNetwork(network);
 
   const keyPair = ECPair.fromWIF(privateKey);
 
@@ -109,9 +109,11 @@ const getAddressFromPrivateKey = (privateKey: string, network: string) => {
   });
 };
 
-const getBalance = async (address: string, network: string) => {
-  const testnet =
-    network === 'bitcoin' ? false : network === 'bitcoin-testnet' ? true : true;
+const getBalance = async ({
+  address,
+  network,
+}: BalancePayload): Promise<IResponse> => {
+  const testnet = isTestnet(network);
 
   const endpoints = _apiFallbacks.fetchUTXOs(testnet, address, 0);
   const utxos = await fallback(endpoints);
@@ -125,13 +127,8 @@ const getBalance = async (address: string, network: string) => {
   });
 };
 
-const transfer = async (args: TransferPayload) => {
-  const testnet =
-    args.network === 'bitcoin'
-      ? false
-      : args.network === 'bitcoin-testnet'
-      ? true
-      : true;
+const transfer = async (args: TransferPayload): Promise<IResponse> => {
+  const testnet = isTestnet(args.network);
 
   const keyPair = ECPair.fromWIF(args.privateKey);
 
@@ -142,8 +139,10 @@ const transfer = async (args: TransferPayload) => {
       : utxolib.networks.testnet
   );
 
-  const fromAddress = getAddressFromPrivateKey(args.privateKey, args.network)
-    .address;
+  const fromAddress = getAddressFromPrivateKey({
+    privateKey: args.privateKey,
+    network: args.network,
+  }).address;
 
   const changeAddress = fromAddress;
   const endpoints = _apiFallbacks.fetchUTXOs(testnet, fromAddress, 0);
@@ -196,14 +195,15 @@ const transfer = async (args: TransferPayload) => {
   }
 };
 
-const getTransaction = async ({ hash, network }: GetTransactionPayload) => {
-  const testnet =
-    network === 'bitcoin' ? false : network === 'bitcoin-testnet' ? true : true;
+const getTransaction = async ({
+  hash,
+  network,
+}: GetTransactionPayload): Promise<IResponse> => {
+  const testnet = isTestnet(network);
 
   const transaction = await fallback(_apiFallbacks.fetchUTXO(testnet, hash, 0));
   const bigAmount = new BigNumber(transaction.amount);
 
-  // Convert amount from Satoshi to Bitcoin
   const amount = bigAmount.dividedBy(new BigNumber(10).exponentiatedBy(8));
 
   return successResponse({
@@ -211,6 +211,18 @@ const getTransaction = async ({ hash, network }: GetTransactionPayload) => {
     amount: amount.toNumber(),
   });
 };
+
+function getNetwork(network: Network) {
+  return network === 'bitcoin'
+    ? bitcoin.networks.bitcoin
+    : network === 'bitcoin-testnet'
+    ? bitcoin.networks.testnet
+    : bitcoin.networks.bitcoin;
+}
+
+function isTestnet(network: Network) {
+  return network === 'bitcoin-testnet';
+}
 
 export default {
   createWallet,

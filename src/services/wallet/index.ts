@@ -18,9 +18,10 @@ import {
   IGetTokenInfoPayload,
   ISmartContractCallPayload,
   Network,
+  INetworkHelper,
 } from '../../common/utils/types';
 
-const networkHelpers: Record<Network, any> = {
+const networkHelpers: Record<Network, INetworkHelper> = {
   ethereum: ethereumHelper,
   solana: solanaHelper,
   tron: tronHelper,
@@ -49,11 +50,7 @@ const supportedFeatures = {
   solana: [...baseFeatures, 'getTokenInfo'],
   bitcoin: [...baseFeatures],
   'bitcoin-testnet': [...baseFeatures],
-  waves: [
-    ...baseFeatures.filter(feature => feature !== 'getAddressFromPrivateKey'),
-    'getTokenInfo',
-    'smartContractCall',
-  ],
+  waves: [...baseFeatures, 'getTokenInfo', 'smartContractCall'],
   tron: [...baseFeatures, 'getTokenInfo', 'smartContractCall'],
 };
 
@@ -90,7 +87,7 @@ function getAddressFromPrivateKey(args: GetAddressFromPrivateKeyPayload) {
       throw new Error('Invalid network');
     }
 
-    return helper.getAddressFromPrivateKey(args.privateKey);
+    return helper.getAddressFromPrivateKey(args);
   } catch (error) {
     throw error;
   }
@@ -110,18 +107,7 @@ function generateWalletFromMnemonic(args: GenerateWalletFromMnemonicPayload) {
       throw new Error('Invalid network');
     }
 
-    if (args.network.startsWith('bitcoin')) {
-      return helper.generateWalletFromMnemonic(
-        args.network,
-        args.mnemonic,
-        args.derivationPath
-      );
-    } else {
-      return helper.generateWalletFromMnemonic(
-        args.mnemonic,
-        args.derivationPath
-      );
-    }
+    return helper.generateWalletFromMnemonic(args);
   } catch (error) {
     throw error;
   }
@@ -139,7 +125,7 @@ function createWallet(args: CreateWalletPayload) {
       throw new Error('Invalid network');
     }
 
-    return helper.createWallet(args.derivationPath);
+    return helper.createWallet(args);
   } catch (error) {
     throw error;
   }
@@ -157,7 +143,7 @@ async function getBalance(args: BalancePayload) {
       throw new Error('Invalid network');
     }
 
-    return helper.getBalance({ ...args });
+    return helper.getBalance(args);
   } catch (error) {
     throw error;
   }
@@ -175,7 +161,7 @@ async function transfer(args: TransferPayload) {
       throw new Error('Invalid network');
     }
 
-    return helper.transfer({ ...args });
+    return helper.transfer(args);
   } catch (error) {
     throw error;
   }
@@ -193,7 +179,7 @@ async function getTransaction(args: GetTransactionPayload) {
       throw new Error('Invalid network');
     }
 
-    return helper.getTransaction({ ...args });
+    return helper.getTransaction(args);
   } catch (error) {
     throw error;
   }
@@ -215,7 +201,7 @@ async function getEncryptedJsonFromPrivateKey(
       throw new Error('Invalid network');
     }
 
-    return helper.getEncryptedJsonFromPrivateKey({ ...args });
+    return helper.getEncryptedJsonFromPrivateKey?.(args);
   } catch (error) {
     throw error;
   }
@@ -237,7 +223,7 @@ async function getWalletFromEncryptedJson(
       throw new Error('Invalid network');
     }
 
-    return helper.getWalletFromEncryptedJson({ ...args });
+    return helper.getWalletFromEncryptedJson?.(args);
   } catch (error) {
     throw error;
   }
@@ -255,7 +241,7 @@ async function getTokenInfo(args: IGetTokenInfoPayload) {
       throw new Error('Invalid network');
     }
 
-    return helper.getTokenInfo({ ...args });
+    return helper.getTokenInfo?.(args);
   } catch (error) {
     throw error;
   }
@@ -273,7 +259,7 @@ async function smartContractCall(args: ISmartContractCallPayload) {
       throw new Error('Invalid network');
     }
 
-    return helper.smartContractCall({ ...args });
+    return helper.smartContractCall?.(args);
   } catch (error) {
     throw error;
   }

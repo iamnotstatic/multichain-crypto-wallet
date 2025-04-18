@@ -3,8 +3,12 @@ import { successResponse } from '../utils';
 import erc20Abi from '../../abis/erc20.json';
 import {
   BalancePayload,
+  CreateWalletPayload,
+  GenerateWalletFromMnemonicPayload,
+  GetAddressFromPrivateKeyPayload,
   GetTransactionPayload,
   IGetTokenInfoPayload,
+  IResponse,
   ISmartContractCallPayload,
   TransferPayload,
 } from '../utils/types';
@@ -55,7 +59,7 @@ const getContract = async ({
   };
 };
 
-const createWallet = (derivationPath?: string) => {
+const createWallet = ({ derivationPath }: CreateWalletPayload): IResponse => {
   const path = derivationPath || "m/44'/195'/0'/0/0";
   const account = TronWeb.createRandom(undefined, path);
 
@@ -66,7 +70,9 @@ const createWallet = (derivationPath?: string) => {
   });
 };
 
-const getAddressFromPrivateKey = (privateKey: string) => {
+const getAddressFromPrivateKey = ({
+  privateKey,
+}: GetAddressFromPrivateKeyPayload): IResponse => {
   const account = TronWeb.address.fromPrivateKey(privateKey);
 
   return successResponse({
@@ -74,10 +80,10 @@ const getAddressFromPrivateKey = (privateKey: string) => {
   });
 };
 
-const generateWalletFromMnemonic = (
-  mnemonic: string,
-  derivationPath?: string
-) => {
+const generateWalletFromMnemonic = ({
+  mnemonic,
+  derivationPath,
+}: GenerateWalletFromMnemonicPayload): IResponse => {
   const path = derivationPath || "m/44'/195'/0'/0/0";
   const account = TronWeb.fromMnemonic(mnemonic, path);
 
@@ -96,7 +102,7 @@ const getBalance = async ({
   rpcUrl,
   tokenAddress,
   address,
-}: BalancePayload) => {
+}: BalancePayload): Promise<IResponse> => {
   const { tronWeb, contract } = await getContract({
     rpcUrl,
     contractAddress: tokenAddress,
@@ -128,7 +134,7 @@ const transfer = async ({
   recipientAddress,
   amount,
   feeLimit,
-}: TransferPayload) => {
+}: TransferPayload): Promise<IResponse> => {
   const { tronWeb, contract } = await getContract({
     rpcUrl,
     privateKey,
@@ -172,7 +178,7 @@ const transfer = async ({
   }
 };
 
-const getTransaction = async ({ hash, rpcUrl }: GetTransactionPayload) => {
+const getTransaction = async ({ hash, rpcUrl }: GetTransactionPayload): Promise<IResponse> => {
   const { tronWeb } = await getContract({ rpcUrl });
 
   try {
@@ -189,7 +195,7 @@ const getTokenInfo = async ({
   address,
   rpcUrl,
   apiKey,
-}: IGetTokenInfoPayload) => {
+}: IGetTokenInfoPayload): Promise<IResponse> => {
   const { contract } = await getContract({
     contractAddress: address,
     rpcUrl,
@@ -231,7 +237,7 @@ const smartContractCall = async ({
   methodType,
   feeLimit,
   contractAbi,
-}: ISmartContractCallPayload) => {
+}: ISmartContractCallPayload): Promise<IResponse> => {
   const { tronWeb } = await getContract({
     rpcUrl,
     contractAddress,
