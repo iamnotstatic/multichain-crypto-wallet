@@ -110,10 +110,18 @@ function generateWalletFromMnemonic(args: GenerateWalletFromMnemonicPayload) {
       throw new Error('Invalid network');
     }
 
-    return helper.generateWalletFromMnemonic(
-      args.mnemonic,
-      args.derivationPath
-    );
+    if (args.network.startsWith('bitcoin')) {
+      return helper.generateWalletFromMnemonic(
+        args.network,
+        args.mnemonic,
+        args.derivationPath
+      );
+    } else {
+      return helper.generateWalletFromMnemonic(
+        args.mnemonic,
+        args.derivationPath
+      );
+    }
   } catch (error) {
     throw error;
   }
