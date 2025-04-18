@@ -1,8 +1,12 @@
 import { successResponse } from '../utils';
 import {
   BalancePayload,
+  CreateWalletPayload,
+  GenerateWalletFromMnemonicPayload,
+  GetAddressFromPrivateKeyPayload,
   GetTransactionPayload,
   IGetTokenInfoPayload,
+  IResponse,
   ISmartContractCallPayload,
   ITokenInfo,
   TransferPayload,
@@ -25,7 +29,7 @@ import axios from 'axios';
 
 const WAVES_DECIMALS = 8;
 
-const createWallet = (cluster?: string) => {
+const createWallet = ({ cluster }: CreateWalletPayload): IResponse => {
   const seed = randomSeed();
   const chainId = getChainIdWithCluster(cluster);
 
@@ -36,7 +40,10 @@ const createWallet = (cluster?: string) => {
   });
 };
 
-const generateWalletFromMnemonic = (mnemonic: string, cluster?: string) => {
+const generateWalletFromMnemonic = ({
+  mnemonic,
+  cluster,
+}: GenerateWalletFromMnemonicPayload): IResponse => {
   const chainId = getChainIdWithCluster(cluster);
 
   return successResponse({
@@ -46,7 +53,17 @@ const generateWalletFromMnemonic = (mnemonic: string, cluster?: string) => {
   });
 };
 
-const getBalance = async (args: BalancePayload) => {
+const getAddressFromPrivateKey = ({
+  privateKey,
+}: GetAddressFromPrivateKeyPayload): IResponse => {
+  const chainId = getChainIdWithAddress(privateKey);
+
+  return successResponse({
+    address: address(privateKey, chainId),
+  });
+};
+
+const getBalance = async (args: BalancePayload): Promise<IResponse> => {
   try {
     if (!args.rpcUrl) {
       throw new Error('Error: Node URL is required');
@@ -80,7 +97,7 @@ const getBalance = async (args: BalancePayload) => {
   }
 };
 
-const transfer = async (args: TransferPayload) => {
+const transfer = async (args: TransferPayload): Promise<IResponse> => {
   try {
     if (!args.rpcUrl) {
       throw new Error('Error: Node URL is required');
@@ -120,7 +137,9 @@ const transfer = async (args: TransferPayload) => {
   }
 };
 
-const getTransaction = async (args: GetTransactionPayload) => {
+const getTransaction = async (
+  args: GetTransactionPayload
+): Promise<IResponse> => {
   try {
     if (!args.rpcUrl) {
       throw new Error('Error: Node URL is required');
@@ -136,7 +155,7 @@ const getTransaction = async (args: GetTransactionPayload) => {
   }
 };
 
-const getTokenInfo = async (args: IGetTokenInfoPayload) => {
+const getTokenInfo = async (args: IGetTokenInfoPayload): Promise<IResponse> => {
   try {
     const url = new URL(`assets/details/${args.address}`, args.rpcUrl);
     const { data } = await axios.get(url.toString());
@@ -155,7 +174,9 @@ const getTokenInfo = async (args: IGetTokenInfoPayload) => {
   }
 };
 
-const smartContractCall = async (args: ISmartContractCallPayload) => {
+const smartContractCall = async (
+  args: ISmartContractCallPayload
+): Promise<IResponse> => {
   let data;
 
   if (args.methodType === 'write') {
@@ -202,6 +223,7 @@ export default {
   getBalance,
   createWallet,
   generateWalletFromMnemonic,
+  getAddressFromPrivateKey,
   transfer,
   getTransaction,
   getTokenInfo,

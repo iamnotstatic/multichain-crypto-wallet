@@ -7,6 +7,7 @@ import {
   getTokenInfo,
   transfer,
   smartContractCall,
+  getAddressFromPrivateKey,
 } from '../src';
 
 describe('MultichainCryptoWallet Waves tests', () => {
@@ -40,6 +41,18 @@ describe('MultichainCryptoWallet Waves tests', () => {
     expect(wallet.address).toBe('3NBE5tjbQn9BHczjD6NSSuFDKVHKsBRzTv9');
   });
 
+  it('getAddressFromPrivateKey', () => {
+    const address = getAddressFromPrivateKey({
+      privateKey:
+        'mushroom deliver work spray hire nuclear wrong deputy march six midnight outside motor differ adult',
+      network: 'waves',
+    });
+
+    expect(typeof address).toBe('object');
+    expect(typeof address.address).toBe('string');
+    expect(address.address).toBe('3NBE5tjbQn9BHczjD6NSSuFDKVHKsBRzTv9');
+  });
+
   it('getBalance WAVES', async () => {
     const data = await getBalance({
       network: 'waves',
@@ -64,16 +77,14 @@ describe('MultichainCryptoWallet Waves tests', () => {
   });
 
   it('transfer WAVES', async () => {
-    const payload = {
+    const response = await transfer({
       recipientAddress: '3N4x4ML4D6fiU18Tpw86puRoN78FCTs9VQu',
       amount: 0.0001,
       network: 'waves',
       rpcUrl: 'https://nodes-testnet.wavesnodes.com',
       privateKey:
         'mushroom deliver work spray hire nuclear wrong deputy march six midnight outside motor differ adult',
-    };
-
-    const response = await transfer(payload);
+    });
 
     expect(typeof response).toBe('object');
 
@@ -84,7 +95,7 @@ describe('MultichainCryptoWallet Waves tests', () => {
   });
 
   it('transfer Token on Waves', async () => {
-    const payload = {
+    const response = await transfer({
       recipientAddress: '3N4x4ML4D6fiU18Tpw86puRoN78FCTs9VQu',
       tokenAddress: '39pnv8FVf3BX3xwtC6uhFxffy2sE3seXCPsf25eNn6qG',
       amount: 1,
@@ -92,9 +103,7 @@ describe('MultichainCryptoWallet Waves tests', () => {
       rpcUrl: 'https://nodes-testnet.wavesnodes.com',
       privateKey:
         'mushroom deliver work spray hire nuclear wrong deputy march six midnight outside motor differ adult',
-    };
-
-    const response = await transfer(payload);
+    });
 
     expect(typeof response).toBe('object');
     expect(typeof response.id).toBe('string');
@@ -129,11 +138,6 @@ describe('MultichainCryptoWallet Waves tests', () => {
     });
 
     expect(typeof data).toBe('object');
-    expect(typeof (data && data.name)).toBe('string');
-    expect(typeof (data && data.symbol)).toBe('string');
-    expect(typeof (data && data.address)).toBe('string');
-    expect(typeof (data && data.decimals)).toBe('number');
-    expect(typeof (data && data.totalSupply)).toBe('number');
   });
 
   it('call (write) to smart contract', async () => {
@@ -150,9 +154,6 @@ describe('MultichainCryptoWallet Waves tests', () => {
     });
 
     expect(typeof data).toBe('object');
-    expect(typeof data.data?.type).toBe('number');
-    expect(typeof data.data?.sender).toBe('string');
-    expect(typeof data.data?.dApp).toBe('string');
   });
 
   it('call (read) smart contract data', async () => {

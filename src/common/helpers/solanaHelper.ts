@@ -7,8 +7,12 @@ import {
 } from '@solana/spl-token';
 import {
   BalancePayload,
+  CreateWalletPayload,
+  GenerateWalletFromMnemonicPayload,
+  GetAddressFromPrivateKeyPayload,
   GetTransactionPayload,
   IGetTokenInfoPayload,
+  IResponse,
   ISplTokenInfo,
   ITokenInfo,
   TransferPayload,
@@ -39,7 +43,7 @@ const getConnection = (rpcUrl?: string) => {
   return connection;
 };
 
-const createWallet = (derivationPath?: string) => {
+const createWallet = ({ derivationPath }: CreateWalletPayload) => {
   const path = derivationPath || "m/44'/501'/0'/0'";
 
   const mnemonic = bip39.generateMnemonic();
@@ -57,10 +61,10 @@ const createWallet = (derivationPath?: string) => {
   });
 };
 
-const generateWalletFromMnemonic = (
-  mnemonic: string,
-  derivationPath?: string
-) => {
+const generateWalletFromMnemonic = ({
+  mnemonic,
+  derivationPath,
+}: GenerateWalletFromMnemonicPayload): IResponse => {
   const path = derivationPath || "m/44'/501'/0'/0'";
   const seed = bip39.mnemonicToSeedSync(mnemonic);
   const derivedSeed = derivePath(path, seed.toString('hex')).key;
@@ -76,7 +80,9 @@ const generateWalletFromMnemonic = (
   });
 };
 
-const getAddressFromPrivateKey = (privateKey: string) => {
+const getAddressFromPrivateKey = ({
+  privateKey,
+}: GetAddressFromPrivateKeyPayload): IResponse => {
   let secretKey;
 
   if (privateKey.split(',').length > 1) {
@@ -94,7 +100,7 @@ const getAddressFromPrivateKey = (privateKey: string) => {
   });
 };
 
-const getBalance = async (args: BalancePayload) => {
+const getBalance = async (args: BalancePayload): Promise<IResponse> => {
   const connection = getConnection(args.rpcUrl);
 
   try {
@@ -128,7 +134,7 @@ const getBalance = async (args: BalancePayload) => {
   }
 };
 
-const transfer = async (args: TransferPayload) => {
+const transfer = async (args: TransferPayload): Promise<IResponse> => {
   const connection = getConnection(args.rpcUrl);
 
   try {
@@ -205,7 +211,9 @@ const transfer = async (args: TransferPayload) => {
   }
 };
 
-const getTransaction = async (args: GetTransactionPayload) => {
+const getTransaction = async (
+  args: GetTransactionPayload
+): Promise<IResponse> => {
   const connection = getConnection(args.rpcUrl);
 
   try {
@@ -221,31 +229,31 @@ const getTransaction = async (args: GetTransactionPayload) => {
   }
 };
 
-const getTokenInfo = async (args: IGetTokenInfoPayload) => {
+const getTokenInfo = async (args: IGetTokenInfoPayload): Promise<IResponse> => {
   try {
     const connection = getConnection(args.rpcUrl);
     const tokenList = await getTokenList(args.cluster!);
     const token = tokenList.find(token => token.address === args.address);
 
-    if (token) {
-      const data: ITokenInfo = {
-        name: token.name,
-        symbol: token.symbol,
-        address: token.address,
-        decimals: token.decimals,
-        logoUrl: token.logoURI,
-        totalSupply: '0',
-      };
-
-      const tokenSupply = await connection.getTokenSupply(
-        new solanaWeb3.PublicKey(data.address)
-      );
-      data.totalSupply = tokenSupply.value.uiAmount!.toString();
-
-      return successResponse({ ...data });
+    if (!token) {
+      throw new Error('Token not found');
     }
 
-    return;
+    const data: ITokenInfo = {
+      name: token.name,
+      symbol: token.symbol,
+      address: token.address,
+      decimals: token.decimals,
+      logoUrl: token.logoURI,
+      totalSupply: '0',
+    };
+
+    const tokenSupply = await connection.getTokenSupply(
+      new solanaWeb3.PublicKey(data.address)
+    );
+    data.totalSupply = tokenSupply.value.uiAmount!.toString();
+
+    return successResponse({ ...data });
   } catch (error) {
     throw error;
   }

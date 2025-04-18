@@ -21,12 +21,6 @@ describe('MultichainCryptoWallet Bitcoin tests', () => {
       network: 'bitcoin', // 'bitcoin' or 'bitcoin-testnet'
     });
 
-    console.log('Wallet:', {
-      address: wallet.address,
-      privateKey: wallet.privateKey,
-      mnemonic: wallet.mnemonic,
-    });
-
     expect(typeof wallet).toBe('object');
   });
 
@@ -36,12 +30,6 @@ describe('MultichainCryptoWallet Bitcoin tests', () => {
         'excess quit spot inspire stereo scrap cave wife narrow era pizza typical',
       derivationPath: "m/44'/0'/0'/0/0", // Leave empty to use default derivation path
       network: 'bitcoin', // 'bitcoin' or 'bitcoin-testnet'
-    });
-
-    console.log('Wallet from mnemonic:', {
-      address: wallet.address,
-      privateKey: wallet.privateKey,
-      mnemonic: wallet.mnemonic,
     });
 
     expect(wallet.address).toBe('1NV8FPKDW1hxJFxc2dNVZDAp7iCqxCLeFu');
@@ -58,16 +46,26 @@ describe('MultichainCryptoWallet Bitcoin tests', () => {
       privateKey: 'KxqTGtCMnX6oL9rxynDKCRJXt64Gm5ame4AEQcYncFhSSUxFBkeJ',
       network: 'bitcoin', // 'bitcoin' or 'bitcoin-testnet'
     });
+
     expect(data.address).toBe('1NV8FPKDW1hxJFxc2dNVZDAp7iCqxCLeFu');
   });
 
   it('getBalance', async () => {
     const data = await getBalance({
-      address: 'mqFyLbaKmH2Z4jEdtveZbqLHsycFZgC5Se',
-      network: 'bitcoin-testnet', // 'bitcoin' or 'bitcoin-testnet'
+      address: 'bc1q7yh99tgvqnpuzgja4etahdgznxldwu3flrf2fl',
+      network: 'bitcoin', // 'bitcoin' or 'bitcoin-testnet'
     });
 
     expect(typeof data.balance).toBe('number');
+  });
+
+  it('Get transaction', async () => {
+    const receipt = await getTransaction({
+      network: 'bitcoin', // 'bitcoin' or 'bitcoin-testnet'
+      hash: 'e499940336c523ed7bb6dce45f3e6fc9a68442cb814ca2f84c2c0c1cdca37c6d',
+    });
+
+    expect(typeof receipt).toBe('object');
   });
 
   it('Transfer', async () => {
@@ -81,14 +79,5 @@ describe('MultichainCryptoWallet Bitcoin tests', () => {
     });
 
     expect(typeof response).toBe('object');
-  });
-
-  it('Get transaction', async () => {
-    const receipt = await getTransaction({
-      network: 'bitcoin-testnet', // 'bitcoin' or 'bitcoin-testnet'
-      hash: '4f6c3661e0e6d190dbdfb6c0791396fccee653c5bf4a5249b049341c2b539ee1',
-    });
-
-    expect(typeof receipt).toBe('object');
   });
 });

@@ -132,3 +132,16 @@ export interface ISmartContractCallPayload {
   nonce?: number;
   privateKey?: string;
 }
+
+export interface INetworkHelper {
+  getAddressFromPrivateKey: (args: GetAddressFromPrivateKeyPayload) => IResponse;
+  generateWalletFromMnemonic: (args: GenerateWalletFromMnemonicPayload) => IResponse;
+  createWallet: (args: CreateWalletPayload) => IResponse;
+  getBalance: (args: BalancePayload) => Promise<IResponse>;
+  transfer: (args: TransferPayload) => Promise<IResponse>;
+  getTransaction: (args: GetTransactionPayload) => Promise<IResponse>;
+  getEncryptedJsonFromPrivateKey?: (args: GetEncryptedJsonFromPrivateKey) => Promise<IResponse>;
+  getWalletFromEncryptedJson?: (args: GetWalletFromEncryptedjsonPayload) => Promise<IResponse>;
+  getTokenInfo?: (args: IGetTokenInfoPayload) => Promise<IResponse>;
+  smartContractCall?: (args: ISmartContractCallPayload) => Promise<IResponse>;
+}

@@ -76,6 +76,7 @@ describe('MultichainCryptoWallet Solana tests', () => {
       privateKey:
         'qUfgDqNZ8EmZtG7FCdvo8ETTQb8crmzcYUdrVdpjfxZiVkrwSjQ9L2ov55oRt25ZSJXCjHw6hqtKJnxdnoGtp1M',
     });
+
     expect(typeof response).toBe('object');
   });
 
