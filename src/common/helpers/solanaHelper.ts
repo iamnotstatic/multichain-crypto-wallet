@@ -1,5 +1,6 @@
 import provider from '../utils/solana';
 import * as solanaWeb3 from '@solana/web3.js';
+import { Keypair } from '@solana/web3.js';
 import {
   getOrCreateAssociatedTokenAccount,
   transfer as transferToken,
@@ -24,6 +25,7 @@ import { derivePath } from 'ed25519-hd-key';
 // @ts-ignore
 import * as BufferLayout from 'buffer-layout';
 import axios from 'axios';
+import nacl from 'tweetnacl';
 
 export const ACCOUNT_LAYOUT = BufferLayout.struct([
   BufferLayout.blob(32, 'mint'),
@@ -274,6 +276,37 @@ const getTokenList = async (
 
   return [];
 };
+
+export function signSolanaMessage(message: string, privateKey: Uint8Array): Uint8Array {
+  // Validate input message
+  if (!message || typeof message !== 'string') {
+    throw new Error('Message must be a non-empty string');
+  }
+
+  // Validate private key
+  if (!(privateKey instanceof Uint8Array) || privateKey.length !== 64) {
+    throw new Error('Private key must be a 64-byte Uint8Array');
+  }
+
+  try {
+    // Create keypair from private key
+    const keypair = Keypair.fromSecretKey(privateKey);
+
+    // Convert message to Uint8Array and sign
+    const messageBytes = new TextEncoder().encode(message);
+    //const signature = keypair.sign(messageBytes);
+    const signature = nacl.sign.detached(messageBytes, keypair.secretKey.slice(0,32));
+
+    // Verify signature lenght (Ed25519 signatures are 64 bytes)
+    if (signature.length !== 64) {
+      throw new Error('Invalid signature lenght');
+    }
+
+    return signature;
+  } catch (error) {
+    throw new Error(`Signing failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+  }
+}
 
 export default {
   getBalance,
