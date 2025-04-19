@@ -1,0 +1,75 @@
+name: "🐛 Bug Report"
+description: Report a bug to help us improve the Multichain Crypto Wallet
+title: "[Bug]: "
+labels: ["bug", "needs triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Thanks for taking the time to report a bug!
+
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: Provide details about your environment (e.g., OS, browser, Node version)
+      placeholder: "e.g., macOS Ventura, Chrome 118, Node 18.12.1"
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug Description
+      description: A clear and concise description of what the bug is.
+      placeholder: "Describe the issue you're facing..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to Reproduce
+      description: How can we reproduce the issue?
+      placeholder: |
+        1. Go to '...'
+        2. Click on '...'
+        3. Scroll down to '...'
+        4. See error
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: What did you expect to happen?
+      placeholder: "It should have..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual Behavior
+      description: What actually happened?
+      placeholder: "Instead, it..."
+    validations:
+      required: true
+
+  - type: input
+    id: repo-version
+    attributes:
+      label: Wallet Version / Branch
+      description: Which version or branch are you seeing the issue on?
+      placeholder: "e.g. v1.0.3 or main"
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant Logs / Screenshots
+      description: Paste any logs or screenshots that may help us debug.
+      placeholder: "Copy-paste terminal logs or attach screenshots here."
+      render: shell

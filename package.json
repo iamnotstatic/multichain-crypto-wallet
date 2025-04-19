@@ -1,5 +1,5 @@
 {
-  "version": "0.2.8",
+  "version": "0.2.10",
   "license": "MIT",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -14,6 +14,11 @@
     "start": "tsdx watch",
     "build": "tsdx build",
     "test": "tsdx test",
+    "test:btc": "tsdx test --testPathPattern=bitcoin",
+    "test:eth": "tsdx test --testPathPattern=ethereum",
+    "test:sol": "tsdx test --testPathPattern=solana",
+    "test:tron": "tsdx test --testPathPattern=tron",
+    "test:waves": "tsdx test --testPathPattern=waves",
     "lint": "tsdx lint",
     "prepare": "tsdx build",
     "size": "size-limit",
@@ -32,7 +37,7 @@
     "trailingComma": "es5"
   },
   "name": "multichain-crypto-wallet",
-  "author": "iamnotstatic",
+  "author": "Abdulfatai Suleiman <abdulfataisuleiman67@gmail.com>",
   "keywords": [
     "multichain",
     "crypto",
@@ -48,7 +53,11 @@
     "polygon",
     "avalanche",
     "waves",
-    "cryptography"
+    "cryptography",
+    "tron",
+    "tronweb",
+    "TRC20",
+    "ERC20"
   ],
   "repository": {
     "type": "git",
@@ -83,7 +92,7 @@
     "@waves/waves-transactions": "^4.2.10",
     "axios": "^0.27.2",
     "bip32": "^3.0.1",
-    "bip39": "^3.0.4",
+    "bip39": "^3.1.0",
     "bitcoinjs-lib": "^6.0.1",
     "bs58": "^5.0.0",
     "buffer-layout": "^1.2.2",
@@ -92,6 +101,7 @@
     "ethers": "^5.6.2",
     "immutable": "^4.1.0",
     "tiny-secp256k1": "^2.2.1",
+    "tronweb": "^6.0.2",
     "url": "^0.11.0"
   },
   "browser": {

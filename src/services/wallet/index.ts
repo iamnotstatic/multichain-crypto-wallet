@@ -4,6 +4,7 @@ import bitcoinHelper from '../../common/helpers/bitcoinHelper';
 import ethereumHelper from '../../common/helpers/ethereumHelper';
 import solanaHelper from '../../common/helpers/solanaHelper';
 import wavesHelper from '../../common/helpers/wavesHelper';
+import tronHelper from '../../common/helpers/tronHelper';
 
 import {
   TransferPayload,
@@ -16,14 +17,83 @@ import {
   GetEncryptedJsonFromPrivateKey,
   IGetTokenInfoPayload,
   ISmartContractCallPayload,
+  Network,
+  INetworkHelper,
 } from '../../common/utils/types';
+
+/**
+ * Mapping of supported networks to their corresponding helper implementations.
+ */
+const networkHelpers: Record<Network, INetworkHelper> = {
+  ethereum: ethereumHelper,
+  solana: solanaHelper,
+  tron: tronHelper,
+  waves: wavesHelper,
+  bitcoin: bitcoinHelper,
+  'bitcoin-testnet': bitcoinHelper,
+};
+
+/**
+ * Core features available for all networks.
+ */
+const baseFeatures = [
+  'createWallet',
+  'getAddressFromPrivateKey',
+  'generateWalletFromMnemonic',
+  'getBalance',
+  'transfer',
+  'getTransaction',
+];
+
+/**
+ * Feature support matrix for each network.
+ */
+const supportedFeatures: Record<Network, string[]> = {
+  ethereum: [
+    ...baseFeatures,
+    'getEncryptedJsonFromPrivateKey',
+    'getWalletFromEncryptedJson',
+    'getTokenInfo',
+    'smartContractCall',
+  ],
+  solana: [...baseFeatures, 'getTokenInfo'],
+  bitcoin: [...baseFeatures],
+  'bitcoin-testnet': [...baseFeatures],
+  waves: [...baseFeatures, 'getTokenInfo', 'smartContractCall'],
+  tron: [...baseFeatures, 'getTokenInfo', 'smartContractCall'],
+};
+
+/**
+ * Retrieves the helper for the specified network or throws if unsupported.
+ *
+ * @param network - The blockchain network identifier.
+ * @returns The network helper implementation.
+ * @throws {Error} When an unsupported network is provided.
+ */
+function getNetworkHelper(network: Network): INetworkHelper {
+  const helper = networkHelpers[network];
+  if (!helper) {
+    throw new Error(`Unsupported network: ${network}`);
+  }
+  return helper;
+}
+
+/**
+ * Checks if a given feature is supported on the specified network.
+ *
+ * @param network - The blockchain network identifier.
+ * @param feature - The feature to check support for.
+ * @returns True if supported; otherwise, false.
+ */
+function isFeatureSupported(network: Network, feature: string): boolean {
+  return supportedFeatures[network]?.includes(feature) || false;
+}
 
 /**
  * Generates a mnemonic phrase.
  *
  * @param numWords - The number of words in the mnemonic (default is 12).
  * @returns A mnemonic phrase as a string.
- *
  * @remarks The strength is calculated as (numWords / 3) * 32.
  */
 function generateMnemonic(numWords: number = 12): string {
@@ -36,28 +106,19 @@ function generateMnemonic(numWords: number = 12): string {
  *
  * @param args - The payload containing the private key and network information.
  * @returns The derived blockchain address.
- *
  * @throws {Error} When an unsupported or invalid network is provided.
- *
  * @remarks Supported networks: Ethereum, Solana, and Bitcoin variants.
  */
-function getAddressFromPrivateKey(args: GetAddressFromPrivateKeyPayload) {
-  try {
-    if (args.network === 'ethereum') {
-      return ethereumHelper.getAddressFromPrivateKey(args.privateKey);
-    } else if (args.network === 'solana') {
-      return solanaHelper.getAddressFromPrivateKey(args.privateKey);
-    } else if (args.network.includes('bitcoin')) {
-      return bitcoinHelper.getAddressFromPrivateKey(
-        args.privateKey,
-        args.network
-      );
-    }
-
-    throw new Error('Invalid network');
-  } catch (error) {
-    throw error;
+function getAddressFromPrivateKey(
+  args: GetAddressFromPrivateKeyPayload
+) {
+  if (!isFeatureSupported(args.network, 'getAddressFromPrivateKey')) {
+    throw new Error(
+      `getAddressFromPrivateKey is not supported for ${args.network}`
+    );
   }
+  const helper = getNetworkHelper(args.network);
+  return helper.getAddressFromPrivateKey(args);
 }
 
 /**
@@ -65,40 +126,19 @@ function getAddressFromPrivateKey(args: GetAddressFromPrivateKeyPayload) {
  *
  * @param args - The payload containing the mnemonic, derivation path, and network details.
  * @returns A wallet object generated from the provided mnemonic.
- *
  * @throws {Error} When an unsupported or invalid network is provided.
- *
  * @remarks Supported networks: Ethereum, Solana, Bitcoin variants, and Waves.
  */
-function generateWalletFromMnemonic(args: GenerateWalletFromMnemonicPayload) {
-  try {
-    if (args.network === 'ethereum') {
-      return ethereumHelper.generateWalletFromMnemonic(
-        args.mnemonic,
-        args.derivationPath
-      );
-    } else if (args.network === 'solana') {
-      return solanaHelper.generateWalletFromMnemonic(
-        args.mnemonic,
-        args.derivationPath
-      );
-    } else if (args.network.includes('bitcoin')) {
-      return bitcoinHelper.generateWalletFromMnemonic(
-        args.network,
-        args.mnemonic,
-        args.derivationPath
-      );
-    } else if (args.network === 'waves') {
-      return wavesHelper.generateWalletFromMnemonic(
-        args.mnemonic,
-        args.cluster
-      );
-    }
-
-    throw new Error('Invalid network');
-  } catch (error) {
-    throw error;
+function generateWalletFromMnemonic(
+  args: GenerateWalletFromMnemonicPayload
+) {
+  if (!isFeatureSupported(args.network, 'generateWalletFromMnemonic')) {
+    throw new Error(
+      `generateWalletFromMnemonic is not supported for ${args.network}`
+    );
   }
+  const helper = getNetworkHelper(args.network);
+  return helper.generateWalletFromMnemonic(args);
 }
 
 /**
@@ -107,27 +147,15 @@ function generateWalletFromMnemonic(args: GenerateWalletFromMnemonicPayload) {
  * @param args - The payload containing network information and configuration parameters
  *               (such as derivation path or cluster details).
  * @returns The newly created wallet.
- *
  * @throws {Error} When an unsupported or invalid network is provided.
- *
  * @remarks Supported networks: Ethereum, Solana, Bitcoin variants, and Waves.
  */
 function createWallet(args: CreateWalletPayload) {
-  try {
-    if (args.network === 'ethereum') {
-      return ethereumHelper.createWallet(args.derivationPath);
-    } else if (args.network === 'solana') {
-      return solanaHelper.createWallet(args.derivationPath);
-    } else if (args.network.includes('bitcoin')) {
-      return bitcoinHelper.createWallet(args.network, args.derivationPath);
-    } else if (args.network === 'waves') {
-      return wavesHelper.createWallet(args.cluster);
-    }
-
-    throw new Error('Invalid network');
-  } catch (error) {
-    throw error;
+  if (!isFeatureSupported(args.network, 'createWallet')) {
+    throw new Error(`createWallet is not supported for ${args.network}`);
   }
+  const helper = getNetworkHelper(args.network);
+  return helper.createWallet(args);
 }
 
 /**
@@ -135,27 +163,15 @@ function createWallet(args: CreateWalletPayload) {
  *
  * @param args - The payload containing the address and network information.
  * @returns The balance of the specified address or wallet.
- *
  * @throws {Error} When an unsupported or invalid network is provided.
- *
  * @remarks Supported networks: Ethereum, Solana, Bitcoin variants, and Waves.
  */
 async function getBalance(args: BalancePayload) {
-  try {
-    if (args.network === 'ethereum') {
-      return await ethereumHelper.getBalance({ ...args });
-    } else if (args.network === 'solana') {
-      return await solanaHelper.getBalance({ ...args });
-    } else if (args.network.includes('bitcoin')) {
-      return await bitcoinHelper.getBalance(args.address, args.network);
-    } else if (args.network === 'waves') {
-      return await wavesHelper.getBalance({ ...args });
-    }
-
-    throw new Error('Invalid network');
-  } catch (error) {
-    throw error;
+  if (!isFeatureSupported(args.network, 'getBalance')) {
+    throw new Error(`getBalance is not supported for ${args.network}`);
   }
+  const helper = getNetworkHelper(args.network);
+  return helper.getBalance(args);
 }
 
 /**
@@ -163,27 +179,15 @@ async function getBalance(args: BalancePayload) {
  *
  * @param args - The payload containing transfer details, including sender, recipient, amount, and network.
  * @returns The result of the transfer operation.
- *
  * @throws {Error} When an unsupported or invalid network is provided.
- *
  * @remarks Supported networks: Ethereum, Solana, Bitcoin variants, and Waves.
  */
 async function transfer(args: TransferPayload) {
-  try {
-    if (args.network === 'ethereum') {
-      return await ethereumHelper.transfer({ ...args });
-    } else if (args.network === 'solana') {
-      return await solanaHelper.transfer({ ...args });
-    } else if (args.network.includes('bitcoin')) {
-      return await bitcoinHelper.transfer({ ...args });
-    } else if (args.network === 'waves') {
-      return await wavesHelper.transfer({ ...args });
-    }
-
-    throw new Error('Invalid network');
-  } catch (error) {
-    throw error;
+  if (!isFeatureSupported(args.network, 'transfer')) {
+    throw new Error(`transfer is not supported for ${args.network}`);
   }
+  const helper = getNetworkHelper(args.network);
+  return helper.transfer(args);
 }
 
 /**
@@ -191,27 +195,15 @@ async function transfer(args: TransferPayload) {
  *
  * @param args - The payload containing transaction identification and network details.
  * @returns The transaction details.
- *
  * @throws {Error} When an unsupported or invalid network is provided.
- *
  * @remarks Supported networks: Ethereum, Solana, Bitcoin variants, and Waves.
  */
 async function getTransaction(args: GetTransactionPayload) {
-  try {
-    if (args.network === 'ethereum') {
-      return await ethereumHelper.getTransaction({ ...args });
-    } else if (args.network === 'solana') {
-      return await solanaHelper.getTransaction({ ...args });
-    } else if (args.network.includes('bitcoin')) {
-      return await bitcoinHelper.getTransaction({ ...args });
-    } else if (args.network === 'waves') {
-      return await wavesHelper.getTransaction({ ...args });
-    }
-
-    throw new Error('Invalid network');
-  } catch (error) {
-    throw error;
+  if (!isFeatureSupported(args.network, 'getTransaction')) {
+    throw new Error(`getTransaction is not supported for ${args.network}`);
   }
+  const helper = getNetworkHelper(args.network);
+  return helper.getTransaction(args);
 }
 
 /**
@@ -219,23 +211,19 @@ async function getTransaction(args: GetTransactionPayload) {
  *
  * @param args - The payload containing the private key and network information.
  * @returns A promise that resolves to the encrypted JSON wallet.
- *
  * @throws {Error} When an unsupported or invalid network is provided.
- *
  * @remarks Currently, only the Ethereum network is supported.
  */
 async function getEncryptedJsonFromPrivateKey(
   args: GetEncryptedJsonFromPrivateKey
 ) {
-  try {
-    if (args.network === 'ethereum') {
-      return await ethereumHelper.getEncryptedJsonFromPrivateKey({ ...args });
-    }
-
-    throw new Error('Invalid network');
-  } catch (error) {
-    throw error;
+  if (!isFeatureSupported(args.network, 'getEncryptedJsonFromPrivateKey')) {
+    throw new Error(
+      `getEncryptedJsonFromPrivateKey is not supported for ${args.network}`
+    );
   }
+  const helper = getNetworkHelper(args.network);
+  return helper.getEncryptedJsonFromPrivateKey?.(args);
 }
 
 /**
@@ -243,23 +231,19 @@ async function getEncryptedJsonFromPrivateKey(
  *
  * @param args - The payload containing the encrypted JSON and network details.
  * @returns A promise that resolves to the decrypted wallet.
- *
  * @throws {Error} When an unsupported or invalid network is provided.
- *
  * @remarks Currently, only the Ethereum network is supported.
  */
 async function getWalletFromEncryptedJson(
   args: GetWalletFromEncryptedjsonPayload
 ) {
-  try {
-    if (args.network === 'ethereum') {
-      return await ethereumHelper.getWalletFromEncryptedJson({ ...args });
-    }
-
-    throw new Error('Invalid network');
-  } catch (error) {
-    throw error;
+  if (!isFeatureSupported(args.network, 'getWalletFromEncryptedJson')) {
+    throw new Error(
+      `getWalletFromEncryptedJson is not supported for ${args.network}`
+    );
   }
+  const helper = getNetworkHelper(args.network);
+  return helper.getWalletFromEncryptedJson?.(args);
 }
 
 /**
@@ -267,25 +251,15 @@ async function getWalletFromEncryptedJson(
  *
  * @param args - The payload containing token and network details.
  * @returns The token information.
- *
  * @throws {Error} When an unsupported or invalid network is provided.
- *
  * @remarks Supported networks: Ethereum, Solana, and Waves.
  */
 async function getTokenInfo(args: IGetTokenInfoPayload) {
-  try {
-    if (args.network === 'ethereum') {
-      return await ethereumHelper.getTokenInfo({ ...args });
-    } else if (args.network === 'solana') {
-      return solanaHelper.getTokenInfo({ ...args });
-    } else if (args.network === 'waves') {
-      return wavesHelper.getTokenInfo({ ...args });
-    }
-
-    throw new Error('Invalid network');
-  } catch (error) {
-    throw error;
+  if (!isFeatureSupported(args.network, 'getTokenInfo')) {
+    throw new Error(`getTokenInfo is not supported for ${args.network}`);
   }
+  const helper = getNetworkHelper(args.network);
+  return helper.getTokenInfo?.(args);
 }
 
 /**
@@ -293,23 +267,15 @@ async function getTokenInfo(args: IGetTokenInfoPayload) {
  *
  * @param args - The payload containing smart contract call details and network information.
  * @returns The result of the smart contract call.
- *
  * @throws {Error} When an unsupported or invalid network is provided, or if the network is not Ethereum or Waves.
- *
  * @remarks Currently, only Ethereum and Waves networks are supported.
  */
 async function smartContractCall(args: ISmartContractCallPayload) {
-  try {
-    if (args.network === 'ethereum') {
-      return await ethereumHelper.smartContractCall({ ...args });
-    } else if (args.network === 'waves') {
-      return await wavesHelper.smartContractCall({ ...args });
-    } else {
-      throw new Error('Only Ethereum and Waves is supported at this time');
-    }
-  } catch (error) {
-    throw error;
+  if (!isFeatureSupported(args.network, 'smartContractCall')) {
+    throw new Error(`smartContractCall is not supported for ${args.network}`);
   }
+  const helper = getNetworkHelper(args.network);
+  return helper.smartContractCall?.(args);
 }
 
 export {

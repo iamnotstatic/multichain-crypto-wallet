@@ -10,6 +10,10 @@ import {
   IGetTokenInfoPayload,
   ITokenInfo,
   ISmartContractCallPayload,
+  CreateWalletPayload,
+  GetAddressFromPrivateKeyPayload,
+  GenerateWalletFromMnemonicPayload,
+  IResponse,
 } from '../utils/types';
 import { successResponse } from '../utils';
 
@@ -26,6 +30,10 @@ const getContract = async ({
   privateKey,
   abi,
 }: GetContract) => {
+  if (!rpcUrl) {
+    throw new Error('RPC URL is required');
+  }
+
   const providerInstance = provider(rpcUrl);
   const gasPrice = await providerInstance.getGasPrice();
   const gas = ethers.BigNumber.from(21000);
@@ -60,7 +68,7 @@ const getContract = async ({
   };
 };
 
-const createWallet = (derivationPath?: string) => {
+const createWallet = ({ derivationPath }: CreateWalletPayload): IResponse => {
   const path = derivationPath || "m/44'/60'/0'/0/0";
   const wallet = ethers.Wallet.createRandom({
     path,
@@ -73,7 +81,9 @@ const createWallet = (derivationPath?: string) => {
   });
 };
 
-const getAddressFromPrivateKey = (privateKey: string) => {
+const getAddressFromPrivateKey = ({
+  privateKey,
+}: GetAddressFromPrivateKeyPayload): IResponse => {
   const wallet = new ethers.Wallet(privateKey);
 
   return successResponse({
@@ -81,10 +91,10 @@ const getAddressFromPrivateKey = (privateKey: string) => {
   });
 };
 
-const generateWalletFromMnemonic = (
-  mnemonic: string,
-  derivationPath?: string
-) => {
+const generateWalletFromMnemonic = ({
+  mnemonic,
+  derivationPath,
+}: GenerateWalletFromMnemonicPayload): IResponse => {
   const path = derivationPath || "m/44'/60'/0'/0/0";
   const wallet = ethers.Wallet.fromMnemonic(mnemonic, path);
 
@@ -99,7 +109,7 @@ const getBalance = async ({
   rpcUrl,
   tokenAddress,
   address,
-}: BalancePayload) => {
+}: BalancePayload): Promise<IResponse> => {
   const { contract, providerInstance } = await getContract({
     rpcUrl,
     contractAddress: tokenAddress,
@@ -133,7 +143,7 @@ const transfer = async ({
   tokenAddress,
   rpcUrl,
   ...args
-}: TransferPayload) => {
+}: TransferPayload): Promise<IResponse> => {
   const { contract, providerInstance, gasPrice, nonce } = await getContract({
     rpcUrl,
     privateKey,
@@ -185,11 +195,11 @@ const transfer = async ({
   }
 };
 
-const getTransaction = async ({ hash, rpcUrl }: GetTransactionPayload) => {
+const getTransaction = async ({ hash, rpcUrl }: GetTransactionPayload): Promise<IResponse> => {
   const { providerInstance } = await getContract({ rpcUrl });
 
   try {
-    const tx = await providerInstance.getTransaction(hash);
+    const tx = await providerInstance.getTransactionReceipt(hash);
     return successResponse({
       ...tx,
     });
@@ -200,7 +210,7 @@ const getTransaction = async ({ hash, rpcUrl }: GetTransactionPayload) => {
 
 const getEncryptedJsonFromPrivateKey = async (
   args: GetEncryptedJsonFromPrivateKey
-) => {
+): Promise<IResponse> => {
   const wallet = new ethers.Wallet(args.privateKey);
   const json = await wallet.encrypt(args.password);
 
@@ -209,7 +219,7 @@ const getEncryptedJsonFromPrivateKey = async (
 
 const getWalletFromEncryptedJson = async (
   args: GetWalletFromEncryptedjsonPayload
-) => {
+): Promise<IResponse> => {
   const wallet = await ethers.Wallet.fromEncryptedJson(
     args.json,
     args.password
@@ -221,7 +231,7 @@ const getWalletFromEncryptedJson = async (
   });
 };
 
-const getTokenInfo = async ({ address, rpcUrl }: IGetTokenInfoPayload) => {
+const getTokenInfo = async ({ address, rpcUrl }: IGetTokenInfoPayload): Promise<IResponse> => {
   const { contract } = await getContract({ contractAddress: address, rpcUrl });
 
   if (contract) {
@@ -237,14 +247,15 @@ const getTokenInfo = async ({ address, rpcUrl }: IGetTokenInfoPayload) => {
       symbol,
       decimals,
       address: contract.address,
-      totalSupply: parseInt(ethers.utils.formatUnits(totalSupply, decimals)),
+      totalSupply: ethers.utils.formatUnits(totalSupply, decimals).toString(),
     };
     return successResponse({ ...data });
   }
-  return;
+
+  throw new Error('Contract not found');
 };
 
-const smartContractCall = async (args: ISmartContractCallPayload) => {
+const smartContractCall = async (args: ISmartContractCallPayload): Promise<IResponse> => {
   const { contract, gasPrice, nonce } = await getContract({
     rpcUrl: args.rpcUrl,
     contractAddress: args.contractAddress,

@@ -1,7 +1,7 @@
 import { IResponse } from './types';
 import * as base64 from 'base64-js';
 
-export const successResponse = (args: IResponse) => {
+export const successResponse = (args: IResponse): IResponse => {
   return args;
 };
 
