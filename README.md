@@ -947,16 +947,7 @@ const evmSignature = await signMessage("hello", "0xYourPrivateKey", "evm");
 const solanaKey = new Uint8Array([...]); // 64-byte Key
 
 const solanaSignature = await signMessage("hello", solanaKey, "solana");
-
-
-### Updated Implementation
-
-- Moved logic to `ethereumHelper.ts` and `solanaHelper.ts` as requested
-
-- Removed standalone `signMessage.ts`
-
-- Maintained all original functionality
-
+```
 ### Want to contribute?
 
 Contributions are welcome! Kindly refer to the [contribution guidelines](CONTRIBUTING.md).

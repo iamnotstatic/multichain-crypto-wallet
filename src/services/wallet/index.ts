@@ -5,6 +5,8 @@ import ethereumHelper from '../../common/helpers/ethereumHelper';
 import solanaHelper from '../../common/helpers/solanaHelper';
 import wavesHelper from '../../common/helpers/wavesHelper';
 import tronHelper from '../../common/helpers/tronHelper';
+import { ethers } from 'ethers';
+import { Keypair } from '@solana/web3.js';
 
 import {
   TransferPayload,
@@ -268,6 +270,70 @@ async function smartContractCall(args: ISmartContractCallPayload) {
     return helper.smartContractCall({ ...args });
   } catch (error) {
     throw error;
+  }
+}
+
+export async function signMessage(
+  message: string,
+  privateKey: string | Uint8Array,
+  chainType: Network 
+): Promise<string> {
+  if (!message || typeof message !== "string") {
+    throw new Error("Message must be a non-empty string");
+  }
+
+  if (!privateKey) {
+    throw new Error("private Key is required");
+  }
+
+  const helper = getNetworkHelper(chainType);
+
+  if (!helper) {
+    throw new Error(`Unsupported network: ${chainType}`);
+  }
+
+  try {
+    switch (chainType) {
+      case "ethereum":
+      case "tron":
+      case "waves":{
+        // EVM chains
+        if (typeof privateKey !== "string" || !privateKey.startsWith("0x")) {
+          throw new Error("EVM private key must be a hex string (0x-prefixed)");
+        }  
+
+        const wallet = new ethers.Wallet(privateKey);
+        return await wallet.signMessage(message);
+      }
+      
+      case "solana": {
+        // solana
+        if (!(privateKey instanceof Uint8Array) || privateKey.length !== 64) {
+          throw new Error("solana private key must be a 64-byte Uint8Array");
+        } 
+
+        const keypair = Keypair.fromSecretKey(privateKey);
+        const encodedMessage = new TextEncoder().encode(message);
+        const nacl = await import("tweetnacl");
+        const signature = nacl.sign.detached(encodedMessage, keypair.secretKey);
+        return Buffer.from(signature).toString("base64");
+      }
+
+      case "bitcoin":
+      case "bitcoin-testnet": {
+        // Bitcoin
+        if (typeof helper.signMessage !== "function") {
+          throw new Error(`signMessage is not supported for ${chainType}`);
+        }
+
+        return helper.signMessage(message, privateKey);
+      } 
+
+      default:
+        throw new Error(`Unsupported chain type: ${chainType}`);
+    }
+  } catch (error) {
+    throw new Error(`Signing failed: ${error.message}`);
   }
 }
 

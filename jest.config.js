@@ -11,4 +11,4 @@ const config = {
   setupFiles: ['./jest.setup.js'],
 };
 
-module.exports = config;
+module.exports = config; 

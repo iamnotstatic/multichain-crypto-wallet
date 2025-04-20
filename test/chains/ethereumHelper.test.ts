@@ -1,4 +1,4 @@
-import { signEvmMessage } from "../src/common/helpers/ethereumHelper";
+import { signEvmMessage } from "../../src/common/helpers/ethereumHelper";
 import { ethers } from "ethers";
 
 describe("EVMSigner", () => {

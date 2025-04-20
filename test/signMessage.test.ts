@@ -1,26 +1,27 @@
-import { signMessage } from "../src/utils/signMessage";
+import { signMessage } from "../src/services/wallet/index";
+import { Network } from "../src/common/utils/types"; 
 import { ethers } from "ethers";
-import { keyPair } from "@solana/web3.js";
+import { Keypair } from "@solana/web3.js";
 
 describe("signMessage", () => {
     // EVM Test
     describe("EVM", () => {
         it("should sign a message with a valid EVM private key", async () => {
             const wallet = ethers.Wallet.createRandom();
-            const signature = await signMessage("test", wallet.privateKey, "evm");
+            const signature = await signMessage("test", wallet.privateKey, "ethereum");
             expect(signature).toMatch(/^0x[a-fA-f0-9]+$/); // Hex signature
         });
 
         it("should throw for invalid EVM private key", async () => {
-            await expect(signMessage("test", "invalid-key", "evm")).rejects.toThrow();
+            await expect(signMessage("test", "invalid-key", "ethereum")).rejects.toThrow();
         });
     }) ;
 
     // Solana Tests
     describe("Solana", () => {
         it("should sign a message with a valid Solana private key", async () => {
-            const Keypair = Keypair.generate();
-            const signature = await signMessage("test", Keypair.secretkey, "solana");
+            const keypair = Keypair.generate();
+            const signature = await signMessage("test", keypair.secretKey, "solana");
             expect(signature).toBeInstanceOf(Uint8Array);
         });
 
@@ -31,10 +32,10 @@ describe("signMessage", () => {
 
     // Edge Cases
     it("should throw for unsupported chain type", async () => {
-        await expect(signMessage("test", "0x123", "cosmos")).rejects.toThrow();
+        await expect(signMessage("test", "0x123", "unsupported-chain" as unknown as Network)).rejects.toThrow();
     });
 
     it("should throw for empty message", async () => {
-        await expect(signMessage("", "0x123", "evm")).rejects.toThrow();
+        await expect(signMessage("", "0x123", "ethereum")).rejects.toThrow();
     });
 });

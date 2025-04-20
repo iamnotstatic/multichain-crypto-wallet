@@ -1,4 +1,4 @@
-import { signSolanaMessage } from "../src/common/helpers/solanaHelper";
+import { signSolanaMessage } from "../../src/common/helpers/solanaHelper";
 import { Keypair } from "@solana/web3.js";
 
 describe("SolanaSigner", () => {
