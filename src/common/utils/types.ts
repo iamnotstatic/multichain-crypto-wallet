@@ -3,6 +3,7 @@ import ethereumHelper from '../../common/helpers/ethereumHelper';
 import solanaHelper from '../../common/helpers/solanaHelper';
 import wavesHelper from '../../common/helpers/wavesHelper';
 import tronHelper from '../../common/helpers/tronHelper';
+import suiHelper from '../../common/helpers/suiHelper';
 
 export type Network =
   | 'ethereum'
@@ -10,7 +11,8 @@ export type Network =
   | 'tron'
   | 'waves'
   | 'bitcoin'
-  | 'bitcoin-testnet';
+  | 'bitcoin-testnet'
+  | 'sui';
 
 export type NetworkHelper<T extends Network> = {
   [key in T]:
@@ -18,7 +20,8 @@ export type NetworkHelper<T extends Network> = {
     | typeof ethereumHelper
     | typeof solanaHelper
     | typeof wavesHelper
-    | typeof tronHelper;
+    | typeof tronHelper
+    | typeof suiHelper;
 };
 
 export interface TransferPayload {
