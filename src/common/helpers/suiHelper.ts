@@ -1,12 +1,12 @@
 import provider from '../utils/sui';
 import { Ed25519Keypair } from '@mysten/sui/keypairs/ed25519';
+import { MIST_PER_SUI } from '@mysten/sui/utils';
 import {
   BalancePayload,
   CreateWalletPayload,
   GenerateWalletFromMnemonicPayload,
   GetAddressFromPrivateKeyPayload,
   GetTransactionPayload,
-  GetWalletFromEncryptedjsonPayload,
   IGetTokenInfoPayload,
   ISmartContractCallPayload,
   ITokenInfo,
@@ -66,18 +66,40 @@ const generateWalletFromMnemonic = ({
 const getAddressFromPrivateKey = ({
   privateKey,
 }: GetAddressFromPrivateKeyPayload): IResponse => {
-  const keypair = Ed25519Keypair.fromSecretKey(privateKey, { skipValidation: false });
+  const keypair = Ed25519Keypair.fromSecretKey(privateKey, {
+    skipValidation: false,
+  });
+
   const publicKey = keypair.getPublicKey();
   const address = publicKey.toSuiAddress();
 
   return successResponse({
-    address,
+    address: address,
   });
 };
 
+const getBalance = async (args: BalancePayload): Promise<IResponse> => {
+  const connection = getConnection(args.rpcUrl);
+
+  if (args.tokenAddress) {
+    const balance = await connection.getBalance({
+      owner: args.address,
+      coinType: args.tokenAddress,
+    });
+    return successResponse({
+      balance: parseFloat(balance.totalBalance) / Number(MIST_PER_SUI),
+    });
+  }
+
+  const balance = await connection.getBalance({ owner: args.address });
+  return successResponse({
+    balance: parseFloat(balance.totalBalance) / Number(MIST_PER_SUI),
+  });
+};
 
 export default {
   createWallet,
   generateWalletFromMnemonic,
   getAddressFromPrivateKey,
+  getBalance,
 };
