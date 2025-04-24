@@ -163,10 +163,37 @@ const transfer = async (args: TransferPayload): Promise<IResponse> => {
   }
 };
 
+const getTransaction = async (
+  args: GetTransactionPayload
+): Promise<IResponse> => {
+  const connection = getConnection(args.rpcUrl);
+
+  try {
+    // Use getTransactionBlock for Sui
+    const tx = await connection.getTransactionBlock({
+      digest: args.hash,
+      options: {
+        showInput: true,
+        showEffects: true,
+        showEvents: true,
+        showObjectChanges: true,
+        showBalanceChanges: true,
+      },
+    });
+
+    return successResponse({
+      ...tx,
+    });
+  } catch (error) {
+    throw error;
+  }
+};
+
 export default {
   createWallet,
   generateWalletFromMnemonic,
   getAddressFromPrivateKey,
   getBalance,
   transfer,
+  getTransaction,
 };
