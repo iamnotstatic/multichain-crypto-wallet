@@ -86,8 +86,15 @@ const getBalance = async (args: BalancePayload): Promise<IResponse> => {
       owner: args.address,
       coinType: args.tokenAddress,
     });
+
+    // Fetch token metadata to get decimals
+    const metadata = await connection.getCoinMetadata({
+      coinType: args.tokenAddress,
+    });
+
+    const decimals = metadata ? metadata.decimals : 0;
     return successResponse({
-      balance: parseFloat(balance.totalBalance) / Number(MIST_PER_SUI),
+      balance: parseFloat(balance.totalBalance) / Math.pow(10, decimals),
     });
   }
 
