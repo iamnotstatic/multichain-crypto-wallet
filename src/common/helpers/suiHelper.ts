@@ -189,6 +189,34 @@ const getTransaction = async (
   }
 };
 
+const getTokenInfo = async (args: IGetTokenInfoPayload): Promise<IResponse> => {
+  try {
+    const connection = getConnection(args.rpcUrl);
+
+    const metadata = await connection.getCoinMetadata({ coinType: args.address });
+    if (!metadata) {
+      throw new Error('Token metadata not found');
+    }
+
+    const supply = await connection.getTotalSupply({ coinType: args.address });
+
+    const data: ITokenInfo = {
+      name: metadata.name,
+      symbol: metadata.symbol,
+      address: args.address,
+      decimals: metadata.decimals,
+      logoUrl: metadata.iconUrl ?? undefined,
+      totalSupply: supply.value.toString(),
+    };
+
+    return successResponse({ ...data });
+  } catch (error) {
+    throw error;
+  }
+};
+
+
+
 export default {
   createWallet,
   generateWalletFromMnemonic,
@@ -196,4 +224,5 @@ export default {
   getBalance,
   transfer,
   getTransaction,
+  getTokenInfo,
 };
