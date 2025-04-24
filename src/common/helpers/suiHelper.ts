@@ -1,6 +1,7 @@
 import provider from '../utils/sui';
 import { Ed25519Keypair } from '@mysten/sui/keypairs/ed25519';
 import { MIST_PER_SUI } from '@mysten/sui/utils';
+import { Transaction } from '@mysten/sui/transactions';
 import {
   BalancePayload,
   CreateWalletPayload,
@@ -104,9 +105,68 @@ const getBalance = async (args: BalancePayload): Promise<IResponse> => {
   });
 };
 
+const transfer = async (args: TransferPayload): Promise<IResponse> => {
+  try {
+    const connection = provider(args.rpcUrl);
+
+    const senderKeypair = Ed25519Keypair.fromSecretKey(args.privateKey);
+
+    const txb = new Transaction();
+
+    if (args.tokenAddress) {
+      // Fetch token decimals
+      const metadata = await connection.getCoinMetadata({
+        coinType: args.tokenAddress,
+      });
+      const decimals = metadata?.decimals || 0;
+      const rawAmount = BigInt(
+        Math.floor(args.amount * Math.pow(10, decimals))
+      );
+
+      // Fetch sender's coins for the token
+      const { data: coins } = await connection.getCoins({
+        owner: senderKeypair.getPublicKey().toSuiAddress(),
+        coinType: args.tokenAddress,
+      });
+
+      if (!coins.length) throw new Error('No coins found.');
+
+      // Split the coin for the amount to transfer
+      const [coin] = txb.splitCoins(txb.object(coins[0].coinObjectId), [
+        txb.pure.u64(rawAmount),
+      ]);
+      txb.transferObjects([coin], txb.pure.address(args.recipientAddress));
+    } else {
+      // native sui transfer
+      const amountInMist = BigInt(
+        Math.floor(args.amount * Number(MIST_PER_SUI))
+      );
+      const [coin] = txb.splitCoins(txb.gas, [txb.pure.u64(amountInMist)]);
+      txb.transferObjects([coin], txb.pure.address(args.recipientAddress));
+    }
+
+    // Sign and execute the transaction
+    const result = await connection.signAndExecuteTransaction({
+      signer: senderKeypair,
+      transaction: txb,
+      options: {
+        showEffects: true,
+        showObjectChanges: true,
+      },
+    });
+
+    return successResponse({
+      ...result,
+    });
+  } catch (error) {
+    throw error;
+  }
+};
+
 export default {
   createWallet,
   generateWalletFromMnemonic,
   getAddressFromPrivateKey,
   getBalance,
+  transfer,
 };
