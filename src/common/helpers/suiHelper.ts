@@ -15,7 +15,6 @@ import {
 } from '../utils/types';
 import * as bip39 from 'bip39';
 import { successResponse } from '../utils';
-import { keyPair } from '@waves/ts-lib-crypto';
 
 const getConnection = (rpcUrl?: string) => {
   const connection = provider(rpcUrl);
@@ -64,7 +63,21 @@ const generateWalletFromMnemonic = ({
   });
 };
 
+const getAddressFromPrivateKey = ({
+  privateKey,
+}: GetAddressFromPrivateKeyPayload): IResponse => {
+  const keypair = Ed25519Keypair.fromSecretKey(privateKey, { skipValidation: false });
+  const publicKey = keypair.getPublicKey();
+  const address = publicKey.toSuiAddress();
+
+  return successResponse({
+    address,
+  });
+};
+
+
 export default {
   createWallet,
   generateWalletFromMnemonic,
+  getAddressFromPrivateKey,
 };
