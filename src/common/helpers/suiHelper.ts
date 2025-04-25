@@ -20,7 +20,6 @@ import { PureTypeName } from '@mysten/sui/dist/cjs/bcs';
 
 const getConnection = (rpcUrl?: string) => {
   const connection = provider(rpcUrl);
-
   return connection;
 };
 
@@ -229,9 +228,8 @@ const smartContractCall = async (
     throw new Error('Number of params and paramTypes must match');
   }
 
-  // serialize parameters as the arguments expected by the MoveVM are in binary format (BCS) when sending transactions.
+  // handle objects and serialize parameters as the arguments expected by the MoveVM are in binary format (BCS) when sending transactions.
   const moveCallArgs = args.params.map((param, idx) => {
-
     const type = (args.paramTypes ?? [])[idx];
 
     // Handle vector and option types
@@ -244,7 +242,7 @@ const smartContractCall = async (
       return txb.pure.option(innerType as PureTypeName, param);
     }
 
-    // Handle primitives
+    // Handle primitive types and objects(stored onchain with objectId)
     switch (type) {
       case 'address':
         return txb.pure.address(param);
@@ -264,6 +262,8 @@ const smartContractCall = async (
         return txb.pure.u256(param);
       case 'bool':
         return txb.pure.bool(param);
+      case 'object':
+        return txb.object(param);
       default:
         throw new Error(`Unsupported parameter type: ${type}`);
     }
@@ -271,14 +271,15 @@ const smartContractCall = async (
 
   // Build moveCall
   txb.moveCall({
-    target: args.contractAddress, //It should be in the form(0xAddress::module_name::function_name)
+    target: args.contractAddress, //it should be in the form (0xAddress::module_name::function_name)
     arguments: moveCallArgs,
+    typeArguments: args.typeArguments ?? [],
   });
 
   // Set gas budget
-  txb.setGasBudget(args.gasLimit || 20000000); // Default to 0.02 SUI
+  txb.setGasBudget(args.gasLimit ?? 0);
 
-  // to call/simulate a non state-changing function as sui move functions aren't explicitly marked as `view`
+
   if (args.methodType === 'read') {
     const sender = args.sender || '0x0';
     const result = await connection.devInspectTransactionBlock({
