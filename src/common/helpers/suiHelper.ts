@@ -16,6 +16,7 @@ import {
 } from '../utils/types';
 import * as bip39 from 'bip39';
 import { successResponse } from '../utils';
+import { PureTypeName } from '@mysten/sui/dist/cjs/bcs';
 
 const getConnection = (rpcUrl?: string) => {
   const connection = provider(rpcUrl);
@@ -193,7 +194,9 @@ const getTokenInfo = async (args: IGetTokenInfoPayload): Promise<IResponse> => {
   try {
     const connection = getConnection(args.rpcUrl);
 
-    const metadata = await connection.getCoinMetadata({ coinType: args.address });
+    const metadata = await connection.getCoinMetadata({
+      coinType: args.address,
+    });
     if (!metadata) {
       throw new Error('Token metadata not found');
     }
@@ -215,7 +218,107 @@ const getTokenInfo = async (args: IGetTokenInfoPayload): Promise<IResponse> => {
   }
 };
 
+const smartContractCall = async (
+  args: ISmartContractCallPayload
+): Promise<IResponse> => {
+  const connection = getConnection(args.rpcUrl);
+  const txb = new Transaction();
 
+  // Validate params and paramTypes length match
+  if (args.params.length !== (args.paramTypes ?? []).length) {
+    throw new Error('Number of params and paramTypes must match');
+  }
+
+  // serialize parameters as the arguments expected by the MoveVM are in binary format (BCS) when sending transactions.
+  const moveCallArgs = args.params.map((param, idx) => {
+
+    const type = (args.paramTypes ?? [])[idx];
+
+    // Handle vector and option types
+    if (type.startsWith('vector<') && type.endsWith('>')) {
+      const innerType = type.slice(7, -1); // e.g., 'u8' from 'vector<u8>'
+      return txb.pure.vector(innerType as PureTypeName, param);
+    }
+    if (type.startsWith('option<') && type.endsWith('>')) {
+      const innerType = type.slice(7, -1); // e.g., 'u64' from 'option<u64>'
+      return txb.pure.option(innerType as PureTypeName, param);
+    }
+
+    // Handle primitives
+    switch (type) {
+      case 'address':
+        return txb.pure.address(param);
+      case 'string':
+        return txb.pure.string(param);
+      case 'u8':
+        return txb.pure.u8(param);
+      case 'u16':
+        return txb.pure.u16(param);
+      case 'u32':
+        return txb.pure.u32(param);
+      case 'u64':
+        return txb.pure.u64(param);
+      case 'u128':
+        return txb.pure.u128(param);
+      case 'u256':
+        return txb.pure.u256(param);
+      case 'bool':
+        return txb.pure.bool(param);
+      default:
+        throw new Error(`Unsupported parameter type: ${type}`);
+    }
+  });
+
+  // Build moveCall
+  txb.moveCall({
+    target: args.contractAddress, //It should be in the form(0xAddress::module_name::function_name)
+    arguments: moveCallArgs,
+  });
+
+  // Set gas budget
+  txb.setGasBudget(args.gasLimit || 20000000); // Default to 0.02 SUI
+
+  // to call/simulate a non state-changing function as sui move functions aren't explicitly marked as `view`
+  if (args.methodType === 'read') {
+    const sender = args.sender || '0x0';
+    const result = await connection.devInspectTransactionBlock({
+      sender,
+      transactionBlock: txb,
+    });
+
+    if (result.effects.status.status !== 'success') {
+      throw new Error(result.effects.status.error || 'View call failed');
+    }
+
+    return successResponse({ data: result });
+  }
+
+  if (args.methodType === 'write') {
+    if (!args.privateKey) throw new Error('Private key required');
+    const keypair = Ed25519Keypair.fromSecretKey(args.privateKey);
+
+    try {
+      const result = await connection.signAndExecuteTransaction({
+        signer: keypair,
+        transaction: txb,
+        options: {
+          showEffects: true,
+          showObjectChanges: true,
+        },
+      });
+
+      if (!result.effects || result.effects.status.status !== 'success') {
+        throw new Error(result.effects?.status.error || 'Transaction failed');
+      }
+
+      return successResponse({ digest: result.digest, data: result });
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  throw new Error('Invalid methodType. Expected "read" or "write".');
+};
 
 export default {
   createWallet,
@@ -225,4 +328,5 @@ export default {
   transfer,
   getTransaction,
   getTokenInfo,
+  smartContractCall,
 };
