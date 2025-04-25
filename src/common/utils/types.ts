@@ -4,6 +4,7 @@ import solanaHelper from '../../common/helpers/solanaHelper';
 import wavesHelper from '../../common/helpers/wavesHelper';
 import tronHelper from '../../common/helpers/tronHelper';
 import suiHelper from '../../common/helpers/suiHelper';
+import { Arguments } from '@truffle/hdwallet-provider/dist/constructor/LegacyConstructor';
 
 export type Network =
   | 'ethereum'
@@ -134,8 +135,8 @@ export interface ISmartContractCallPayload {
   feeLimit?: number;
   nonce?: number;
   privateKey?: string;
-  typeArguments?: string[];
   paramTypes?: string[]; 
+  module?: string;
 }
 
 export interface INetworkHelper {
