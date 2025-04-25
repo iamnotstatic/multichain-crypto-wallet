@@ -136,6 +136,7 @@ export interface ISmartContractCallPayload {
   privateKey?: string;
   paramTypes?: string[];
   sender?: string;
+  typeArguments?: string[];
 }
 
 export interface INetworkHelper {
