@@ -134,9 +134,8 @@ export interface ISmartContractCallPayload {
   feeLimit?: number;
   nonce?: number;
   privateKey?: string;
-  paramTypes?: string[]; 
-  module?: string;
-  packageId?: string;
+  paramTypes?: string[];
+  sender?: string;
 }
 
 export interface INetworkHelper {
