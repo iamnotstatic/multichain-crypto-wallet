@@ -1600,10 +1600,10 @@
   dependencies:
     "@scure/base" "^1.2.4"
 
-"@mysten/sui@^1.28.0":
-  version "1.28.0"
-  resolved "https://registry.yarnpkg.com/@mysten/sui/-/sui-1.28.0.tgz#32322ade494a64284e1bf09a995b46de72a93935"
-  integrity sha512-ABcKc+QBpazBl5/ByLChxHOiPjqxISSdXnBuU1rLm1frp5tjMSCChiL7Reth2zcxWO2qYFK70ewEkYVtJvJQvw==
+"@mysten/sui@^1.28.2":
+  version "1.28.2"
+  resolved "https://registry.yarnpkg.com/@mysten/sui/-/sui-1.28.2.tgz#ded2ae122c53ac3bb6f05d731b5847e447512eb2"
+  integrity sha512-d+lSp3rAtuOX0taIiIv0KNILDsbmAB9koNGHBinfREraGnE9tUFW315UByuyvuZ9K53ji4i2risdtwxCQ1a8Zw==
   dependencies:
     "@graphql-typed-document-node/core" "^3.2.0"
     "@mysten/bcs" "1.6.0"
