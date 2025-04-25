@@ -111,6 +111,29 @@ const transfer = async (args: TransferPayload): Promise<IResponse> => {
     const senderKeypair = Ed25519Keypair.fromSecretKey(args.privateKey);
     const txb = new Transaction();
 
+    // Create a typed version of the transaction builder
+    const tx = txb as unknown as {
+      splitCoins: (coin: any, amounts: any[]) => any[];
+      pure: {
+        u64: (value: number | bigint) => any;
+        address: (addr: string) => any;
+        vector: (type: string, values: any[]) => any;
+        option: (type: string, value: any) => any;
+        string: (value: string) => any;
+        u8: (value: number) => any;
+        u16: (value: number) => any;
+        u32: (value: number) => any;
+        u128: (value: number | bigint) => any;
+        u256: (value: number | bigint) => any;
+        bool: (value: boolean) => any;
+      };
+      object: (id: string) => any;
+      transferObjects: (objects: any[], address: any) => void;
+      gas: any;
+      setGasBudget: (budget: number | bigint) => void;
+      moveCall: (args: any) => any;
+    };
+
     if (args.tokenAddress) {
       // Fetch token decimals
       const metadata = await connection.getCoinMetadata({
@@ -128,19 +151,17 @@ const transfer = async (args: TransferPayload): Promise<IResponse> => {
       if (!coins.length) throw new Error('No coins found.');
 
       // Split the coin for the amount to transfer
-      const [coin] = (txb as any).splitCoins((txb as any).object(coins[0].coinObjectId), [
-        (txb as any).pure.u64(rawAmount),
+      const [coin] = tx.splitCoins(tx.object(coins[0].coinObjectId), [
+        tx.pure.u64(rawAmount),
       ]);
 
-      // Bypass type check for transferObjects
-      (txb as any).transferObjects([coin], (txb as any).pure.address(args.recipientAddress));
+      // Transfer the coin to the recipient
+      tx.transferObjects([coin], tx.pure.address(args.recipientAddress));
     } else {
       // Native SUI transfer
       const amountInMist = BigInt(Math.floor(args.amount * Number(MIST_PER_SUI)));
-      // Bypass type check for gas
-      const [coin] = (txb as any).splitCoins((txb as any).gas, [(txb as any).pure.u64(amountInMist)]);
-      // Bypass type check for transferObjects
-      (txb as any).transferObjects([coin], (txb as any).pure.address(args.recipientAddress));
+      const [coin] = tx.splitCoins(tx.gas, [tx.pure.u64(amountInMist)]);
+      tx.transferObjects([coin], tx.pure.address(args.recipientAddress));
     }
 
     // Sign and execute the transaction
@@ -221,61 +242,86 @@ const smartContractCall = async (
   const connection = getConnection(args.rpcUrl);
   const txb = new Transaction();
 
+  // Create a typed version of the transaction builder
+  const tx = txb as unknown as {
+    splitCoins: (coin: any, amounts: any[]) => any[];
+    pure: {
+      u64: (value: number | bigint) => any;
+      address: (addr: string) => any;
+      vector: (type: string, values: any[]) => any;
+      option: (type: string, value: any) => any;
+      string: (value: string) => any;
+      u8: (value: number) => any;
+      u16: (value: number) => any;
+      u32: (value: number) => any;
+      u128: (value: number | bigint) => any;
+      u256: (value: number | bigint) => any;
+      bool: (value: boolean) => any;
+    };
+    object: (id: string) => any;
+    transferObjects: (objects: any[], address: any) => void;
+    gas: any;
+    setGasBudget: (budget: number | bigint) => void;
+    moveCall: (args: any) => any;
+  };
+
   // Validate params and paramTypes length match
   if (args.params.length !== (args.paramTypes ?? []).length) {
     throw new Error('Number of params and paramTypes must match');
   }
 
-  // Handle objects and serialize parameters as the arguments expected by the MoveVM are in binary format (BCS) when sending transactions.
+  // Handle objects and serialize parameters
   const moveCallArgs = args.params.map((param, idx) => {
     const type = (args.paramTypes ?? [])[idx];
 
     // Handle vector and option types
     if (type.startsWith('vector<') && type.endsWith('>')) {
       const innerType = type.slice(7, -1); // e.g., 'u8' from 'vector<u8>'
-      return (txb as any).pure.vector(innerType as PureTypeName, param);
+      return tx.pure.vector(innerType as PureTypeName, param);
     }
     if (type.startsWith('option<') && type.endsWith('>')) {
       const innerType = type.slice(7, -1); // e.g., 'u64' from 'option<u64>'
-      return (txb as any).pure.option(innerType as PureTypeName, param);
+      return tx.pure.option(innerType as PureTypeName, param);
     }
 
-    // Handle primitive types and objects (stored onchain with objectId)
+    // Handle primitive types and objects
     switch (type) {
       case 'address':
-        return (txb as any).pure.address(param);
+        return tx.pure.address(param);
       case 'string':
-        return (txb as any).pure.string(param);
+        return tx.pure.string(param);
       case 'u8':
-        return (txb as any).pure.u8(param);
+        return tx.pure.u8(param);
       case 'u16':
-        return (txb as any).pure.u16(param);
+        return tx.pure.u16(param);
       case 'u32':
-        return (txb as any).pure.u32(param);
+        return tx.pure.u32(param);
       case 'u64':
-        return (txb as any).pure.u64(param);
+        return tx.pure.u64(param);
       case 'u128':
-        return (txb as any).pure.u128(param);
+        return tx.pure.u128(param);
       case 'u256':
-        return (txb as any).pure.u256(param);
+        return tx.pure.u256(param);
       case 'bool':
-        return (txb as any).pure.bool(param);
+        return tx.pure.bool(param);
       case 'object':
-        return (txb as any).object(param);
+        return tx.object(param);
       default:
         throw new Error(`Unsupported parameter type: ${type}`);
     }
   });
 
   // Build moveCall
-  (txb as any).moveCall({
-    target: args.contractAddress, // it should be in the form (0xAddress::module_name::function_name)
+  tx.moveCall({
+    target: args.contractAddress, // in the form (0xAddress::module_name::function_name)
     arguments: moveCallArgs,
     typeArguments: args.typeArguments ?? [],
   });
 
   // Set gas budget
-  (txb as any).setGasBudget(args.gasLimit ?? 0);
+  if (args.gasLimit) {
+    tx.setGasBudget(args.gasLimit);
+  }
 
   if (args.methodType === 'read') {
     const sender = args.sender || '0x0';
