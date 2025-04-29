@@ -25,7 +25,7 @@ describe('MultichainCryptoWallet Sui tests', () => {
 
   const packageId =
     '0x086162ecfab930c92b2773f0f878f4998bad6c4fd9d2135fc58f8592ed9f4854';
-  const moduleName = 'Nft';
+  const moduleName = 'nft';
   const moduleMethod = 'mint';
 
   const NFT_MINT_CONTRACT = `${packageId}::${moduleName}::${moduleMethod}`;
@@ -42,9 +42,9 @@ describe('MultichainCryptoWallet Sui tests', () => {
     });
 
     expect(typeof wallet).toBe('object');
-    expect(wallet.data).toHaveProperty('address');
-    expect(wallet.data).toHaveProperty('privateKey');
-    expect(wallet.data).toHaveProperty('mnemonic');
+    expect(wallet).toHaveProperty('address');
+    expect(wallet).toHaveProperty('privateKey');
+    expect(wallet).toHaveProperty('mnemonic');
   });
 
   it('generateWalletFromMnemonic', () => {
@@ -56,9 +56,9 @@ describe('MultichainCryptoWallet Sui tests', () => {
     });
 
     expect(typeof wallet).toBe('object');
-    expect(wallet.data).toHaveProperty('address');
-    expect(wallet.data).toHaveProperty('privateKey');
-    expect(wallet.data).toHaveProperty('mnemonic');
+    expect(wallet).toHaveProperty('address');
+    expect(wallet).toHaveProperty('privateKey');
+    expect(wallet).toHaveProperty('mnemonic');
   });
 
   it('getAddressFromPrivateKey', () => {
@@ -68,8 +68,8 @@ describe('MultichainCryptoWallet Sui tests', () => {
     });
 
     expect(typeof address).toBe('object');
-    expect(address.data).toHaveProperty('address');
-    expect(typeof address.data.address).toBe('string');
+    expect(address).toHaveProperty('address');
+    expect(typeof address.address).toBe('string');
   });
 
   it('getBalance native SUI', async () => {
@@ -81,8 +81,8 @@ describe('MultichainCryptoWallet Sui tests', () => {
     });
 
     expect(typeof data).toBe('object');
-    expect(data.data).toHaveProperty('balance');
-    expect(typeof data.data.balance).toBe('number');
+    expect(data).toHaveProperty('balance');
+    expect(typeof data.balance).toBe('number');
   });
 
   it('getBalance USDC testnet token', async () => {
@@ -95,28 +95,26 @@ describe('MultichainCryptoWallet Sui tests', () => {
     });
 
     expect(typeof data).toBe('object');
-    expect(data.data).toHaveProperty('balance');
-    expect(typeof data.data.balance).toBe('number');
+    expect(data).toHaveProperty('balance');
+    expect(typeof data.balance).toBe('number');
   });
 
   it('transfer SUI', async () => {
     const response = await transfer({
-      recipientAddress:
-        '0xc8ef1c69d448b8c373c6de6f7170b0dc4ab8804591601c77ac6d6d0aad9fb914',
-      amount: 0.01, // Small amount for testing
+      recipientAddress: recipientAddress,
+      amount: 0.01, 
       network: 'sui',
       rpcUrl: suiTestnetRpc,
       privateKey: testPrivateKey,
     });
 
     expect(typeof response).toBe('object');
-    expect(response.data).toHaveProperty('digest');
+    expect(response).toHaveProperty('digest');
   });
 
   it('transfer USDC Token on Sui Testnet', async () => {
     const response = await transfer({
-      recipientAddress:
-        '0xc8ef1c69d448b8c373c6de6f7170b0dc4ab8804591601c77ac6d6d0aad9fb914',
+      recipientAddress: recipientAddress,
       tokenAddress: USDC_TESTNET_TOKEN,
       amount: 0.1,
       network: 'sui',
@@ -125,7 +123,7 @@ describe('MultichainCryptoWallet Sui tests', () => {
     });
 
     expect(typeof response).toBe('object');
-    expect(response.data).toHaveProperty('digest');
+    expect(response).toHaveProperty('digest');
   });
 
   it('getTransaction from hash', async () => {
@@ -136,26 +134,26 @@ describe('MultichainCryptoWallet Sui tests', () => {
     });
 
     expect(typeof receipt).toBe('object');
-    expect(receipt.data).toHaveProperty('digest');
+    expect(receipt).toHaveProperty('digest');
   });
 
-  it('getTokenInfo', async () => {
-    const data = await getTokenInfo({
+  it('getTokenInfo (USDC Testnet Coin)', async () => {
+    const tokenInfo = await getTokenInfo({
       address: USDC_TESTNET_TOKEN,
       network: 'sui',
       rpcUrl: suiTestnetRpc,
     });
 
-    expect(data).toBeDefined();
-    expect(typeof data).toBe('object');
-    expect(typeof (data && data.data)).toBe('object');
-    expect(typeof (data && data.data.name)).toBe('string');
-    expect(typeof (data && data.data.symbol)).toBe('string');
-    expect(typeof (data && data.data.address)).toBe('string');
-    expect(typeof (data && data.data.decimals)).toBe('number');
-    expect(typeof (data && data.data.totalSupply)).toBe('string');
-  });
+    expect(tokenInfo).toBeDefined();
+    expect(typeof tokenInfo).toBe('object');
+    expect(tokenInfo).toHaveProperty('name');
+    expect(tokenInfo).toHaveProperty('symbol');
+    expect(tokenInfo).toHaveProperty('address');
+    expect(tokenInfo).toHaveProperty('decimals');
+    expect(tokenInfo).toHaveProperty('logoUrl');
+    expect(tokenInfo).toHaveProperty('totalSupply');
 
+  });
 
   it('smartContractCall write (mint an NFT on testnet)', async () => {
     const response = await smartContractCall({
@@ -167,18 +165,16 @@ describe('MultichainCryptoWallet Sui tests', () => {
       network: 'sui',
       rpcUrl: suiTestnetRpc,
       privateKey: testPrivateKey,
-      gasLimit: 1000000,
+      gasLimit: 10000000,
     });
-
     expect(typeof response).toBe('object');
   });
 
-   // Sui does not have "view" functions, but you can simulate any function call (dry run) to see what would happen/retrieve data,  
- it('smartContractCall read (getting owner of a global counter object)', async () => {
+  it('smartContractCall read (getting owner of a global counter object)', async () => {
     const response = await smartContractCall({
-      contractAddress: '0x775d945700b8e8033df0a2d2b9d1d22ae01e952f47ebe913438c03a17287798c::counter::owner',
-      params: [],
-      paramTypes: [],
+      contractAddress: '0x7190cfaecbe30eea5afd180c426b4a14f5ca5a333cc96a12aecc86eb2d508f7e::counter::owner',
+      params: ['0xaf7a0a1346420a575015429cc4289a1d55faf37d93fa69bb07a1619b3be5665c'], //This is the counter object we want to get its owner
+      paramTypes: ['object'],
       method: 'owner',
       methodType: 'read',
       network: 'sui',
@@ -188,5 +184,4 @@ describe('MultichainCryptoWallet Sui tests', () => {
 
     expect(typeof response).toBe('object');
   });
-
 });

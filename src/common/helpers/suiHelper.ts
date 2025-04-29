@@ -110,29 +110,7 @@ const transfer = async (args: TransferPayload): Promise<IResponse> => {
     const connection = provider(args.rpcUrl);
     const senderKeypair = Ed25519Keypair.fromSecretKey(args.privateKey);
     const txb = new Transaction();
-
-    // Create a typed version of the transaction builder
-    const tx = txb as unknown as {
-      splitCoins: (coin: any, amounts: any[]) => any[];
-      pure: {
-        u64: (value: number | bigint) => any;
-        address: (addr: string) => any;
-        vector: (type: string, values: any[]) => any;
-        option: (type: string, value: any) => any;
-        string: (value: string) => any;
-        u8: (value: number) => any;
-        u16: (value: number) => any;
-        u32: (value: number) => any;
-        u128: (value: number | bigint) => any;
-        u256: (value: number | bigint) => any;
-        bool: (value: boolean) => any;
-      };
-      object: (id: string) => any;
-      transferObjects: (objects: any[], address: any) => void;
-      gas: any;
-      setGasBudget: (budget: number | bigint) => void;
-      moveCall: (args: any) => any;
-    };
+    const tx = txb as any;
 
     if (args.tokenAddress) {
       // Fetch token decimals
@@ -140,7 +118,9 @@ const transfer = async (args: TransferPayload): Promise<IResponse> => {
         coinType: args.tokenAddress,
       });
       const decimals = metadata?.decimals || 0;
-      const rawAmount = BigInt(Math.floor(args.amount * Math.pow(10, decimals)));
+      const rawAmount = BigInt(
+        Math.floor(args.amount * Math.pow(10, decimals))
+      );
 
       // Fetch sender's coins for the token
       const { data: coins } = await connection.getCoins({
@@ -155,11 +135,12 @@ const transfer = async (args: TransferPayload): Promise<IResponse> => {
         tx.pure.u64(rawAmount),
       ]);
 
-      // Transfer the coin to the recipient
       tx.transferObjects([coin], tx.pure.address(args.recipientAddress));
     } else {
       // Native SUI transfer
-      const amountInMist = BigInt(Math.floor(args.amount * Number(MIST_PER_SUI)));
+      const amountInMist = BigInt(
+        Math.floor(args.amount * Number(MIST_PER_SUI))
+      );
       const [coin] = tx.splitCoins(tx.gas, [tx.pure.u64(amountInMist)]);
       tx.transferObjects([coin], tx.pure.address(args.recipientAddress));
     }
@@ -241,36 +222,14 @@ const smartContractCall = async (
 ): Promise<IResponse> => {
   const connection = getConnection(args.rpcUrl);
   const txb = new Transaction();
-
-  // Create a typed version of the transaction builder
-  const tx = txb as unknown as {
-    splitCoins: (coin: any, amounts: any[]) => any[];
-    pure: {
-      u64: (value: number | bigint) => any;
-      address: (addr: string) => any;
-      vector: (type: string, values: any[]) => any;
-      option: (type: string, value: any) => any;
-      string: (value: string) => any;
-      u8: (value: number) => any;
-      u16: (value: number) => any;
-      u32: (value: number) => any;
-      u128: (value: number | bigint) => any;
-      u256: (value: number | bigint) => any;
-      bool: (value: boolean) => any;
-    };
-    object: (id: string) => any;
-    transferObjects: (objects: any[], address: any) => void;
-    gas: any;
-    setGasBudget: (budget: number | bigint) => void;
-    moveCall: (args: any) => any;
-  };
+  const tx = txb as any;
 
   // Validate params and paramTypes length match
   if (args.params.length !== (args.paramTypes ?? []).length) {
     throw new Error('Number of params and paramTypes must match');
   }
 
-  // Handle objects and serialize parameters
+  // Handle objects and serialize parameters as the arguments expected by the MoveVM are in binary format (BCS) when sending transactions.
   const moveCallArgs = args.params.map((param, idx) => {
     const type = (args.paramTypes ?? [])[idx];
 
@@ -284,7 +243,7 @@ const smartContractCall = async (
       return tx.pure.option(innerType as PureTypeName, param);
     }
 
-    // Handle primitive types and objects
+    // Handle primitive types and objects (stored onchain with objectId)
     switch (type) {
       case 'address':
         return tx.pure.address(param);
@@ -313,15 +272,13 @@ const smartContractCall = async (
 
   // Build moveCall
   tx.moveCall({
-    target: args.contractAddress, // in the form (0xAddress::module_name::function_name)
+    target: args.contractAddress, // it should be in the form (0xAddress::module_name::function_name)
     arguments: moveCallArgs,
     typeArguments: args.typeArguments ?? [],
   });
 
   // Set gas budget
-  if (args.gasLimit) {
-    tx.setGasBudget(args.gasLimit);
-  }
+  tx.setGasBudget(args.gasLimit ?? 0);
 
   if (args.methodType === 'read') {
     const sender = args.sender || '0x0';
