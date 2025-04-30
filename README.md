@@ -70,7 +70,8 @@ The following methods are available with this SDK:
       - [Response](#response-8)
       - [Tron Network](#tron-network)
       - [Response](#response-9)
-      - [Sui Network](#response-11)
+      - [Sui Network](#Sui-Network)
+      - [Response](#response-11)
     - [Encryptions](#encryptions)
       - [Encrypt Private Key](#encrypt-private-key)
       - [Response](#response-10)
@@ -862,7 +863,7 @@ Allows for fetching Sui coin
 const info = await multichainWallet.getTokenInfo({
   address: '0xa1ec7fc00a6f40db9693ad1415d0c193ad3906494428cf252621037bd7117e29::usdc::USDC',
   network: 'sui',
-  rpcUrl: 'https://nile.trongrid.io',
+  rpcUrl: 'https://fullnode.testnet.sui.io:443',
 });
 ```
 
