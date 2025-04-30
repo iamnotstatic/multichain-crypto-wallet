@@ -70,6 +70,7 @@ The following methods are available with this SDK:
       - [Response](#response-8)
       - [Tron Network](#tron-network)
       - [Response](#response-9)
+      - [Sui Network](#response-11)
     - [Encryptions](#encryptions)
       - [Encrypt Private Key](#encrypt-private-key)
       - [Response](#response-10)
@@ -84,11 +85,13 @@ The following methods are available with this SDK:
       - [Response](#response-14)
       - [Get TRC20 Token Info](#get-tron-token-info)
       - [Response](#response-15)
+      - [Get Sui Coin Info](#get-sui-coin-info)
+      - [Response](#response-16)
     - [Smart Contract Call](#smart-contract-call)
       - [Ethereum network](#ethereum-network-1)
       - [Waves network](#waves-network-1)
       - [Tron network](#tron-network-1)
-      - [Response](#response-17)
+      - [Sui Network](#sui-network-1)
     - [Want to contribute?](#want-to-contribute)
 
 ### Generate mnemonic
