@@ -12,7 +12,7 @@
   },
   "scripts": {
     "start": "tsdx watch",
-    "build": "cross-env NODE_ENV=production tsdx build",
+    "build": "tsdx build",
     "test": "tsdx test",
     "test:btc": "tsdx test --testPathPattern=bitcoin",
     "test:eth": "tsdx test --testPathPattern=ethereum",
