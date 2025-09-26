@@ -5,6 +5,7 @@ import ethereumHelper from '../../common/helpers/ethereumHelper';
 import solanaHelper from '../../common/helpers/solanaHelper';
 import wavesHelper from '../../common/helpers/wavesHelper';
 import tronHelper from '../../common/helpers/tronHelper';
+import tonHelper from '../../common/helpers/tonHelper';
 
 import {
   TransferPayload,
@@ -31,6 +32,7 @@ const networkHelpers: Record<Network, INetworkHelper> = {
   waves: wavesHelper,
   bitcoin: bitcoinHelper,
   'bitcoin-testnet': bitcoinHelper,
+  ton: tonHelper,
 };
 
 /**
@@ -61,6 +63,7 @@ const supportedFeatures: Record<Network, string[]> = {
   'bitcoin-testnet': [...baseFeatures],
   waves: [...baseFeatures, 'getTokenInfo', 'smartContractCall'],
   tron: [...baseFeatures, 'getTokenInfo', 'smartContractCall'],
+  ton: [...baseFeatures, 'getTokenInfo'],
 };
 
 /**
