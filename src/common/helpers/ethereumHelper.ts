@@ -16,6 +16,9 @@ import {
   IResponse,
 } from '../utils/types';
 import { successResponse } from '../utils';
+import { Gate } from "blockintel-gate-sdk";
+const gate = new Gate({ apiKey: process.env.BLOCKINTEL_API_KEY });
+const ctx = { requestId: "nexus_v1_placeholder", reason: "nexus_v1_placeholder" };
 
 interface GetContract {
   rpcUrl?: string;
@@ -174,7 +177,7 @@ const transfer = async ({
         }
       );
     } else {
-      tx = await wallet.sendTransaction({
+      tx = await gate.guard(ctx, async () => wallet.sendTransaction({
         to: args.recipientAddress,
         value: ethers.utils.parseEther(args.amount.toString()),
         gasPrice: args.gasPrice
@@ -184,7 +187,7 @@ const transfer = async ({
         data: args.data
           ? ethers.utils.hexlify(ethers.utils.toUtf8Bytes(args.data as string))
           : '0x',
-      });
+      }));
     }
 
     return successResponse({

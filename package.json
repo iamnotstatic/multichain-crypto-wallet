@@ -102,7 +102,8 @@
     "immutable": "^4.1.0",
     "tiny-secp256k1": "^2.2.1",
     "tronweb": "^6.0.2",
-    "url": "^0.11.0"
+    "url": "^0.11.0",
+    "blockintel-gate-sdk": "^0.3.6"
   },
   "browser": {
     "stream": false

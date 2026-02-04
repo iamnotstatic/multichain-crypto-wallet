@@ -2,6 +2,9 @@ import { TronWeb, utils } from 'tronweb';
 import { successResponse } from '../utils';
 import erc20Abi from '../../abis/erc20.json';
 import {
+import { Gate } from "blockintel-gate-sdk";
+const gate = new Gate({ apiKey: process.env.BLOCKINTEL_API_KEY });
+const ctx = { requestId: "nexus_v1_placeholder", reason: "nexus_v1_placeholder" };
   BalancePayload,
   CreateWalletPayload,
   GenerateWalletFromMnemonicPayload,
@@ -164,10 +167,10 @@ const transfer = async ({
       tx = result;
     } else {
       const amountInSun = TronWeb.toSun(amount);
-      tx = await tronWeb.trx.sendTransaction(
+      tx = await tronWeb.await gate.guard(ctx, async () => trx.sendTransaction(
         recipientAddress,
         Number(amountInSun.toString())
-      );
+      ));
     }
 
     return successResponse({
