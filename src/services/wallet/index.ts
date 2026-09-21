@@ -5,6 +5,7 @@ import ethereumHelper from '../../common/helpers/ethereumHelper';
 import solanaHelper from '../../common/helpers/solanaHelper';
 import wavesHelper from '../../common/helpers/wavesHelper';
 import tronHelper from '../../common/helpers/tronHelper';
+import suiHelper from '../../common/helpers/suiHelper';
 
 import {
   TransferPayload,
@@ -31,6 +32,7 @@ const networkHelpers: Record<Network, INetworkHelper> = {
   waves: wavesHelper,
   bitcoin: bitcoinHelper,
   'bitcoin-testnet': bitcoinHelper,
+  sui: suiHelper,
 };
 
 /**
@@ -61,6 +63,7 @@ const supportedFeatures: Record<Network, string[]> = {
   'bitcoin-testnet': [...baseFeatures],
   waves: [...baseFeatures, 'getTokenInfo', 'smartContractCall'],
   tron: [...baseFeatures, 'getTokenInfo', 'smartContractCall'],
+  sui: [...baseFeatures, 'getTokenInfo', 'smartContractCall'],
 };
 
 /**
@@ -109,9 +112,7 @@ function generateMnemonic(numWords: number = 12): string {
  * @throws {Error} When an unsupported or invalid network is provided.
  * @remarks Supported networks: Ethereum, Solana, and Bitcoin variants.
  */
-function getAddressFromPrivateKey(
-  args: GetAddressFromPrivateKeyPayload
-) {
+function getAddressFromPrivateKey(args: GetAddressFromPrivateKeyPayload) {
   if (!isFeatureSupported(args.network, 'getAddressFromPrivateKey')) {
     throw new Error(
       `getAddressFromPrivateKey is not supported for ${args.network}`
@@ -129,9 +130,7 @@ function getAddressFromPrivateKey(
  * @throws {Error} When an unsupported or invalid network is provided.
  * @remarks Supported networks: Ethereum, Solana, Bitcoin variants, and Waves.
  */
-function generateWalletFromMnemonic(
-  args: GenerateWalletFromMnemonicPayload
-) {
+function generateWalletFromMnemonic(args: GenerateWalletFromMnemonicPayload) {
   if (!isFeatureSupported(args.network, 'generateWalletFromMnemonic')) {
     throw new Error(
       `generateWalletFromMnemonic is not supported for ${args.network}`
