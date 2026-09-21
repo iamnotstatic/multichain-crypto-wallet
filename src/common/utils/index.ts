@@ -1,6 +1,6 @@
 import { IResponse } from './types';
 import * as base64 from 'base64-js';
-import BigNumber from "bignumber.js";
+import BigNumber from 'bignumber.js';
 
 export const successResponse = (args: IResponse): IResponse => {
   return args;
@@ -117,7 +117,10 @@ export const toBase64 = (input: Uint8Array): string => {
  * Convert human-readable amount → raw integer (BigInt) by decimals
  * ex: 0.1 USDC (decimals 6) => 100000n
  */
-export const parseAmount = (amount: string | number, decimals: number): bigint => {
+export const parseAmount = (
+  amount: string | number,
+  decimals: number
+): bigint => {
   const bn = new BigNumber(amount);
   const multiplier = new BigNumber(10).pow(decimals);
   return BigInt(bn.times(multiplier).toFixed(0));
@@ -127,7 +130,10 @@ export const parseAmount = (amount: string | number, decimals: number): bigint =
  * Convert raw amount → human-readable string by decimals
  * ex: 100000n USDC (decimals 6) => "0.1"
  */
-export const formatAmount = (raw: bigint | string, decimals: number): string => {
+export const formatAmount = (
+  raw: bigint | string,
+  decimals: number
+): string => {
   const bn = new BigNumber(raw.toString());
   const divisor = new BigNumber(10).pow(decimals);
   return bn.dividedBy(divisor).toString();
