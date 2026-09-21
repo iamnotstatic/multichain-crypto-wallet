@@ -78,6 +78,9 @@ describe('MultichainCryptoWallet Solana tests', () => {
     });
 
     expect(typeof response).toBe('object');
+    expect(response.transaction).toHaveProperty('signatures');
+    expect(Array.isArray(response.transaction.signatures)).toBe(true);
+    expect(response.transaction.signatures.length).toBeGreaterThan(0);
   });
 
   it('transfer Token on Solana', async () => {
@@ -92,6 +95,9 @@ describe('MultichainCryptoWallet Solana tests', () => {
     });
 
     expect(typeof response).toBe('object');
+    expect(response.transaction).toHaveProperty('signatures');
+    expect(Array.isArray(response.transaction.signatures)).toBe(true);
+    expect(response.transaction.signatures.length).toBeGreaterThan(0);
   });
 
   it('Get transaction', async () => {

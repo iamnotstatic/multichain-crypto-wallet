@@ -2,8 +2,9 @@ import provider from '../utils/solana';
 import * as solanaWeb3 from '@solana/web3.js';
 import {
   getOrCreateAssociatedTokenAccount,
-  transfer as transferToken,
+  getAssociatedTokenAddress,
   getMint,
+  createTransferInstruction,
 } from '@solana/spl-token';
 import {
   BalancePayload,
@@ -18,19 +19,11 @@ import {
   TransferPayload,
 } from '../utils/types';
 import * as bs58 from 'bs58';
-import { successResponse } from '../utils';
+import { successResponse, parseAmount, formatAmount } from '../utils';
 import * as bip39 from 'bip39';
 import { derivePath } from 'ed25519-hd-key';
-// @ts-ignore
-import * as BufferLayout from 'buffer-layout';
 import axios from 'axios';
 
-export const ACCOUNT_LAYOUT = BufferLayout.struct([
-  BufferLayout.blob(32, 'mint'),
-  BufferLayout.blob(32, 'owner'),
-  BufferLayout.nu64('amount'),
-  BufferLayout.blob(93),
-]);
 export const chainId = {
   'mainnet-beta': 101,
   testnet: 102,
@@ -39,7 +32,6 @@ export const chainId = {
 
 const getConnection = (rpcUrl?: string) => {
   const connection = provider(rpcUrl);
-
   return connection;
 };
 
@@ -105,30 +97,35 @@ const getBalance = async (args: BalancePayload): Promise<IResponse> => {
 
   try {
     let balance;
+    const publicKey = new solanaWeb3.PublicKey(args.address);
     if (args.tokenAddress) {
-      const account = await connection.getTokenAccountsByOwner(
-        new solanaWeb3.PublicKey(args.address),
-        {
-          mint: new solanaWeb3.PublicKey(args.tokenAddress),
-        }
+      const mintPubkey = new solanaWeb3.PublicKey(args.tokenAddress);
+      // get token by account
+      const tokenAccountAddress = await getAssociatedTokenAddress(
+        mintPubkey,
+        publicKey
       );
+      const accountInfo = await connection.getAccountInfo(tokenAccountAddress);
 
+      // check if account not associated with this return 0 balance
+      if (!accountInfo) {
+        return successResponse({
+          balance: '0',
+        });
+      }
+
+      const rawBalance = await connection.getTokenAccountBalance(
+        tokenAccountAddress
+      );
       balance =
-        account.value.length > 0
-          ? ACCOUNT_LAYOUT.decode(account.value[0].account.data).amount
-          : 0;
-
-      return successResponse({
-        balance: balance / solanaWeb3.LAMPORTS_PER_SOL,
-      });
+        rawBalance.value.uiAmountString ??
+        formatAmount(rawBalance.value.amount, rawBalance.value.decimals);
+    } else {
+      const rawBalance = await connection.getBalance(publicKey);
+      balance = formatAmount(rawBalance.toString(), 9);
     }
 
-    const publicKey = new solanaWeb3.PublicKey(args.address);
-    balance = await connection.getBalance(publicKey);
-
-    return successResponse({
-      balance: balance / solanaWeb3.LAMPORTS_PER_SOL,
-    });
+    return successResponse({ balance });
   } catch (error) {
     throw error;
   }
@@ -139,8 +136,8 @@ const transfer = async (args: TransferPayload): Promise<IResponse> => {
 
   try {
     const recipient = new solanaWeb3.PublicKey(args.recipientAddress);
-    let secretKey;
-    let signature;
+    let secretKey: Uint8Array;
+    let signature: string;
 
     if (args.privateKey.split(',').length > 1) {
       secretKey = new Uint8Array(args.privateKey.split(',') as any);
@@ -152,14 +149,15 @@ const transfer = async (args: TransferPayload): Promise<IResponse> => {
       skipValidation: true,
     });
 
+    const { blockhash } = await connection.getLatestBlockhash();
+
     if (args.tokenAddress) {
-      // Get token mint
+      // SPL Token Transfer
       const mint = await getMint(
         connection,
         new solanaWeb3.PublicKey(args.tokenAddress)
       );
 
-      // Get the token account of the from address, and if it does not exist, create it
       const fromTokenAccount = await getOrCreateAssociatedTokenAccount(
         connection,
         from,
@@ -167,7 +165,6 @@ const transfer = async (args: TransferPayload): Promise<IResponse> => {
         from.publicKey
       );
 
-      // Get the token account of the recipient address, and if it does not exist, create it
       const recipientTokenAccount = await getOrCreateAssociatedTokenAccount(
         connection,
         from,
@@ -175,32 +172,54 @@ const transfer = async (args: TransferPayload): Promise<IResponse> => {
         recipient
       );
 
-      signature = await transferToken(
+      const amount = parseAmount(args.amount, mint.decimals);
+      const tx = new solanaWeb3.Transaction().add(
+        createTransferInstruction(
+          fromTokenAccount.address,
+          recipientTokenAccount.address,
+          from.publicKey, // owner (signer)
+          amount
+        )
+      );
+
+      tx.recentBlockhash = blockhash;
+      tx.feePayer = from.publicKey;
+
+      signature = await solanaWeb3.sendAndConfirmTransaction(
         connection,
-        from,
-        fromTokenAccount.address,
-        recipientTokenAccount.address,
-        from.publicKey,
-        solanaWeb3.LAMPORTS_PER_SOL * args.amount
+        tx,
+        [from],
+        {
+          commitment: 'confirmed',
+        }
       );
     } else {
+      // Native SOL Transfer
+      const amount = parseAmount(args.amount, 9); // SOL always 9 decimals
       const transaction = new solanaWeb3.Transaction().add(
         solanaWeb3.SystemProgram.transfer({
           fromPubkey: from.publicKey,
           toPubkey: recipient,
-          lamports: solanaWeb3.LAMPORTS_PER_SOL * args.amount,
+          lamports: amount,
         })
       );
+
+      transaction.recentBlockhash = blockhash;
+      transaction.feePayer = from.publicKey;
 
       signature = await solanaWeb3.sendAndConfirmTransaction(
         connection,
         transaction,
-        [from]
+        [from],
+        {
+          commitment: 'confirmed',
+        }
       );
     }
 
     const tx = await connection.getTransaction(signature, {
       maxSupportedTransactionVersion: 0,
+      commitment: 'confirmed',
     });
 
     return successResponse({
