@@ -38,8 +38,10 @@ export const _apiFallbacks = {
             : Blockchair.networks.BITCOIN
         )(address, confirmations)
     ),
-    () =>
-      Sochain.fetchUTXOs(testnet ? 'BTCTEST' : 'BTC')(address, confirmations),
+    // SoChain's BTCTEST is Bitcoin testnet4, so SoChain serves mainnet only
+    testnet
+      ? undefined
+      : () => Sochain.fetchUTXOs('BTC')(address, confirmations),
     () =>
       Blockchain.fetchUTXOs(
         testnet ? BlockchainNetwork.BitcoinTestnet : BlockchainNetwork.Bitcoin
@@ -61,8 +63,9 @@ export const _apiFallbacks = {
             ? Blockchair.networks.BITCOIN_TESTNET
             : Blockchair.networks.BITCOIN
         )(address, confirmations),
-      () =>
-        Sochain.fetchTXs(testnet ? 'BTCTEST' : 'BTC')(address, confirmations),
+      testnet
+        ? undefined
+        : () => Sochain.fetchTXs('BTC')(address, confirmations),
       () =>
         Blockchain.fetchUTXOs(
           testnet ? BlockchainNetwork.BitcoinTestnet : BlockchainNetwork.Bitcoin
@@ -80,7 +83,6 @@ export const _apiFallbacks = {
             : Blockchair.networks.BITCOIN
         )(hex)
     ),
-    () => Sochain.broadcastTransaction(testnet ? 'BTCTEST' : 'BTC')(hex),
     () =>
       JSONRPC.broadcastTransaction(
         testnet ? MULTICHAIN_URLS.BTCTEST : MULTICHAIN_URLS.BTC
