@@ -3,6 +3,7 @@ import ethereumHelper from '../../common/helpers/ethereumHelper';
 import solanaHelper from '../../common/helpers/solanaHelper';
 import wavesHelper from '../../common/helpers/wavesHelper';
 import tronHelper from '../../common/helpers/tronHelper';
+import tonHelper from '../../common/helpers/tonHelper';
 
 export type Network =
   | 'ethereum'
@@ -10,15 +11,17 @@ export type Network =
   | 'tron'
   | 'waves'
   | 'bitcoin'
-  | 'bitcoin-testnet';
+  | 'bitcoin-testnet'
+  | 'ton';
 
 export type NetworkHelper<T extends Network> = {
   [key in T]:
-    | typeof bitcoinHelper
-    | typeof ethereumHelper
-    | typeof solanaHelper
-    | typeof wavesHelper
-    | typeof tronHelper;
+  | typeof bitcoinHelper
+  | typeof ethereumHelper
+  | typeof solanaHelper
+  | typeof wavesHelper
+  | typeof tronHelper
+  | typeof tonHelper;
 };
 
 export interface TransferPayload {
@@ -36,6 +39,9 @@ export interface TransferPayload {
   fee?: number; // defaults to 10000
   feeLimit?: number;
   subtractFee?: boolean; // defaults to false
+  walletVersion?: TonWalletVersion;
+  forwardGas?: number | string;  // for ton jetton 
+  memo?: string; // for memo tag ton
 }
 
 export interface BalancePayload {
@@ -44,22 +50,28 @@ export interface BalancePayload {
   rpcUrl?: string;
   apiKey?: string;
   tokenAddress?: string;
+  walletVersion?: TonWalletVersion;
+  privateKey?: string;
 }
 
 export interface CreateWalletPayload {
   derivationPath?: string;
   cluster?: string;
+  walletVersion?: TonWalletVersion;
   network: Network;
 }
 
 export interface GetAddressFromPrivateKeyPayload {
   privateKey: string;
   network: Network;
+  walletVersion?: TonWalletVersion;
 }
 
 export interface GetTransactionPayload {
   rpcUrl?: string;
   apiKey?: string;
+  address?: string;
+  logicalTime?: string;
   hash: string;
   network: Network;
 }
@@ -68,6 +80,7 @@ export interface GenerateWalletFromMnemonicPayload {
   mnemonic: string;
   derivationPath?: string;
   cluster?: string;
+  walletVersion?: TonWalletVersion;
   network: Network;
 }
 
@@ -132,6 +145,8 @@ export interface ISmartContractCallPayload {
   nonce?: number;
   privateKey?: string;
 }
+
+export type TonWalletVersion = 'v4R2' | 'W5';
 
 export interface INetworkHelper {
   getAddressFromPrivateKey: (args: GetAddressFromPrivateKeyPayload) => IResponse;

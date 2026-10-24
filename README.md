@@ -70,25 +70,29 @@ The following methods are available with this SDK:
       - [Response](#response-8)
       - [Tron Network](#tron-network)
       - [Response](#response-9)
+      - [Ton Network](#ton-network)
+      - [Response](#response-10)
     - [Encryptions](#encryptions)
       - [Encrypt Private Key](#encrypt-private-key)
-      - [Response](#response-10)
-      - [Decrypt Encrypted JSON](#decrypt-encrypted-json)
       - [Response](#response-11)
+      - [Decrypt Encrypted JSON](#decrypt-encrypted-json)
+      - [Response](#response-12)
     - [Token Info](#token-info)
       - [Get ERC20 Token Info](#get-erc20-token-info)
-      - [Response](#response-12)
-      - [Get SPL Token Info](#get-spl-token-info)
       - [Response](#response-13)
-      - [Get Waves Token Info](#get-waves-token-info)
+      - [Get SPL Token Info](#get-spl-token-info)
       - [Response](#response-14)
-      - [Get TRC20 Token Info](#get-tron-token-info)
+      - [Get Waves Token Info](#get-waves-token-info)
       - [Response](#response-15)
+      - [Get TRC20 Token Info](#get-tron-token-info)
+      - [Response](#response-16)
+      - [Get Jetton Token Info](#get-ton-jetton-token-info)
+      - [Response](#response-17)
     - [Smart Contract Call](#smart-contract-call)
       - [Ethereum network](#ethereum-network-1)
       - [Waves network](#waves-network-1)
       - [Tron network](#tron-network-1)
-      - [Response](#response-17)
+      - [Response](#response-18)
     - [Want to contribute?](#want-to-contribute)
 
 ### Generate mnemonic
@@ -140,6 +144,13 @@ const wallet = await multichainWallet.createWallet({
 // Creating a Tron wallet
 const wallet = await multichainWallet.createWallet({
   network: 'tron',
+});
+
+// Creating a Ton wallet
+const wallet = await multichainWallet.createWallet({
+  cluster: 'testnet', // Can also be mainnet,
+  network: 'ton',
+  walletVersion: "v4R2", // Can also be W5 or delete (default v4R2)
 });
 
 ```
@@ -202,6 +213,16 @@ const data = await multichainWallet.getBalance({
   address: 'TDdHvW9nU1JaX1P7roYtDvjErTTR17GPJJ',
   rpcUrl: 'https://nile.trongrid.io',
 });
+
+// Get the Ton balance of an address.
+const data = await multichainWallet.getBalance({
+  network: 'ton',
+  address: "0QBG61c4TjKqyiELE3CrxqSVHL6Lkl4D28K1A9oB8G13sXDG",
+  privateKey: "0808b63ccb05a826085acdb68465e04f428fee6781ed7f770fbe785e32ff56941aab493f5d1c5e94c0fd4a04934c988998c3803110180d26baa940fe602f60bc",
+  apiKey: "xxxxxxxxxxxxxxxxxxxxxxx", // optional for 10 request per second
+  rpcUrl: "https://testnet.toncenter.com/api/v2/jsonRPC",
+  walletVersion: "v4R2", // Can also be W5 or delete (default v4R2)
+});
 ```
 
 #### Tokens
@@ -237,6 +258,17 @@ const data = await multichainWallet.getBalance({
   address: 'TDdHvW9nU1JaX1P7roYtDvjErTTR17GPJJ',
   rpcUrl: 'https://nile.trongrid.io',
   tokenAddress: 'TXLAQ63Xg1NAzckPwKHvzw7CSEmLMEqcdj',
+});
+
+// Get the balance of a token on ton.
+const data = await multichainWallet.getBalance({
+  network: 'ton',
+  address: "0QBG61c4TjKqyiELE3CrxqSVHL6Lkl4D28K1A9oB8G13sXDG",
+  rpcUrl: "https://testnet.toncenter.com/api/v2/jsonRPC",
+  tokenAddress: 'kQB519C3IXFgCr4qKj6QrtaB9Pm3Sawr-Gonlo3O0cKL_I03',
+  privateKey: "0808b63ccb05a826085acdb68465e04f428fee6781ed7f770fbe785e32ff56941aab493f5d1c5e94c0fd4a04934c988998c3803110180d26baa940fe602f60bc",
+  apiKey: "xxxxxxxxxxxxxxxxxxxxxxx", // optional for 10 request per second
+  walletVersion: "v4R2", // Can also be W5 or delete (default v4R2)
 });
 ```
 
@@ -299,6 +331,14 @@ const wallet = multichainWallet.generateWalletFromMnemonic({
     'mushroom deliver work spray hire nuclear wrong deputy march six midnight outside motor differ adult',
   network: 'tron',
 });
+
+// Generate a Ton wallet from mnemonic.
+const wallet = multichainWallet.generateWalletFromMnemonic({
+  mnemonic: 'august series long climb rain arrest unfair pill share funny rubber easy pulse vibrant settle inflict castle winter left duty you flower problem betray', // support 12 and 24 mnemonic
+  network: 'ton',
+  walletVersion: "v4R2", // Can also be W5 or delete (default v4R2)
+  cluster: "testnet",  // Can also be mainnet,
+});
 ```
 
 #### Response
@@ -341,6 +381,14 @@ const address = multichainWallet.getAddressFromPrivateKey({
   privateKey:
     'fa01dc6efd5fd64e4897aadf255ae715cf34138c7ada5f6a7efb0bdd0bd9c8c4',
   network: 'tron',
+});
+
+// Get the address from the private key on the Tron network.
+const address = multichainWallet.getAddressFromPrivateKey({
+  privateKey:
+    '0808b63ccb05a826085acdb68465e04f428fee6781ed7f770fbe785e32ff56941aab493f5d1c5e94c0fd4a04934c988998c3803110180d26baa940fe602f60bc',
+  network: 'ton',
+  walletVersion: "v4R2", // Can also be W5 or delete (default v4R2)
 });
 ```
 
@@ -390,6 +438,16 @@ const receipt = await multichainWallet.getTransaction({
   hash: '34f27486cbe693d5182c4b5e18c1779d918668f86f396ed62a279d8b519b81cc',
   network: 'tron',
   rpcUrl: 'https://nile.trongrid.io',
+});
+
+// Get the transaction receipt on Ton network.
+const receipt = await multichainWallet.getTransaction({
+  hash: '7a74b1e743f4251079afcb898f678c997820febb714103da417b2dd1370f968c',
+  network: 'ton',
+  rpcUrl: "https://testnet.toncenter.com/api/v2/jsonRPC",
+  apiKey: "xxxxxxxxxxxxxxxxxxxxxxx", // optional for 10 request per second
+  address: "0QBG61c4TjKqyiELE3CrxqSVHL6Lkl4D28K1A9oB8G13sXDG", // need address from documentation 
+  logicalTime: '39457313000003', // need LT from documentation 
 });
 ```
 
@@ -624,6 +682,46 @@ const transfer = await multichainWallet.transfer({
 }
 ```
 
+#### Ton Network
+
+Allows for the transfer of TON and Jetton tokens.
+
+```javascript
+// Transferring TON from v4 address to w5 or another.
+const transfer = await multichainWallet.transfer({
+  recipientAddress: "0QBh77kXMw-M-kg4L6EzP_6Jlx5xTh7mRbkM-zDjngphErgc",
+  amount: 0.1,
+  memo: "Sending Ton to Wallet W5",
+  network: 'ton',
+  apiKey: "xxxxxxxxxxxxxxxxxxxxxxx", // optional for 10 request per second
+  rpcUrl: "https://testnet.toncenter.com/api/v2/jsonRPC",
+  privateKey: "0808b63ccb05a826085acdb68465e04f428fee6781ed7f770fbe785e32ff56941aab493f5d1c5e94c0fd4a04934c988998c3803110180d26baa940fe602f60bc",
+  walletVersion: "v4R2", // Can also be W5 or delete (default v4R2)
+});
+
+// Transferring TRC20 tokens from one address to another.
+const transfer = await multichainWallet.transfer({
+  recipientAddress: "0QBh77kXMw-M-kg4L6EzP_6Jlx5xTh7mRbkM-zDjngphErgc",
+  amount: 0.1,
+  memo: "Sending Ton to Wallet W5",
+  network: 'ton',
+  apiKey: "xxxxxxxxxxxxxxxxxxxxxxx", // optional for 10 request per second
+  rpcUrl: "https://testnet.toncenter.com/api/v2/jsonRPC",
+  privateKey: "0808b63ccb05a826085acdb68465e04f428fee6781ed7f770fbe785e32ff56941aab493f5d1c5e94c0fd4a04934c988998c3803110180d26baa940fe602f60bc",
+  tokenAddress: 'kQB519C3IXFgCr4qKj6QrtaB9Pm3Sawr-Gonlo3O0cKL_I03',
+  walletVersion: "v4R2", // Can also be W5 or delete (default v4R2)
+});
+```
+
+#### Response
+
+```javascript
+{
+  transactionHash
+  ..object;
+}
+```
+
 ### Encryptions
 
 #### Encrypt Private Key
@@ -774,6 +872,32 @@ const info = await multichainWallet.getTokenInfo({
   address: 'TXLAQ63Xg1NAzckPwKHvzw7CSEmLMEqcdj',
   decimals: 6,
   totalSupply: '2100000000000000'
+}
+```
+
+#### Get Ton Jetton Token Info
+
+Allows for fetching Ton token info
+
+```javascript
+const info = await multichainWallet.getTokenInfo({
+  address: 'kQB519C3IXFgCr4qKj6QrtaB9Pm3Sawr-Gonlo3O0cKL_I03',
+  network: 'ton',
+  apiKey: "xxxxxxxxxxxxxxxxxxxxxxx", // optional for 10 request per second
+  rpcUrl: "https://testnet.toncenter.com/api/v2/jsonRPC",
+});
+```
+
+#### Response
+
+```javascript
+{
+  name: 'Testnet Hipo Staked TON',
+  symbol: 'thTON',
+  address: 'kQB519C3IXFgCr4qKj6QrtaB9Pm3Sawr-Gonlo3O0cKL_I03',
+  decimals: null,
+  logoUrl: "https://app.hipo.finance/thton.png"
+  totalSupply: '132492602000022'
 }
 ```
 
