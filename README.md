@@ -70,6 +70,8 @@ The following methods are available with this SDK:
       - [Response](#response-8)
       - [Tron Network](#tron-network)
       - [Response](#response-9)
+      - [Sui Network](#Sui-Network)
+      - [Response](#response-11)
     - [Encryptions](#encryptions)
       - [Encrypt Private Key](#encrypt-private-key)
       - [Response](#response-10)
@@ -84,11 +86,13 @@ The following methods are available with this SDK:
       - [Response](#response-14)
       - [Get TRC20 Token Info](#get-tron-token-info)
       - [Response](#response-15)
+      - [Get Sui Coin Info](#get-sui-coin-info)
+      - [Response](#response-16)
     - [Smart Contract Call](#smart-contract-call)
       - [Ethereum network](#ethereum-network-1)
       - [Waves network](#waves-network-1)
       - [Tron network](#tron-network-1)
-      - [Response](#response-17)
+      - [Sui Network](#sui-network-1)
     - [Want to contribute?](#want-to-contribute)
 
 ### Generate mnemonic
@@ -137,11 +141,15 @@ const wallet = await multichainWallet.createWallet({
   network: 'waves',
 });
 
-// Creating a Tron wallet
+// Creating a Tron wallet.
 const wallet = await multichainWallet.createWallet({
   network: 'tron',
 });
 
+//Creating a Sui wallet.
+const wallet = await multichainWallet.createWallet({
+  network: 'sui',
+})
 ```
 
 #### Response
@@ -202,6 +210,13 @@ const data = await multichainWallet.getBalance({
   address: 'TDdHvW9nU1JaX1P7roYtDvjErTTR17GPJJ',
   rpcUrl: 'https://nile.trongrid.io',
 });
+
+// Get the Sui balance of an address.
+const data = await multichainWallet.getBalance({
+  network: 'sui',
+  address: '0xc8ef1c69d448b8c373c6de6f7170b0dc4ab8804591601c77ac6d6d0aad9fb914',
+  rpcUrl: 'https://fullnode.testnet.sui.io:443',
+});
 ```
 
 #### Tokens
@@ -231,12 +246,20 @@ const data = await multichainWallet.getBalance({
   tokenAddress: '39pnv8FVf3BX3xwtC6uhFxffy2sE3seXCPsf25eNn6qG',
 });
 
-// Get the balance of a token on tron.
+// Get the balance of a token on Tron.
 const data = await multichainWallet.getBalance({
   network: 'tron',
   address: 'TDdHvW9nU1JaX1P7roYtDvjErTTR17GPJJ',
   rpcUrl: 'https://nile.trongrid.io',
   tokenAddress: 'TXLAQ63Xg1NAzckPwKHvzw7CSEmLMEqcdj',
+});
+
+// Get the balance of a token on Sui.
+const data = await multichainWallet.getBalance({
+  network: 'sui',
+  address: '0xc8ef1c69d448b8c373c6de6f7170b0dc4ab8804591601c77ac6d6d0aad9fb914',
+  rpcUrl: 'https://fullnode.testnet.sui.io:443',
+  tokenAddress: '0xa1ec7fc00a6f40db9693ad1415d0c193ad3906494428cf252621037bd7117e29::usdc::USDC',
 });
 ```
 
@@ -299,6 +322,14 @@ const wallet = multichainWallet.generateWalletFromMnemonic({
     'mushroom deliver work spray hire nuclear wrong deputy march six midnight outside motor differ adult',
   network: 'tron',
 });
+
+// Generate a Sui Wallet from mnemonic.
+const wallet = multichainWallet.generateWalletFromMnemonic({
+  mnemonic:
+    'ship friend modify merit dune tower ritual off assault resemble vintage solid',
+  derivationPath: "m/44'/784'/0'/0'/0'", // Leave empty to use default derivation path
+  network: 'sui',
+});
 ```
 
 #### Response
@@ -342,6 +373,14 @@ const address = multichainWallet.getAddressFromPrivateKey({
     'fa01dc6efd5fd64e4897aadf255ae715cf34138c7ada5f6a7efb0bdd0bd9c8c4',
   network: 'tron',
 });
+
+// Get the address from the private key on the Sui network.
+const address = multichainWallet.getAddressFromPrivateKey({
+  privateKey:
+    'suiprivkey1qpppfvzg767qahlw6eu09m2ql3uvc59xqgt3l0un06lvnf8yjxac6v37z3e',
+  network: 'sui',
+});
+
 ```
 
 #### Response
@@ -390,6 +429,13 @@ const receipt = await multichainWallet.getTransaction({
   hash: '34f27486cbe693d5182c4b5e18c1779d918668f86f396ed62a279d8b519b81cc',
   network: 'tron',
   rpcUrl: 'https://nile.trongrid.io',
+});
+
+// Get the transaction receipt on Sui network.
+const receipt = await multichainWallet.getTransaction({
+  hash: 'AsU5WsBm8kZtuC2hQNyX3zv3CpvHUznE3mLEVewsgp4V',
+  network: 'sui',
+  rpcUrl: 'https://fullnode.testnet.sui.io:443',
 });
 ```
 
@@ -623,6 +669,38 @@ const transfer = await multichainWallet.transfer({
   ..object;
 }
 ```
+#### Sui Network
+
+Allows for the transfer of SUI and Sui tokens.
+
+```javascript
+// Transferring SUI from one address to another.
+const transfer = await multichainWallet.transfer({
+  recipientAddress: '0x7264e741063b6b064cdb780b44578db213cdff9e5641abb2c34a5b5c55307579',
+  amount: 0.1,
+  network: sui,
+  rpcUrl: 'https://fullnode.testnet.sui.io:443',
+  privateKey: 'suiprivkey1qpppfvzg767qahlw6eu09m2ql3uvc59xqgt3l0un06lvnf8yjxac6v37z3e',
+})
+
+// Transferring Sui coins from one address to another.
+const transfer = await multichainWallet.transfer({
+  recipientAddress: '0x7264e741063b6b064cdb780b44578db213cdff9e5641abb2c34a5b5c55307579',
+  tokenAddress: '0xa1ec7fc00a6f40db9693ad1415d0c193ad3906494428cf252621037bd7117e29::usdc::USDC',
+  amount: 0.1,
+  network: sui,
+  rpcUrl: 'https://fullnode.testnet.sui.io:443',
+  privateKey: 'suiprivkey1qpppfvzg767qahlw6eu09m2ql3uvc59xqgt3l0un06lvnf8yjxac6v37z3e',
+})
+```
+
+#### Response
+```bash
+{
+  digest
+  ..object;
+}
+```
 
 ### Encryptions
 
@@ -777,6 +855,30 @@ const info = await multichainWallet.getTokenInfo({
 }
 ```
 
+#### Get Sui Coin Info
+
+Allows for fetching Sui coin 
+
+```javascript
+const info = await multichainWallet.getTokenInfo({
+  address: '0xa1ec7fc00a6f40db9693ad1415d0c193ad3906494428cf252621037bd7117e29::usdc::USDC',
+  network: 'sui',
+  rpcUrl: 'https://fullnode.testnet.sui.io:443',
+});
+```
+
+#### Response
+```javascript
+{
+  name: 'USDC',
+  symbol: 'USDC',
+  address: '0xa1ec7fc00a6f40db9693ad1415d0c193ad3906494428cf252621037bd7117e29::usdc::USDC',
+  decimals: 6,
+  logoUrl: 'https://www.circle.com/hubfs/Brand/USDC/USDC_icon_32x32.png',
+  totalSupply: '2526980560742103'
+}
+```
+
 ### Smart Contract Call
 
 This can be used to make custom smart contract interaction by specifying the contract ABI and function types.
@@ -911,6 +1013,35 @@ const data = await multichainWallet.smartContractCall({
 });
 ```
 
+#### Sui network
+```javascript
+// Calling a write smart contract function
+const data = await multichainWallet.smartContractCall({
+   contractAddress: '0x086162ecfab930c92b2773f0f878f4998bad6c4fd9d2135fc58f8592ed9f4854::nft::mint', // The contractAddress is the form `packageId::module_name::method`
+   params: ['nftName', 'nftDescription', '0xc8ef1c69d448b8c373c6de6f7170b0dc4ab8804591601c77ac6d6d0aad9fb914', 'nftImgUrl'],
+   paramTypes: ['string', 'string', 'address', 'string'],
+   method: 'mint',
+   methodType: 'write',
+   network: 'sui',
+   rpcUrl: 'https://fullnode.testnet.sui.io:443',
+   privateKey: testPrivateKey,
+   gasLimit: 10_000_000, // 0.01 SUI
+})
+
+// Calling a read smart contract function
+const data = await multichainWallet.smartContractCall({
+  // This calls the owner function to retrieve the owner of a counter object in a module
+   contractAddress: '0x086162ecfab930c92b2773f0f878f4998bad6c4fd9d2135fc58f8592ed9f4854::counter::owner', // The contractAddress is the form `packageId::module_name::method`
+   params: ['0xaf7a0a1346420a575015429cc4289a1d55faf37d93fa69bb07a1619b3be5665c'], //This is the counter object we want to get its owner
+   paramTypes: ['object'],
+   method: 'owner',
+   methodType: 'read',
+   network: 'sui',
+   rpcUrl: 'https://fullnode.testnet.sui.io:443',
+   sender: '0xc8ef1c69d448b8c373c6de6f7170b0dc4ab8804591601c77ac6d6d0aad9fb914',
+})
+```
+
 Some of the parameters available in this function are:
 
 - The **method** parameter is the name of the smart contract function to be interacted with.
@@ -927,6 +1058,11 @@ The optional parameters that the object takes in are: value, contractAbi, gas pr
 - The **private key** is a string parameter that can be passed to use as the signer. It is used to sign the transaction. This parameter is not needed when calling a smart contract read function.
 - The **payment** (only on Waves) payment is the payment (WAVES or Waves Asset) sent to the smart contract while interacting with it. If the smart contract function does not require any payment.
 - The **feeLimt** (only on Tron) is the max amount of fee you're willing to pay for the transaction
+- The **paramTypes** (only on Sui) it is the list of types for each parameter expected by the function e.g `u64`, `address`, `vector<u8>`. Used to define the function's signature and how to encode the arguments. 
+- The **typeArguments** (only on Sui) this is an optional field, they are concrete types for generic parameters, basically for interacting with the specific type of an object. Example, in this move function `public fun transfer<T>(coin: Coin<T>, recipient: address)` This function can transfer any kind of coin, but you must specify the actual coin type when you call it. An example of calling the fucntion: 
+`transfer<0x2::usdc::USDC>(my_usdc_coin, recipient_address)`
+Here, `0x2::usdc::USDC` is the typeArgument for `T` and `my_usdc_coin` is the objectId of your usdc coin
+- The **sender** (only on Sui) this is the sui address only for view transactions. 
 
 #### Response
 
